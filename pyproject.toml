@@ -38,6 +38,9 @@ develop = [
     "bump-my-version",
     "check-manifest",
     "cibuildwheel",
+    "codespell>=2.4,<2.5",
+    "mdformat>=0.7.22,<0.8",
+    "mdformat-tables>=1",
     "maturin>=1,<2",
     "pytest",
     "pytest-cov",
@@ -56,6 +59,7 @@ Homepage = "https://github.com/1kbgz/superstore"
 current_version = "0.2.6"
 commit = true
 tag = true
+commit_args = "-s"
 
 [[tool.bumpversion.files]]
 filename = "superstore/__init__.py"
