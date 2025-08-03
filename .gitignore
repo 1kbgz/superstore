@@ -139,10 +139,13 @@ js/dist
 js/lib
 js/node_modules
 js/*.tgz
+superstore/extension
 
 # Jupyter
 .ipynb_checkpoints
 .autoversion
+!superstore/extension/superstore.json
+!superstore/extension/install.json
 superstore/nbextension
 superstore/labextension
 
