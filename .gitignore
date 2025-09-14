@@ -146,6 +146,7 @@ superstore/extension
 # Jupyter
 .ipynb_checkpoints
 .autoversion
+Untitled*.ipynb
 !superstore/extension/superstore.json
 !superstore/extension/install.json
 superstore/nbextension
