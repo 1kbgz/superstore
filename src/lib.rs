@@ -4,7 +4,6 @@ mod example;
 
 pub use example::Example;
 
-
 #[pymodule]
 fn superstore(_py: Python, m: &Bound<PyModule>) -> PyResult<()> {
     // Example
