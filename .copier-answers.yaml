@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier
-_commit: 18afe0a
+_commit: 973c39c
 _src_path: https://github.com/python-project-templates/base.git
 add_docs: false
 add_extension: rust
@@ -8,5 +8,5 @@ email: 3105306+timkpaine@users.noreply.github.com
 github: 1kbgz
 project_description: Data generation
 project_name: superstore
-python_version_primary: '3.9'
+python_version_primary: '3.11'
 team: the superstore authors
