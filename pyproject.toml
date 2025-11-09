@@ -8,8 +8,13 @@ authors = [{name = "the superstore authors", email = "dev@1kbgz.com"}]
 description="Data generation"
 readme = "README.md"
 license = { text = "Apache-2.0" }
+<<<<<<< before updating
 version = "0.2.6"
 requires-python = ">=3.9"
+=======
+version = "0.1.0"
+requires-python = ">=3.10"
+>>>>>>> after updating
 keywords = []
 
 classifiers = [
@@ -19,7 +24,6 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -96,7 +100,7 @@ ignore = [
 ]
 
 [tool.cibuildwheel]
-build = "cp39-*"
+build = "cp310-*"
 test-command = "pytest -vvv {project}/superstore/tests"
 test-requires = ["pytest", "pytest-cov", "pytest-sugar", "pytest-xdist"]
 
