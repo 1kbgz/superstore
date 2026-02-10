@@ -7,15 +7,10 @@ build-backend="hatchling.build"
 
 [project]
 name = "superstore"
-<<<<<<< before updating
-authors = [{name = "the superstore authors", email = "dev@1kbgz.com"}]
-description="Data generation"
-=======
 authors = [
-    {name = "the superstore authors", email = "3105306+timkpaine@users.noreply.github.com"},
+    {name = "the superstore authors", email = "dev@1kbgz.com"},
 ]
 description = "Data generation"
->>>>>>> after updating
 readme = "README.md"
 license = { text = "Apache-2.0" }
 version = "0.2.6"
