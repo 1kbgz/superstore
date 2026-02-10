@@ -12,6 +12,8 @@ crate-type = ["cdylib"]
 [dependencies]
 superstore = { path = "./rust", version = "*" }
 pyo3 = { version = "0.27.2", features = ["abi3-py39", "extension-module", "multiple-pymethods"] }
+uuid = { version = "1.0", features = ["v4"] }
+rand = "0.8"
 
 [profile.release]
 panic = 'abort'
