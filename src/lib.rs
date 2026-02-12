@@ -1,5 +1,4 @@
 use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyList};
 
 mod crossfilter;
 mod general;

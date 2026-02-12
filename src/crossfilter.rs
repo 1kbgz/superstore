@@ -102,11 +102,8 @@ fn job_to_pydict(py: Python<'_>, j: &Job, json: bool) -> PyResult<Py<PyDict>> {
 }
 
 #[pyfunction]
-#[pyo3(name = "machines")]
-pub fn py_machines(py: Python<'_>, count: Option<usize>, json: Option<bool>) -> PyResult<PyObject> {
-    let count = count.unwrap_or(100);
-    let _json = json.unwrap_or(false);
-
+#[pyo3(name = "machines", signature = (count=100, json=false))]
+pub fn py_machines(py: Python<'_>, count: usize, json: bool) -> PyResult<Py<PyAny>> {
     let machines = rust_machines(count);
     let list = PyList::empty(py);
     for m in &machines {
@@ -117,13 +114,9 @@ pub fn py_machines(py: Python<'_>, count: Option<usize>, json: Option<bool>) -> 
 }
 
 #[pyfunction]
-#[pyo3(name = "usage")]
-pub fn py_usage(
-    py: Python<'_>,
-    machine: &Bound<'_, PyDict>,
-    json: Option<bool>,
-) -> PyResult<PyObject> {
-    let _json = json.unwrap_or(false);
+#[pyo3(name = "usage", signature = (machine, json=false))]
+pub fn py_usage(py: Python<'_>, machine: &Bound<'_, PyDict>, json: bool) -> PyResult<Py<PyAny>> {
+    let _json = json;
 
     // Extract machine fields
     let machine_id: String = machine
@@ -209,13 +202,9 @@ pub fn py_usage(
 }
 
 #[pyfunction]
-#[pyo3(name = "status")]
-pub fn py_status(
-    py: Python<'_>,
-    machine: &Bound<'_, PyDict>,
-    json: Option<bool>,
-) -> PyResult<PyObject> {
-    let json_flag = json.unwrap_or(false);
+#[pyo3(name = "status", signature = (machine, json=false))]
+pub fn py_status(py: Python<'_>, machine: &Bound<'_, PyDict>, json: bool) -> PyResult<Py<PyAny>> {
+    let json_flag = json;
 
     // Extract fields
     let machine_id: String = machine
@@ -323,13 +312,9 @@ pub fn py_status(
 }
 
 #[pyfunction]
-#[pyo3(name = "jobs")]
-pub fn py_jobs(
-    py: Python<'_>,
-    machine: &Bound<'_, PyDict>,
-    json: Option<bool>,
-) -> PyResult<PyObject> {
-    let json_flag = json.unwrap_or(false);
+#[pyo3(name = "jobs", signature = (machine, json=false))]
+pub fn py_jobs(py: Python<'_>, machine: &Bound<'_, PyDict>, json: bool) -> PyResult<Py<PyAny>> {
+    let json_flag = json;
 
     // Extract machine fields
     let machine_id: String = machine

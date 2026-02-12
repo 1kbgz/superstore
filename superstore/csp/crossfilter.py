@@ -4,7 +4,7 @@ from typing import List
 import csp
 from csp import ts
 
-from ..crossfilter import (
+from .. import (
     JOBS_SCHEMA,
     MACHINE_SCHEMA,
     STATUS_SCHEMA,
