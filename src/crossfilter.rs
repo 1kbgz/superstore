@@ -102,9 +102,15 @@ fn job_to_pydict(py: Python<'_>, j: &Job, json: bool) -> PyResult<Py<PyDict>> {
 }
 
 #[pyfunction]
-#[pyo3(name = "machines", signature = (count=100, json=false))]
-pub fn py_machines(py: Python<'_>, count: usize, json: bool) -> PyResult<Py<PyAny>> {
-    let machines = rust_machines(count);
+#[pyo3(name = "machines", signature = (count=100, json=false, seed=None))]
+pub fn py_machines(
+    py: Python<'_>,
+    count: usize,
+    json: bool,
+    seed: Option<u64>,
+) -> PyResult<Py<PyAny>> {
+    let _ = json;
+    let machines = rust_machines(count, seed);
     let list = PyList::empty(py);
     for m in &machines {
         list.append(machine_to_pydict(py, m)?)?;
@@ -114,8 +120,13 @@ pub fn py_machines(py: Python<'_>, count: usize, json: bool) -> PyResult<Py<PyAn
 }
 
 #[pyfunction]
-#[pyo3(name = "usage", signature = (machine, json=false))]
-pub fn py_usage(py: Python<'_>, machine: &Bound<'_, PyDict>, json: bool) -> PyResult<Py<PyAny>> {
+#[pyo3(name = "usage", signature = (machine, json=false, seed=None))]
+pub fn py_usage(
+    py: Python<'_>,
+    machine: &Bound<'_, PyDict>,
+    json: bool,
+    seed: Option<u64>,
+) -> PyResult<Py<PyAny>> {
     let _json = json;
 
     // Extract machine fields
@@ -159,7 +170,7 @@ pub fn py_usage(py: Python<'_>, machine: &Bound<'_, PyDict>, json: bool) -> PyRe
 
     if !has_cpu || cpu_val.is_none() {
         // No previous usage, return initial usage
-        let u = rust_usage(&m, None);
+        let u = rust_usage(&m, None, seed);
         return Ok(usage_to_pydict(py, &u)?.into_bound(py).into());
     }
 
@@ -197,7 +208,7 @@ pub fn py_usage(py: Python<'_>, machine: &Bound<'_, PyDict>, json: bool) -> PyRe
             .unwrap_or(0.0),
     };
 
-    let u = rust_usage(&m, Some(&prev_usage));
+    let u = rust_usage(&m, Some(&prev_usage), seed);
     Ok(usage_to_pydict(py, &u)?.into_bound(py).into())
 }
 
@@ -312,8 +323,13 @@ pub fn py_status(py: Python<'_>, machine: &Bound<'_, PyDict>, json: bool) -> PyR
 }
 
 #[pyfunction]
-#[pyo3(name = "jobs", signature = (machine, json=false))]
-pub fn py_jobs(py: Python<'_>, machine: &Bound<'_, PyDict>, json: bool) -> PyResult<Py<PyAny>> {
+#[pyo3(name = "jobs", signature = (machine, json=false, seed=None))]
+pub fn py_jobs(
+    py: Python<'_>,
+    machine: &Bound<'_, PyDict>,
+    json: bool,
+    seed: Option<u64>,
+) -> PyResult<Py<PyAny>> {
     let json_flag = json;
 
     // Extract machine fields
@@ -351,7 +367,7 @@ pub fn py_jobs(py: Python<'_>, machine: &Bound<'_, PyDict>, json: bool) -> PyRes
         zone,
     };
 
-    match rust_job(&m, json_flag) {
+    match rust_job(&m, json_flag, seed) {
         Some(j) => Ok(job_to_pydict(py, &j, json_flag)?.into_bound(py).into()),
         None => Ok(py.None()),
     }

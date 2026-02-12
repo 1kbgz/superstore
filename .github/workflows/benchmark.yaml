@@ -1,0 +1,113 @@
+name: Benchmarks
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'rust/**'
+      - 'src/**'
+      - 'superstore/**'
+      - 'asv.conf.json'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'rust/**'
+      - 'src/**'
+      - 'superstore/**'
+      - 'asv.conf.json'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        fetch-depth: 0  # Fetch full history for comparing commits
+
+    - name: Fetch main branch
+      run: |
+        git fetch origin main:main || true
+
+    - uses: actions-ext/python/setup@main
+      with:
+        version: "3.11"
+
+    - uses: actions-ext/rust/setup@main
+
+    - name: Install dependencies
+      run: make develop
+
+    - name: Build
+      run: make build
+
+    - name: Run benchmarks (quick)
+      run: make bench-quick
+
+    - name: Compare benchmarks (PR only)
+      if: github.event_name == 'pull_request'
+      run: |
+        # Run comparison between main and PR HEAD
+        python -m asv machine --yes
+        python -m asv continuous origin/main HEAD --quick --factor 1.1 || true
+      continue-on-error: true
+
+    - name: Generate benchmark report
+      run: |
+        python -m asv publish || echo "No benchmark results to publish yet"
+      continue-on-error: true
+
+    - name: Upload benchmark results
+      uses: actions/upload-artifact@v6
+      with:
+        name: benchmark-results
+        path: .asv/html/
+        retention-days: 30
+        if-no-files-found: ignore
+
+  # Deploy benchmark results to GitHub Pages (main branch only)
+  deploy-results:
+    needs: benchmark
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: benchmark-results
+        path: benchmark-html
+      continue-on-error: true
+
+    - name: Check if results exist
+      id: check
+      run: |
+        if [ -d "benchmark-html" ] && [ "$(ls -A benchmark-html 2>/dev/null)" ]; then
+          echo "exists=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "exists=false" >> "$GITHUB_OUTPUT"
+          echo "No benchmark results to deploy"
+        fi
+
+    - name: Deploy to GitHub Pages
+      if: steps.check.outputs.exists == 'true'
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./benchmark-html
+        destination_dir: benchmarks

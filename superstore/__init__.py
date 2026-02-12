@@ -1,32 +1,170 @@
 __version__ = "0.2.6"
 
 # Import directly from the native Rust module
+# Import configuration classes from pydantic models
+from .config import (
+    # Enums
+    ClimateZone,
+    # Config classes
+    CrossfilterConfig,
+    MachineType,
+    OutputFormat,
+    Season,
+    SuperstoreConfig,
+    TimeseriesConfig,
+    WeatherConfig,
+    WeatherEvent,
+    # Factory functions
+    crossfilter_config,
+    superstore_config,
+    timeseries_config,
+    weather_config,
+)
 from .superstore import (
+    # Temporal dependency models
+    AR1,
     JOBS_SCHEMA,
     MACHINE_SCHEMA,
     STATUS_SCHEMA,
     USAGE_SCHEMA,
+    ARp,
+    # Copula models
+    ClaytonCopula,
+    # Correlation matrix support
+    CorrelationMatrix,
+    EmployeeStream,
+    ExponentialSmoothing,
+    FrankCopula,
+    GaussianCopula,
+    GumbelCopula,
+    MarkovChain,
+    RandomWalk,
+    SuperstoreStream,
+    addGaussianNoise,
+    applyMissing,
+    # Core generators
     employees,
-    getTimeSeries,
-    getTimeSeriesData,
+    # Arrow IPC export
+    employeesArrowIpc,
+    employeesParallel,
+    employeesStream,
+    # File export
+    employeesToCsv,
+    employeesToParquet,
     jobs,
     machines,
+    numThreads,
+    pearsonCorrelation,
+    sampleBeta,
+    sampleBivariate,
+    sampleCategorical,
+    sampleExponential,
+    sampleGamma,
+    sampleLogNormal,
+    sampleMixture,
+    sampleNormal,
+    samplePareto,
+    samplePoisson,
+    # Statistical distributions
+    sampleUniform,
+    sampleWeibull,
+    # Deterministic mode
+    setDeterministicMode,
+    setNumThreads,
     status,
     superstore,
+    superstoreArrowIpc,
+    # Parallel generators
+    superstoreParallel,
+    # Streaming generators
+    superstoreStream,
+    superstoreToCsv,
+    superstoreToParquet,
+    timeseries,
+    timeseriesData,
     usage,
+    # Weather generator
+    weather,
 )
 
 __all__ = (
+    # Schemas
     "JOBS_SCHEMA",
     "MACHINE_SCHEMA",
     "STATUS_SCHEMA",
     "USAGE_SCHEMA",
+    # Core generators
     "employees",
-    "getTimeSeries",
-    "getTimeSeriesData",
+    "timeseries",
+    "timeseriesData",
     "jobs",
     "machines",
     "status",
     "superstore",
     "usage",
+    "weather",
+    # Streaming generators
+    "superstoreStream",
+    "employeesStream",
+    "SuperstoreStream",
+    "EmployeeStream",
+    # Parallel generators
+    "superstoreParallel",
+    "employeesParallel",
+    "numThreads",
+    "setNumThreads",
+    "setDeterministicMode",
+    # Statistical distributions
+    "sampleUniform",
+    "sampleNormal",
+    "sampleLogNormal",
+    "sampleExponential",
+    "samplePoisson",
+    "samplePareto",
+    "sampleBeta",
+    "sampleGamma",
+    "sampleWeibull",
+    "sampleCategorical",
+    "sampleMixture",
+    "addGaussianNoise",
+    "applyMissing",
+    # Arrow IPC export
+    "superstoreArrowIpc",
+    "employeesArrowIpc",
+    # File export
+    "superstoreToParquet",
+    "employeesToParquet",
+    "superstoreToCsv",
+    "employeesToCsv",
+    # Correlation matrix support
+    "CorrelationMatrix",
+    "sampleBivariate",
+    "pearsonCorrelation",
+    # Temporal dependency models
+    "AR1",
+    "ARp",
+    "MarkovChain",
+    "RandomWalk",
+    "ExponentialSmoothing",
+    # Copula models
+    "GaussianCopula",
+    "ClaytonCopula",
+    "FrankCopula",
+    "GumbelCopula",
+    # Configuration classes
+    "WeatherConfig",
+    "SuperstoreConfig",
+    "TimeseriesConfig",
+    "CrossfilterConfig",
+    # Config enums
+    "ClimateZone",
+    "Season",
+    "WeatherEvent",
+    "MachineType",
+    "OutputFormat",
+    # Config factory functions
+    "weather_config",
+    "superstore_config",
+    "timeseries_config",
+    "crossfilter_config",
 )

@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "project": "superstore",
+    "project_url": "https://github.com/1kbgz/superstore",
+    "repo": ".",
+    "branches": ["main"],
+    "environment_type": "virtualenv",
+    "install_command": ["python -m pip install ."],
+    "build_command": [
+        "python -m pip install hatchling hatch-rs maturin"
+    ],
+    "show_commit_url": "https://github.com/1kbgz/superstore/commit/",
+    "results_dir": ".asv/results",
+    "html_dir": ".asv/html",
+    "benchmark_dir": "superstore/benchmarks",
+    "dvcs": "git",
+    "build_cache_size": 5,
+    "pythons": ["3.11"],
+    "matrix": {},
+    "regressions_first_commits": {},
+    "regressions_thresholds": {}
+}

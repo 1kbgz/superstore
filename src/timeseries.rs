@@ -120,7 +120,7 @@ fn create_hashmap_polars(
     Ok(result_dict.into())
 }
 
-/// Create dict from HashMap data  
+/// Create dict from HashMap data
 fn create_hashmap_dict(
     py: Python<'_>,
     data: &HashMap<char, (Vec<NaiveDateTime>, Vec<f64>)>,
@@ -143,15 +143,16 @@ fn create_hashmap_dict(
 }
 
 #[pyfunction]
-#[pyo3(name = "getTimeSeries", signature = (nper=30, freq="B", ncol=4, output="pandas"))]
+#[pyo3(name = "timeseries", signature = (nper=30, freq="B", ncol=4, output="pandas", seed=None))]
 pub fn py_get_time_series(
     py: Python<'_>,
     nper: usize,
     freq: &str,
     ncol: usize,
     output: &str,
+    seed: Option<u64>,
 ) -> PyResult<Py<PyAny>> {
-    let data = get_time_series(nper, freq, ncol);
+    let data = get_time_series(nper, freq, ncol, seed);
 
     match output {
         "pandas" => create_timeseries_pandas(py, &data),
@@ -165,15 +166,16 @@ pub fn py_get_time_series(
 }
 
 #[pyfunction]
-#[pyo3(name = "getTimeSeriesData", signature = (nper=30, freq="B", ncol=4, output="pandas"))]
+#[pyo3(name = "timeseriesData", signature = (nper=30, freq="B", ncol=4, output="pandas", seed=None))]
 pub fn py_get_time_series_data(
     py: Python<'_>,
     nper: usize,
     freq: &str,
     ncol: usize,
     output: &str,
+    seed: Option<u64>,
 ) -> PyResult<Py<PyAny>> {
-    let data = get_time_series_data(nper, freq, ncol);
+    let data = get_time_series_data(nper, freq, ncol, seed);
 
     match output {
         "pandas" => create_hashmap_pandas(py, &data),

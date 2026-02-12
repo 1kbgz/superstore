@@ -37,7 +37,7 @@ pip install superstore[develop]
 ## Quick Start
 
 ```python
-from superstore import superstore, employees, getTimeSeries
+from superstore import superstore, employees, timeseries, weather
 
 # Generate 1000 retail records as a pandas DataFrame
 df = superstore(count=1000)
@@ -47,13 +47,38 @@ df_polars = superstore(count=1000, output="polars")
 
 # Generate as list of dicts
 records = superstore(count=1000, output="dict")
+
+# Generate reproducible data with a seed
+df = superstore(count=1000, seed=42)
+```
+
+## Reproducibility with Seeds
+
+All data generators support an optional `seed` parameter for reproducible random data generation:
+
+```python
+from superstore import superstore, employees, getTimeSeries, machines
+
+# Same seed produces identical data
+df1 = superstore(count=100, seed=42)
+df2 = superstore(count=100, seed=42)
+assert df1.equals(df2)  # True
+
+# Works with all generators
+employees_df = employees(count=50, seed=123)
+timeseries_df = timeseries(nper=30, seed=456)
+weather_df = weather(count=100, seed=789)
+machine_list = machines(count=10, seed=321)
+
+# No seed means random data each time
+df3 = superstore(count=100)  # Different each call
 ```
 
 ## API Reference
 
 ### Retail Data Generation
 
-#### `superstore(count=1000, output="pandas")`
+#### `superstore(count=1000, output="pandas", seed=None)`
 
 Generate synthetic superstore sales records.
 
@@ -61,6 +86,7 @@ Generate synthetic superstore sales records.
 
 - `count` (int, default=1000): Number of records to generate
 - `output` (str, default="pandas"): Output format - "pandas", "polars", or "dict"
+- `seed` (int, optional): Random seed for reproducible generation
 
 **Returns:** DataFrame or list of dicts with columns:
 
@@ -82,7 +108,7 @@ df = superstore(count=500, output="polars")
 records = superstore(count=500, output="dict")
 ```
 
-#### `employees(count=1000, output="pandas")`
+#### `employees(count=1000, output="pandas", seed=None)`
 
 Generate synthetic employee records.
 
@@ -90,6 +116,7 @@ Generate synthetic employee records.
 
 - `count` (int, default=1000): Number of employees to generate
 - `output` (str, default="pandas"): Output format - "pandas", "polars", or "dict"
+- `seed` (int, optional): Random seed for reproducible generation
 
 **Returns:** DataFrame or list of dicts with columns:
 
@@ -107,7 +134,7 @@ df = employees(count=100)
 
 ### Time Series Data Generation
 
-#### `getTimeSeries(nper=30, freq="B", ncol=4, output="pandas")`
+#### `timeseries(nper=30, freq="B", ncol=4, output="pandas", seed=None)`
 
 Generate a random walk time series with multiple columns.
 
@@ -117,45 +144,94 @@ Generate a random walk time series with multiple columns.
 - `freq` (str, default="B"): Frequency - "B" (business days), "D" (daily), "W" (weekly), "M" (monthly)
 - `ncol` (int, default=4): Number of columns (named A, B, C, D, ...)
 - `output` (str, default="pandas"): Output format - "pandas", "polars", or "dict"
+- `seed` (int, optional): Random seed for reproducible generation
 
 **Returns:** DataFrame with DatetimeIndex and random walk columns
 
 ```python
-from superstore import getTimeSeries
+from superstore import timeseries
 
 # 30 business days, 4 columns
-df = getTimeSeries()
+df = timeseries()
 
 # 100 daily periods, 6 columns
-df = getTimeSeries(nper=100, freq="D", ncol=6)
+df = timeseries(nper=100, freq="D", ncol=6)
 
 # As polars DataFrame
-df = getTimeSeries(nper=50, output="polars")
+df = timeseries(nper=50, output="polars")
 ```
 
-#### `getTimeSeriesData(nper=30, freq="B", ncol=4, output="pandas")`
+#### `timeseriesData(nper=30, freq="B", ncol=4, output="pandas", seed=None)`
 
 Generate multiple independent time series as a dict of Series/DataFrames.
 
-**Parameters:** Same as `getTimeSeries`
+**Parameters:** Same as `timeseries`
 
 **Returns:** Dict mapping column names (A, B, C, ...) to pandas Series or polars DataFrames
 
 ```python
-from superstore import getTimeSeriesData
+from superstore import timeseriesData
 
 # Dict of pandas Series
-series_dict = getTimeSeriesData()
+series_dict = timeseriesData()
 
 # Dict of polars DataFrames
-series_dict = getTimeSeriesData(output="polars")
+series_dict = timeseriesData(output="polars")
+```
+
+### Weather Data Generation
+
+#### `weather(count=1000, output="pandas", seed=None, **kwargs)` or `weather(config: WeatherConfig)`
+
+Generate realistic weather sensor readings with day/night cycles, seasonal patterns, and weather events.
+
+**Parameters:**
+
+- `count` (int, default=1000): Number of readings to generate
+- `output` (str, default="pandas"): Output format - "pandas", "polars", or "dict"
+- `seed` (int, optional): Random seed for reproducible generation
+- `climate_zone` (str, default="temperate"): Climate zone - "tropical", "subtropical", "temperate", "continental", "polar", "arid", "mediterranean"
+- `latitude` (float, default=40.0): Latitude for day/night calculations (-90 to 90)
+- `start_date` (str, optional): Start date (YYYY-MM-DD)
+- `frequency_minutes` (int, default=15): Reading frequency in minutes
+- `base_temp_celsius` (float, default=15.0): Annual average temperature
+- `enable_weather_events` (bool, default=True): Enable weather event simulation
+- `outlier_probability` (float, default=0.01): Probability of sensor errors
+- `sensor_drift` (bool, default=False): Enable gradual sensor calibration drift
+
+**Returns:** DataFrame or list of dicts with columns:
+
+- timestamp, temperature_celsius, humidity_percent, precipitation_mm
+- pressure_hpa, wind_speed_kmh, weather_event, is_outlier
+
+```python
+from superstore import weather
+from superstore.config import WeatherConfig, ClimateZone
+
+# Basic usage
+df = weather(count=500, seed=42)
+
+# With climate zone
+df = weather(count=500, climate_zone="tropical", latitude=-5.0)
+
+# Using Pydantic config for full control
+config = WeatherConfig(
+    count=1000,
+    climate_zone=ClimateZone.MEDITERRANEAN,
+    latitude=35.0,
+    base_temp_celsius=20.0,
+    enable_weather_events=True,
+    outlier_probability=0.02,
+    sensor_drift=True,
+)
+df = weather(config)
 ```
 
 ### Machine Metrics Generation
 
 These functions simulate server/machine monitoring data for testing dashboards and alerting systems.
 
-#### `machines(count=100, json=False)`
+#### `machines(count=100, json=False, seed=None)`
 
 Generate a list of machine definitions.
 
@@ -163,6 +239,7 @@ Generate a list of machine definitions.
 
 - `count` (int, default=100): Number of machines to generate
 - `json` (bool, default=False): JSON format flag (reserved for future use)
+- `seed` (int, optional): Random seed for reproducible generation
 
 **Returns:** List of machine dicts with: machine_id, kind (edge/core/worker), cores, region, zone
 
@@ -173,7 +250,7 @@ from superstore import machines
 machine_list = machines(count=50)
 ```
 
-#### `usage(machine, json=False)`
+#### `usage(machine, json=False, seed=None)`
 
 Generate usage metrics for a machine.
 
@@ -181,6 +258,7 @@ Generate usage metrics for a machine.
 
 - `machine` (dict): Machine dict from `machines()`
 - `json` (bool, default=False): JSON format flag
+- `seed` (int, optional): Random seed for reproducible generation
 
 **Returns:** Dict with machine info plus: cpu, mem, free, network, disk (all 0-100 percentages)
 
@@ -211,7 +289,7 @@ s = status(metrics)
 print(s["status"])  # "idle", "active", or "capacity"
 ```
 
-#### `jobs(machine, json=False)`
+#### `jobs(machine, json=False, seed=None)`
 
 Generate active jobs for a machine.
 
@@ -219,6 +297,7 @@ Generate active jobs for a machine.
 
 - `machine` (dict): Machine dict
 - `json` (bool, default=False): JSON format flag
+- `seed` (int, optional): Random seed for reproducible generation
 
 **Returns:** List of job dicts with: machine_id, job_id, name, units, start_time, end_time
 
@@ -239,6 +318,54 @@ from superstore import MACHINE_SCHEMA, USAGE_SCHEMA, STATUS_SCHEMA, JOBS_SCHEMA
 print(MACHINE_SCHEMA)
 # {'machine_id': 'string', 'kind': 'string', 'cores': 'integer', 'region': 'string', 'zone': 'string'}
 ```
+
+### Pydantic Configuration Classes
+
+For complex configurations with validation, use Pydantic config classes:
+
+```python
+from superstore import weather
+from superstore.config import (
+    WeatherConfig, ClimateZone, OutputFormat,
+    # Future: SuperstoreConfig, TimeseriesConfig, CrossfilterConfig
+)
+
+# WeatherConfig provides full control with validation
+config = WeatherConfig(
+    count=2000,
+    climate_zone=ClimateZone.TROPICAL,
+    latitude=-5.0,
+    base_temp_celsius=28.0,
+    temp_daily_amplitude=8.0,
+    temp_seasonal_amplitude=5.0,
+    humidity_temp_correlation=-0.5,
+    precipitation_probability=0.25,
+    enable_weather_events=True,
+    event_probability=0.1,
+    outlier_probability=0.02,
+    sensor_drift=True,
+    sensor_drift_rate=0.002,
+    output=OutputFormat.POLARS,
+    seed=42,
+)
+
+# Pass config directly to generator
+df = weather(config)
+
+# Config classes validate parameters at construction time
+try:
+    bad_config = WeatherConfig(latitude=200.0)  # Raises ValidationError
+except ValueError as e:
+    print(e)  # "latitude must be between -90 and 90"
+```
+
+Available enums:
+
+- `ClimateZone`: TROPICAL, SUBTROPICAL, TEMPERATE, CONTINENTAL, POLAR, ARID, MEDITERRANEAN
+- `Season`: SPRING, SUMMER, FALL, WINTER
+- `WeatherEvent`: CLEAR, CLOUDY, RAIN, HEAVY_RAIN, SNOW, STORM, HEATWAVE, COLD_SNAP, FOG
+- `OutputFormat`: PANDAS, POLARS, DICT
+- `MachineType`: CORE, EDGE, WORKER
 
 ## Output Format Examples
 

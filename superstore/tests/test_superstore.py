@@ -99,3 +99,87 @@ class TestSuperstore:
         df = employees(count=50)
         assert isinstance(df, pd.DataFrame)
         assert df.shape[0] == 50
+
+    def test_superstore_seed_reproducibility(self):
+        """Test that same seed produces identical results."""
+        from superstore import superstore
+
+        df1 = superstore(count=100, seed=42)
+        df2 = superstore(count=100, seed=42)
+
+        # DataFrames should be identical
+        assert df1.equals(df2)
+
+        # Specific values should match
+        assert df1["Order ID"].tolist() == df2["Order ID"].tolist()
+        assert df1["City"].tolist() == df2["City"].tolist()
+        assert df1["Sales"].tolist() == df2["Sales"].tolist()
+
+    def test_superstore_seed_different_seeds(self):
+        """Test that different seeds produce different results."""
+        from superstore import superstore
+
+        df1 = superstore(count=100, seed=42)
+        df2 = superstore(count=100, seed=123)
+
+        # DataFrames should be different
+        assert not df1.equals(df2)
+
+    def test_superstore_seed_no_seed_varies(self):
+        """Test that no seed produces different results each call."""
+        from superstore import superstore
+
+        df1 = superstore(count=100)
+        df2 = superstore(count=100)
+
+        # DataFrames should be different (extremely unlikely to match)
+        assert not df1["Order ID"].tolist() == df2["Order ID"].tolist()
+
+    def test_employees_seed_reproducibility(self):
+        """Test that same seed produces identical employee results."""
+        from superstore import employees
+
+        df1 = employees(count=100, seed=42)
+        df2 = employees(count=100, seed=42)
+
+        # DataFrames should be identical
+        assert df1.equals(df2)
+
+        # Specific values should match
+        assert df1["Employee ID"].tolist() == df2["Employee ID"].tolist()
+        assert df1["First Name"].tolist() == df2["First Name"].tolist()
+        assert df1["Email"].tolist() == df2["Email"].tolist()
+
+    def test_employees_seed_different_seeds(self):
+        """Test that different seeds produce different employee results."""
+        from superstore import employees
+
+        df1 = employees(count=100, seed=42)
+        df2 = employees(count=100, seed=123)
+
+        # DataFrames should be different
+        assert not df1.equals(df2)
+
+    def test_seed_with_polars_output(self):
+        """Test seed reproducibility with polars output."""
+        from superstore import employees, superstore
+
+        df1 = superstore(count=100, output="polars", seed=42)
+        df2 = superstore(count=100, output="polars", seed=42)
+        assert df1.equals(df2)
+
+        df1 = employees(count=100, output="polars", seed=42)
+        df2 = employees(count=100, output="polars", seed=42)
+        assert df1.equals(df2)
+
+    def test_seed_with_dict_output(self):
+        """Test seed reproducibility with dict output."""
+        from superstore import employees, superstore
+
+        data1 = superstore(count=100, output="dict", seed=42)
+        data2 = superstore(count=100, output="dict", seed=42)
+        assert data1 == data2
+
+        data1 = employees(count=100, output="dict", seed=42)
+        data2 = employees(count=100, output="dict", seed=42)
+        assert data1 == data2

@@ -186,9 +186,14 @@ fn create_employees_dict(py: Python<'_>, rows: &[EmployeeRow]) -> PyResult<Py<Py
 }
 
 #[pyfunction]
-#[pyo3(name = "superstore", signature = (count=1000, output="pandas"))]
-pub fn py_superstore(py: Python<'_>, count: usize, output: &str) -> PyResult<Py<PyAny>> {
-    let rows = superstore(count);
+#[pyo3(name = "superstore", signature = (count=1000, output="pandas", seed=None))]
+pub fn py_superstore(
+    py: Python<'_>,
+    count: usize,
+    output: &str,
+    seed: Option<u64>,
+) -> PyResult<Py<PyAny>> {
+    let rows = superstore(count, seed);
 
     match output {
         "pandas" => create_superstore_pandas(py, &rows),
@@ -202,9 +207,14 @@ pub fn py_superstore(py: Python<'_>, count: usize, output: &str) -> PyResult<Py<
 }
 
 #[pyfunction]
-#[pyo3(name = "employees", signature = (count=1000, output="pandas"))]
-pub fn py_employees(py: Python<'_>, count: usize, output: &str) -> PyResult<Py<PyAny>> {
-    let rows = employees(count);
+#[pyo3(name = "employees", signature = (count=1000, output="pandas", seed=None))]
+pub fn py_employees(
+    py: Python<'_>,
+    count: usize,
+    output: &str,
+    seed: Option<u64>,
+) -> PyResult<Py<PyAny>> {
+    let rows = employees(count, seed);
 
     match output {
         "pandas" => create_employees_pandas(py, &rows),

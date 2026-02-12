@@ -1,12 +1,23 @@
 use chrono::{Datelike, Duration as ChronoDuration, NaiveDate, NaiveDateTime, Weekday};
-use rand::Rng;
+use rand::rngs::StdRng;
+use rand::{Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+
+use crate::temporal::AR1;
 
 const ALPHABET: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 fn get_cols(k: usize) -> Vec<char> {
     ALPHABET.chars().take(k).collect()
+}
+
+/// Create an RNG from an optional seed
+fn create_rng(seed: Option<u64>) -> StdRng {
+    match seed {
+        Some(s) => StdRng::seed_from_u64(s),
+        None => StdRng::from_entropy(),
+    }
 }
 
 fn make_date_index(k: usize, freq: &str) -> Vec<NaiveDateTime> {
@@ -61,24 +72,28 @@ fn make_date_index(k: usize, freq: &str) -> Vec<NaiveDateTime> {
     dates
 }
 
-fn make_time_series(nper: usize, freq: &str) -> (Vec<NaiveDateTime>, Vec<f64>) {
-    let mut rng = rand::thread_rng();
+fn make_time_series_with_rng<R: Rng>(
+    rng: &mut R,
+    nper: usize,
+    freq: &str,
+) -> (Vec<NaiveDateTime>, Vec<f64>) {
     let dates = make_date_index(nper, freq);
 
-    // Generate cumulative sum of random normals with mean 0.2 and std 1
-    let mut values = Vec::with_capacity(nper);
-    let mut cumsum = 0.0;
-    for _ in 0..nper {
-        // Approximate normal distribution using Box-Muller
-        let u1: f64 = rng.gen();
-        let u2: f64 = rng.gen();
-        let z = (-2.0 * u1.ln()).sqrt() * (2.0 * std::f64::consts::PI * u2).cos();
-        let value = 0.2 + z; // mean 0.2, std 1
-        cumsum += value;
-        values.push(cumsum);
-    }
+    // Use AR(1) model with phi=0.95 for realistic temporal autocorrelation
+    // High phi means values persist (smooth time series)
+    let mut ar1 = AR1::new(0.95, 1.0, 0.0).expect("Invalid AR1 parameters");
+    let values = ar1.sample_n(rng, nper);
 
-    (dates, values)
+    // Compute cumulative sum for a trending time series (like stock prices)
+    let cumsum: Vec<f64> = values
+        .iter()
+        .scan(0.0, |acc, &x| {
+            *acc += x;
+            Some(*acc)
+        })
+        .collect();
+
+    (dates, cumsum)
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -97,24 +112,27 @@ pub fn get_time_series_data(
     nper: usize,
     freq: &str,
     ncol: usize,
+    seed: Option<u64>,
 ) -> HashMap<char, (Vec<NaiveDateTime>, Vec<f64>)> {
+    let mut rng = create_rng(seed);
     let cols = get_cols(ncol);
     let mut data = HashMap::new();
 
     for c in cols {
-        data.insert(c, make_time_series(nper, freq));
+        data.insert(c, make_time_series_with_rng(&mut rng, nper, freq));
     }
 
     data
 }
 
-pub fn get_time_series(nper: usize, freq: &str, ncol: usize) -> TimeSeriesData {
+pub fn get_time_series(nper: usize, freq: &str, ncol: usize, seed: Option<u64>) -> TimeSeriesData {
+    let mut rng = create_rng(seed);
     let cols = get_cols(ncol);
     let index = make_date_index(nper, freq);
     let mut columns = Vec::with_capacity(ncol);
 
     for c in cols {
-        let (_, values) = make_time_series(nper, freq);
+        let (_, values) = make_time_series_with_rng(&mut rng, nper, freq);
         columns.push(TimeSeriesColumn { name: c, values });
     }
 
@@ -147,12 +165,30 @@ mod tests {
 
     #[test]
     fn test_get_time_series() {
-        let data = get_time_series(30, "B", 4);
+        let data = get_time_series(30, "B", 4, None);
         assert_eq!(data.index.len(), 30);
         assert_eq!(data.columns.len(), 4);
         assert_eq!(data.columns[0].name, 'A');
         assert_eq!(data.columns[1].name, 'B');
         assert_eq!(data.columns[2].name, 'C');
         assert_eq!(data.columns[3].name, 'D');
+    }
+
+    #[test]
+    fn test_get_time_series_seeded() {
+        let data1 = get_time_series(10, "D", 2, Some(99999));
+        let data2 = get_time_series(10, "D", 2, Some(99999));
+        // Same seed should produce same results
+        assert_eq!(data1.columns[0].values, data2.columns[0].values);
+        assert_eq!(data1.columns[1].values, data2.columns[1].values);
+    }
+
+    #[test]
+    fn test_get_time_series_data_seeded() {
+        let data1 = get_time_series_data(10, "D", 2, Some(88888));
+        let data2 = get_time_series_data(10, "D", 2, Some(88888));
+        // Same seed should produce same results
+        assert_eq!(data1.get(&'A').unwrap().1, data2.get(&'A').unwrap().1);
+        assert_eq!(data1.get(&'B').unwrap().1, data2.get(&'B').unwrap().1);
     }
 }
