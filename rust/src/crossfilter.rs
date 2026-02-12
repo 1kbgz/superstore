@@ -319,9 +319,8 @@ pub fn status(usage_data: &Usage, _json: bool) -> Status {
     let now = Utc::now().naive_utc();
     let last_update = now.format("%Y-%m-%dT%H:%M:%S%.6f").to_string();
 
-    let status_str = if usage_data.cpu == 0.0 && usage_data.mem == 0.0 {
-        "unknown"
-    } else if usage_data.cpu < 20.0 {
+    // Status is determined by cpu level
+    let status_str = if usage_data.cpu < 20.0 {
         "idle"
     } else if usage_data.cpu > 80.0 {
         "capacity"

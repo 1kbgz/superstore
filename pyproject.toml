@@ -31,11 +31,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 
-dependencies = [
-    "coolname",
-    "Faker>=1.0.1",
-    "pandas>=0.23.4",
-]
+dependencies = []
 
 [project.optional-dependencies]
 develop = [
@@ -55,6 +51,9 @@ develop = [
     "ty",
     "uv",
     "wheel",
+    # tests
+    "pandas",
+    "polars",
 ]
 
 [project.scripts]

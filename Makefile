@@ -1,14 +1,20 @@
 #########
 # BUILD #
 #########
-.PHONY: develop-py develop-rs develop
+.PHONY: develop-py develop-rs develop build-native
 develop-py:
 	uv pip install -e .[develop]
 
 develop-rs:
 	make -C rust develop
 
-develop: develop-rs develop-py  ## setup project for development
+develop: develop-rs develop-py build-native  ## setup project for development
+
+# Build native module for development
+build-native:
+	RUSTFLAGS="-C link-arg=-undefined -C link-arg=dynamic_lookup" cargo build --release --target aarch64-apple-darwin
+	cp target/aarch64-apple-darwin/release/libsuperstore.dylib superstore/superstore.so
+	install_name_tool -id "@rpath/superstore.so" superstore/superstore.so
 
 .PHONY: requirements-py requirements-rs requirements
 requirements-py:  ## install prerequisite python build requirements
