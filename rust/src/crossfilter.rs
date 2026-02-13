@@ -1,6 +1,7 @@
 use chrono::{Duration as ChronoDuration, Utc};
+use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
-use rand::Rng;
+use rand::{Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 const REGIONS: [&str; 3] = ["na", "eu", "ap"];
@@ -17,10 +18,17 @@ const NOUNS: [&str; 20] = [
     "lion", "mouse", "newt", "owl", "panda", "quail", "rabbit", "snake", "tiger",
 ];
 
-fn generate_name() -> String {
-    let mut rng = rand::thread_rng();
-    let adj = ADJECTIVES.choose(&mut rng).unwrap();
-    let noun = NOUNS.choose(&mut rng).unwrap();
+/// Create an RNG from an optional seed
+fn create_rng(seed: Option<u64>) -> StdRng {
+    match seed {
+        Some(s) => StdRng::seed_from_u64(s),
+        None => StdRng::from_entropy(),
+    }
+}
+
+fn generate_name<R: Rng>(rng: &mut R) -> String {
+    let adj = ADJECTIVES.choose(rng).unwrap();
+    let noun = NOUNS.choose(rng).unwrap();
     format!("{}-{}", adj, noun)
 }
 
@@ -29,12 +37,17 @@ fn generate_id() -> String {
     uuid.rsplit('-').next().unwrap().to_string()
 }
 
+fn generate_id_seeded<R: Rng>(rng: &mut R) -> String {
+    // Generate a UUID-like string using the seeded RNG
+    let hex_chars: Vec<char> = "0123456789abcdef".chars().collect();
+    (0..12).map(|_| *hex_chars.choose(rng).unwrap()).collect()
+}
+
 fn clip(value: f64, min: f64, max: f64) -> f64 {
     ((value.max(min).min(max) * 100.0).round()) / 100.0
 }
 
-fn randrange(low: f64, high: f64) -> f64 {
-    let mut rng = rand::thread_rng();
+fn randrange<R: Rng>(rng: &mut R, low: f64, high: f64) -> f64 {
     rng.gen::<f64>() * (high - low) + low
 }
 
@@ -87,8 +100,8 @@ pub struct Job {
     pub end_time: String,
 }
 
-pub fn machines(count: usize) -> Vec<Machine> {
-    let mut rng = rand::thread_rng();
+pub fn machines(count: usize, seed: Option<u64>) -> Vec<Machine> {
+    let mut rng = create_rng(seed);
     let mut result = Vec::with_capacity(count);
 
     for _ in 0..count {
@@ -105,7 +118,11 @@ pub fn machines(count: usize) -> Vec<Machine> {
         };
 
         let machine = Machine {
-            machine_id: generate_id(),
+            machine_id: if seed.is_some() {
+                generate_id_seeded(&mut rng)
+            } else {
+                generate_id()
+            },
             kind: kind.to_string(),
             cores,
             region: REGIONS.choose(&mut rng).unwrap().to_string(),
@@ -117,8 +134,8 @@ pub fn machines(count: usize) -> Vec<Machine> {
     result
 }
 
-pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
-    let mut rng = rand::thread_rng();
+pub fn usage(machine: &Machine, prev_usage: Option<&Usage>, seed: Option<u64>) -> Usage {
+    let mut rng = create_rng(seed);
 
     // 10% chance to reset to zero
     let should_reset = prev_usage.is_none() || rng.gen::<f64>() < 0.1;
@@ -144,6 +161,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
         "core" => {
             // bursty cpu/mem/network/disk
             let cpu = randrange(
+                &mut rng,
                 if prev.cpu > 0.0 { prev.cpu - 15.0 } else { 0.0 },
                 if prev.cpu > 0.0 {
                     prev.cpu + 15.0
@@ -152,6 +170,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
                 },
             );
             let mem = randrange(
+                &mut rng,
                 if prev.mem > 0.0 {
                     prev.mem - 15.0
                 } else {
@@ -164,6 +183,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
                 },
             );
             let network = randrange(
+                &mut rng,
                 if prev.network > 0.0 {
                     prev.network - 15.0
                 } else {
@@ -176,6 +196,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
                 },
             );
             let disk = randrange(
+                &mut rng,
                 if prev.disk > 0.0 {
                     prev.disk - 15.0
                 } else {
@@ -192,6 +213,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
         "edge" => {
             // low cpu, medium mem, high network/disk
             let cpu = randrange(
+                &mut rng,
                 if prev.cpu > 0.0 {
                     prev.cpu - 5.0
                 } else {
@@ -204,6 +226,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
                 },
             );
             let mem = randrange(
+                &mut rng,
                 if prev.mem > 0.0 {
                     prev.mem - 5.0
                 } else {
@@ -216,6 +239,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
                 },
             );
             let network = randrange(
+                &mut rng,
                 if prev.network > 0.0 {
                     prev.network - 5.0
                 } else {
@@ -228,6 +252,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
                 },
             );
             let disk = randrange(
+                &mut rng,
                 if prev.disk > 0.0 {
                     prev.disk - 5.0
                 } else {
@@ -244,6 +269,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
         _ => {
             // worker: high cpu, high mem, high network/disk
             let cpu = randrange(
+                &mut rng,
                 if prev.cpu > 0.0 {
                     prev.cpu - 5.0
                 } else {
@@ -256,6 +282,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
                 },
             );
             let mem = randrange(
+                &mut rng,
                 if prev.mem > 0.0 {
                     prev.mem - 5.0
                 } else {
@@ -268,6 +295,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
                 },
             );
             let network = randrange(
+                &mut rng,
                 if prev.network > 0.0 {
                     prev.network - 5.0
                 } else {
@@ -280,6 +308,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>) -> Usage {
                 },
             );
             let disk = randrange(
+                &mut rng,
                 if prev.disk > 0.0 {
                     prev.disk - 5.0
                 } else {
@@ -319,9 +348,8 @@ pub fn status(usage_data: &Usage, _json: bool) -> Status {
     let now = Utc::now().naive_utc();
     let last_update = now.format("%Y-%m-%dT%H:%M:%S%.6f").to_string();
 
-    let status_str = if usage_data.cpu == 0.0 && usage_data.mem == 0.0 {
-        "unknown"
-    } else if usage_data.cpu < 20.0 {
+    // Status is determined by cpu level
+    let status_str = if usage_data.cpu < 20.0 {
         "idle"
     } else if usage_data.cpu > 80.0 {
         "capacity"
@@ -345,12 +373,12 @@ pub fn status(usage_data: &Usage, _json: bool) -> Status {
     }
 }
 
-pub fn job(machine: &Machine, _json: bool) -> Option<Job> {
+pub fn job(machine: &Machine, _json: bool, seed: Option<u64>) -> Option<Job> {
     if machine.kind != "worker" {
         return None;
     }
 
-    let mut rng = rand::thread_rng();
+    let mut rng = create_rng(seed);
     if rng.gen::<f64>() < 0.5 {
         return None;
     }
@@ -363,8 +391,12 @@ pub fn job(machine: &Machine, _json: bool) -> Option<Job> {
 
     Some(Job {
         machine_id: machine.machine_id.clone(),
-        job_id: generate_id(),
-        name: generate_name(),
+        job_id: if seed.is_some() {
+            generate_id_seeded(&mut rng)
+        } else {
+            generate_id()
+        },
+        name: generate_name(&mut rng),
         units: *[1, 2, 4, 8].choose(&mut rng).unwrap(),
         start_time,
         end_time,
@@ -390,15 +422,16 @@ mod tests {
 
     #[test]
     fn test_randrange() {
+        let mut rng = create_rng(None);
         for _ in 0..100 {
-            let val = randrange(10.0, 20.0);
+            let val = randrange(&mut rng, 10.0, 20.0);
             assert!(val >= 10.0 && val < 20.0);
         }
     }
 
     #[test]
     fn test_machines() {
-        let ms = machines(100);
+        let ms = machines(100, None);
         assert_eq!(ms.len(), 100);
         for m in &ms {
             assert_eq!(m.machine_id.len(), 12);
@@ -410,9 +443,23 @@ mod tests {
     }
 
     #[test]
+    fn test_machines_seeded() {
+        let ms1 = machines(10, Some(42));
+        let ms2 = machines(10, Some(42));
+        // Same seed should produce same machines
+        for (m1, m2) in ms1.iter().zip(ms2.iter()) {
+            assert_eq!(m1.machine_id, m2.machine_id);
+            assert_eq!(m1.kind, m2.kind);
+            assert_eq!(m1.cores, m2.cores);
+            assert_eq!(m1.region, m2.region);
+            assert_eq!(m1.zone, m2.zone);
+        }
+    }
+
+    #[test]
     fn test_usage() {
-        let m = machines(1).pop().unwrap();
-        let u = usage(&m, None);
+        let m = machines(1, None).pop().unwrap();
+        let u = usage(&m, None, None);
         assert_eq!(u.machine_id, m.machine_id);
         assert_eq!(u.cpu, 0.0);
         assert_eq!(u.mem, 0.0);
@@ -421,11 +468,12 @@ mod tests {
 
     #[test]
     fn test_status() {
-        let m = machines(1).pop().unwrap();
-        let u = usage(&m, None);
+        let m = machines(1, None).pop().unwrap();
+        let u = usage(&m, None, None);
         let s = status(&u, false);
         assert_eq!(s.machine_id, m.machine_id);
-        assert_eq!(s.status, "unknown");
+        // cpu=0 means status is "idle" (cpu < 20)
+        assert_eq!(s.status, "idle");
     }
 
     #[test]
@@ -439,7 +487,7 @@ mod tests {
                 region: "na".to_string(),
                 zone: "A".to_string(),
             };
-            if let Some(j) = job(&m, false) {
+            if let Some(j) = job(&m, false, None) {
                 assert_eq!(j.machine_id, m.machine_id);
                 assert_eq!(j.job_id.len(), 12);
                 assert!(j.name.contains('-'));
@@ -458,6 +506,6 @@ mod tests {
             region: "na".to_string(),
             zone: "A".to_string(),
         };
-        assert!(job(&m, false).is_none());
+        assert!(job(&m, false, None).is_none());
     }
 }

@@ -32,13 +32,12 @@ classifiers = [
 ]
 
 dependencies = [
-    "coolname",
-    "Faker>=1.0.1",
-    "pandas>=0.23.4",
+    "pydantic>=2.0",
 ]
 
 [project.optional-dependencies]
 develop = [
+    "asv>=0.6",
     "build",
     "bump-my-version",
     "check-manifest",
@@ -48,13 +47,19 @@ develop = [
     "hatchling",
     "mdformat>=0.7.22,<1.1",
     "mdformat-tables>=1",
+    "mypy>=1.0",
     "pytest",
     "pytest-cov",
     "ruff>=0.9,<0.15",
     "twine",
     "ty",
     "uv",
+    "virtualenv",
     "wheel",
+    # tests
+    "pandas",
+    "pandas-stubs",
+    "polars",
 ]
 
 [project.scripts]
@@ -92,6 +97,7 @@ replace = 'version = "{new_version}"'
 [tool.check-manifest]
 ignore = [
     ".copier-answers.yaml",
+    "asv.conf.json",
     "Cargo.toml",
     "Cargo.lock",
     "Makefile",

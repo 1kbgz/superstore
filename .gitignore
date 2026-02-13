@@ -55,6 +55,9 @@ junit.xml
 .hypothesis/
 .pytest_cache/
 
+# ASV benchmarks
+.asv/
+
 # Translations
 *.mo
 *.pot

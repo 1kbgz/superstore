@@ -1,9 +1,17 @@
 use pyo3::prelude::*;
-use pyo3::types::{PyDict, PyList};
 
+mod arrow;
+mod copulas;
+mod correlation;
 mod crossfilter;
+mod distributions;
+mod export;
 mod general;
+mod parallel;
+mod streaming;
+mod temporal;
 mod timeseries;
+mod weather;
 
 #[pymodule]
 fn superstore(m: &Bound<PyModule>) -> PyResult<()> {
@@ -28,6 +36,33 @@ fn superstore(m: &Bound<PyModule>) -> PyResult<()> {
 
     // Crossfilter schemas
     crossfilter::add_schemas(m)?;
+
+    // Streaming module
+    streaming::register_streaming(m)?;
+
+    // Parallel module
+    parallel::register_parallel(m)?;
+
+    // Distributions module
+    distributions::register_distributions(m)?;
+
+    // Arrow module
+    arrow::register_arrow(m)?;
+
+    // Export module (Parquet/CSV)
+    export::register_export(m)?;
+
+    // Correlation module
+    correlation::register_correlation(m)?;
+
+    // Temporal module
+    temporal::register_temporal(m)?;
+
+    // Copulas module
+    copulas::register_copulas(m)?;
+
+    // Weather module
+    weather::register_weather(m)?;
 
     Ok(())
 }

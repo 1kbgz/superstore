@@ -46,8 +46,8 @@ lint-rs:  ## run rust linter
 	make -C rust lint
 
 lint-docs:  ## lint docs with mdformat and codespell
-	python -m mdformat --check README.md 
-	python -m codespell_lib README.md 
+	python -m mdformat --check README.md
+	python -m codespell_lib README.md
 
 lint: lint-rs lint-py lint-docs  ## run project linters
 
@@ -63,8 +63,8 @@ fix-rs:  ## fix rust formatting
 	make -C rust fix
 
 fix-docs:  ## autoformat docs with mdformat and codespell
-	python -m mdformat README.md 
-	python -m codespell_lib --write README.md 
+	python -m mdformat README.md
+	python -m codespell_lib --write README.md
 
 fix: fix-rs fix-py fix-docs  ## run project autoformatters
 
@@ -74,12 +74,15 @@ format: fix
 ################
 # Other Checks #
 ################
-.PHONY: check-manifest checks check
+.PHONY: check-manifest stubtest checks check
 
 check-manifest:  ## check python sdist manifest with check-manifest
 	check-manifest -v
 
-checks: check-manifest
+stubtest:  ## validate type stubs against runtime module
+	python -m mypy.stubtest superstore.superstore --allowlist superstore/stubtest_allowlist.txt --ignore-unused-allowlist
+
+checks: check-manifest stubtest
 
 # alias
 check: checks
@@ -152,6 +155,36 @@ dist: clean build dist-rs dist-py-wheel dist-py-sdist dist-check  ## build all d
 
 publish: dist  ## publish python assets
 
+##############
+# BENCHMARKS #
+##############
+.PHONY: bench bench-run bench-quick bench-compare bench-publish bench-preview bench-machine
+
+bench-machine:  ## configure asv machine info (required for CI)
+	python -m asv machine --yes
+
+bench:  ## run all benchmarks (quick mode, using current install)
+	python -m asv machine --yes
+	python -m asv run --quick --environment existing
+
+bench-run:  ## run all benchmarks (full, from commits)
+	python -m asv machine --yes
+	python -m asv run
+
+bench-quick:  ## run benchmarks with minimal samples (current install)
+	python -m asv machine --yes
+	python -m asv run --quick --show-stderr --environment existing
+
+bench-compare:  ## compare benchmarks between HEAD and main
+	python -m asv machine --yes
+	python -m asv continuous main HEAD --quick
+
+bench-publish:  ## generate benchmark HTML report
+	python -m asv publish
+
+bench-preview:  ## preview benchmark results in browser
+	python -m asv preview
+
 #########
 # CLEAN #
 #########
@@ -161,7 +194,7 @@ deep-clean: ## clean everything from the repository
 	git clean -fdx
 
 clean: ## clean the repository
-	rm -rf .coverage coverage cover htmlcov logs build dist *.egg-info
+	rm -rf .coverage coverage cover htmlcov logs build dist *.egg-info .asv
 
 ############################################################################################
 

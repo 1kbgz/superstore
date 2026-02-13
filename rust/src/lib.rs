@@ -1,9 +1,27 @@
+pub mod arrow;
+pub mod copulas;
+pub mod correlation;
 pub mod crossfilter;
+pub mod distributions;
+pub mod export;
 pub mod general;
+pub mod parallel;
+pub mod streaming;
+pub mod temporal;
 pub mod timeseries;
 pub mod utils;
+pub mod weather;
 
+pub use arrow::*;
+pub use copulas::*;
+pub use correlation::*;
 pub use crossfilter::*;
+pub use distributions::*;
+pub use export::*;
 pub use general::*;
+pub use parallel::*;
+pub use streaming::*;
+pub use temporal::*;
 pub use timeseries::*;
 pub use utils::*;
+pub use weather::*;
