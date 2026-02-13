@@ -227,7 +227,7 @@ pub fn superstore_arrow(
     count: usize,
     seed: Option<u64>,
 ) -> Result<RecordBatch, arrow::error::ArrowError> {
-    let rows = superstore(count, seed);
+    let rows = superstore(count, seed, None);
     superstore_to_arrow(&rows)
 }
 
@@ -236,7 +236,7 @@ pub fn employees_arrow(
     count: usize,
     seed: Option<u64>,
 ) -> Result<RecordBatch, arrow::error::ArrowError> {
-    let rows = employees(count, seed);
+    let rows = employees(count, seed, None);
     employees_to_arrow(&rows)
 }
 

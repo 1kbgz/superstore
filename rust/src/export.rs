@@ -78,7 +78,7 @@ pub fn superstore_to_parquet<P: AsRef<Path>>(
     seed: Option<u64>,
     compression: ParquetCompression,
 ) -> Result<usize, ExportError> {
-    let rows = superstore(count, seed);
+    let rows = superstore(count, seed, None);
     let batch = superstore_to_arrow(&rows)?;
 
     let file = File::create(path)?;
@@ -100,7 +100,7 @@ pub fn employees_to_parquet<P: AsRef<Path>>(
     seed: Option<u64>,
     compression: ParquetCompression,
 ) -> Result<usize, ExportError> {
-    let rows = employees(count, seed);
+    let rows = employees(count, seed, None);
     let batch = employees_to_arrow(&rows)?;
 
     let file = File::create(path)?;
@@ -179,7 +179,7 @@ pub fn superstore_to_csv<P: AsRef<Path>>(
     count: usize,
     seed: Option<u64>,
 ) -> Result<usize, ExportError> {
-    let rows = superstore(count, seed);
+    let rows = superstore(count, seed, None);
 
     let file = File::create(path)?;
     let mut writer = BufWriter::new(file);
@@ -205,7 +205,7 @@ pub fn employees_to_csv<P: AsRef<Path>>(
     count: usize,
     seed: Option<u64>,
 ) -> Result<usize, ExportError> {
-    let rows = employees(count, seed);
+    let rows = employees(count, seed, None);
 
     let file = File::create(path)?;
     let mut writer = BufWriter::new(file);

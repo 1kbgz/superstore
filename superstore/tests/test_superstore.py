@@ -183,3 +183,96 @@ class TestSuperstore:
         data1 = employees(count=100, output="dict", seed=42)
         data2 = employees(count=100, output="dict", seed=42)
         assert data1 == data2
+
+
+class TestSuperstoreConfig:
+    """Tests for SuperstoreConfig-based API."""
+
+    def test_superstore_with_config(self):
+        """Test superstore() with SuperstoreConfig."""
+        import pandas as pd
+
+        from superstore import superstore
+        from superstore.config import SuperstoreConfig
+
+        config = SuperstoreConfig(count=100, seed=42)
+        df = superstore(config)
+        assert isinstance(df, pd.DataFrame)
+        assert len(df) == 100
+
+    def test_superstore_config_output_format(self):
+        """Test SuperstoreConfig respects output format."""
+        import polars as pl
+
+        from superstore import superstore
+        from superstore.config import SuperstoreConfig
+
+        config = SuperstoreConfig(count=50, output="polars", seed=42)
+        df = superstore(config)
+        assert isinstance(df, pl.DataFrame)
+        assert len(df) == 50
+
+    def test_superstore_config_override(self):
+        """Test explicit params override config values."""
+        from superstore import superstore
+        from superstore.config import SuperstoreConfig
+
+        config = SuperstoreConfig(count=100, seed=42)
+        # Override count with explicit arg
+        df = superstore(config, count=50)
+        assert len(df) == 50
+
+    def test_superstore_config_seed_reproducibility(self):
+        """Test seed in config produces reproducible results."""
+        from superstore import superstore
+        from superstore.config import SuperstoreConfig
+
+        config = SuperstoreConfig(count=100, seed=42)
+        df1 = superstore(config)
+        df2 = superstore(config)
+        assert df1.equals(df2)
+
+    def test_superstore_config_dict_output(self):
+        """Test SuperstoreConfig with dict output."""
+        from superstore import superstore
+        from superstore.config import SuperstoreConfig
+
+        config = SuperstoreConfig(count=25, output="dict", seed=42)
+        data = superstore(config)
+        assert isinstance(data, list)
+        assert len(data) == 25
+        assert all(isinstance(row, dict) for row in data)
+
+    def test_superstore_config_pool_size(self):
+        """Test SuperstoreConfig with custom pool_size."""
+        from superstore import superstore
+        from superstore.config import SuperstoreConfig
+
+        # Test with default pool_size
+        config_default = SuperstoreConfig(count=100, seed=42)
+        assert config_default.pool_size == 1000
+
+        # Test with custom pool_size - smaller
+        config_small = SuperstoreConfig(count=100, seed=42, pool_size=50)
+        df_small = superstore(config_small)
+        assert len(df_small) == 100
+
+        # Test with custom pool_size - larger
+        config_large = SuperstoreConfig(count=500, seed=42, pool_size=5000)
+        df_large = superstore(config_large)
+        assert len(df_large) == 500
+
+        # Verify pool_size affects variety of generated data
+        # With small pool (50), there should be more duplicate cities
+        config_tiny = SuperstoreConfig(count=200, seed=42, pool_size=10)
+        df_tiny = superstore(config_tiny)
+        unique_cities_tiny = df_tiny["City"].nunique()
+
+        config_big = SuperstoreConfig(count=200, seed=42, pool_size=1000)
+        df_big = superstore(config_big)
+        unique_cities_big = df_big["City"].nunique()
+
+        # With 10 pool vs 1000 pool, the tiny pool should have fewer unique cities
+        # (limited by pool size of 10)
+        assert unique_cities_tiny <= 10
+        assert unique_cities_big > unique_cities_tiny

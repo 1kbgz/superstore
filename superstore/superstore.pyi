@@ -5,6 +5,8 @@ from typing import Any, Literal, final, overload
 import pandas as pd
 import polars as pl
 
+from .config import CrossfilterConfig, SuperstoreConfig, TimeseriesConfig
+
 # =============================================================================
 # Schema constants
 # =============================================================================
@@ -18,22 +20,51 @@ JOBS_SCHEMA: dict[str, str]
 # Core generators
 # =============================================================================
 
+# superstore() with SuperstoreConfig
 @overload
 def superstore(
-    count: int = ...,
-    output: Literal["pandas"] = ...,
+    config: SuperstoreConfig,
+    count: int | None = ...,
+    output: Literal["pandas"] | None = ...,
     seed: int | None = ...,
 ) -> pd.DataFrame: ...
 @overload
 def superstore(
-    count: int = ...,
+    config: SuperstoreConfig,
+    count: int | None = ...,
     *,
     output: Literal["polars"],
     seed: int | None = ...,
 ) -> pl.DataFrame: ...
 @overload
 def superstore(
-    count: int = ...,
+    config: SuperstoreConfig,
+    count: int | None = ...,
+    *,
+    output: Literal["dict"],
+    seed: int | None = ...,
+) -> list[dict[str, Any]]: ...
+
+# superstore() without config (backward compatible)
+@overload
+def superstore(
+    config: None = ...,
+    count: int | None = ...,
+    output: Literal["pandas"] | None = ...,
+    seed: int | None = ...,
+) -> pd.DataFrame: ...
+@overload
+def superstore(
+    config: None = ...,
+    count: int | None = ...,
+    *,
+    output: Literal["polars"],
+    seed: int | None = ...,
+) -> pl.DataFrame: ...
+@overload
+def superstore(
+    config: None = ...,
+    count: int | None = ...,
     *,
     output: Literal["dict"],
     seed: int | None = ...,
@@ -63,28 +94,63 @@ def employees(
 # Time series generators
 # =============================================================================
 
+# timeseries() with TimeseriesConfig
 @overload
 def timeseries(
-    nper: int = ...,
-    freq: str = ...,
-    ncol: int = ...,
-    output: Literal["pandas"] = ...,
+    config: TimeseriesConfig,
+    nper: int | None = ...,
+    freq: str | None = ...,
+    ncol: int | None = ...,
+    output: Literal["pandas"] | None = ...,
     seed: int | None = ...,
 ) -> pd.DataFrame: ...
 @overload
 def timeseries(
-    nper: int = ...,
-    freq: str = ...,
-    ncol: int = ...,
+    config: TimeseriesConfig,
+    nper: int | None = ...,
+    freq: str | None = ...,
+    ncol: int | None = ...,
     *,
     output: Literal["polars"],
     seed: int | None = ...,
 ) -> pl.DataFrame: ...
 @overload
 def timeseries(
-    nper: int = ...,
-    freq: str = ...,
-    ncol: int = ...,
+    config: TimeseriesConfig,
+    nper: int | None = ...,
+    freq: str | None = ...,
+    ncol: int | None = ...,
+    *,
+    output: Literal["dict"],
+    seed: int | None = ...,
+) -> dict[str, Any]: ...
+
+# timeseries() with int (backward compatible) or None
+@overload
+def timeseries(
+    config: int | None = ...,
+    nper: int | None = ...,
+    freq: str | None = ...,
+    ncol: int | None = ...,
+    output: Literal["pandas"] | None = ...,
+    seed: int | None = ...,
+) -> pd.DataFrame: ...
+@overload
+def timeseries(
+    config: int | None = ...,
+    nper: int | None = ...,
+    freq: str | None = ...,
+    ncol: int | None = ...,
+    *,
+    output: Literal["polars"],
+    seed: int | None = ...,
+) -> pl.DataFrame: ...
+@overload
+def timeseries(
+    config: int | None = ...,
+    nper: int | None = ...,
+    freq: str | None = ...,
+    ncol: int | None = ...,
     *,
     output: Literal["dict"],
     seed: int | None = ...,
@@ -121,7 +187,8 @@ def timeseriesData(
 # =============================================================================
 
 def machines(
-    count: int = ...,
+    config: CrossfilterConfig | int | None = ...,
+    count: int | None = ...,
     json: bool = ...,
     seed: int | None = ...,
 ) -> list[dict[str, Any]]: ...

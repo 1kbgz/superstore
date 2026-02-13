@@ -219,6 +219,7 @@ class SuperstoreConfig(BaseModel):
     count: int = Field(default=1000, ge=1, description="Number of rows to generate")
     output: OutputFormat = Field(default=OutputFormat.PANDAS, description="Output format")
     seed: int | None = Field(default=None, description="Random seed for reproducibility")
+    pool_size: int = Field(default=1000, ge=1, le=100000, description="Size of pre-generated data pools for performance")
 
     # Date range
     start_date: str | None = Field(default=None, description="Start date (YYYY-MM-DD). Defaults to start of year.")

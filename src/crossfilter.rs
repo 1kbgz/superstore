@@ -101,16 +101,77 @@ fn job_to_pydict(py: Python<'_>, j: &Job, json: bool) -> PyResult<Py<PyDict>> {
     Ok(dict.into())
 }
 
+/// Parse CrossfilterConfig dict into (count, seed)
+fn parse_crossfilter_config(dict: &Bound<'_, PyDict>) -> PyResult<(usize, Option<u64>)> {
+    // CrossfilterConfig uses n_machines for count
+    let count: usize = dict
+        .get_item("n_machines")?
+        .map(|v| v.extract())
+        .transpose()?
+        .or_else(|| {
+            dict.get_item("count")
+                .ok()
+                .flatten()
+                .and_then(|v| v.extract().ok())
+        })
+        .unwrap_or(100);
+
+    let seed: Option<u64> = dict.get_item("seed")?.and_then(|v| v.extract().ok());
+
+    Ok((count, seed))
+}
+
+/// Generate machine data with structured configuration.
+///
+/// Args:
+///     config: Optional CrossfilterConfig pydantic model, dict, or int (for backward compatibility).
+///             If int, treated as count. If None, uses default configuration.
+///     count: Number of machines (overrides config if provided)
+///     json: Whether to return JSON (deprecated, unused)
+///     seed: Random seed (overrides config if provided)
+///
+/// Returns:
+///     List of machine dictionaries.
 #[pyfunction]
-#[pyo3(name = "machines", signature = (count=100, json=false, seed=None))]
+#[pyo3(name = "machines", signature = (config=None, count=None, json=false, seed=None))]
 pub fn py_machines(
     py: Python<'_>,
-    count: usize,
+    config: Option<&Bound<'_, PyAny>>,
+    count: Option<usize>,
     json: bool,
     seed: Option<u64>,
 ) -> PyResult<Py<PyAny>> {
     let _ = json;
-    let machines = rust_machines(count, seed);
+
+    // Parse config from pydantic model, dict, or int (backward compat)
+    let (cfg_count, cfg_seed) = if let Some(cfg) = config {
+        // Check if it's an integer (backward compatibility: machines(100))
+        if let Ok(int_val) = cfg.extract::<usize>() {
+            (int_val, None)
+        // Check if it's a pydantic model (has model_dump method)
+        } else if cfg.hasattr("model_dump")? {
+            // Use mode="json" to ensure enums are serialized as strings
+            let kwargs = PyDict::new(py);
+            kwargs.set_item("mode", "json")?;
+            let dict = cfg.call_method("model_dump", (), Some(&kwargs))?;
+            let dict = dict.downcast::<PyDict>()?;
+            parse_crossfilter_config(dict)?
+        } else if let Ok(dict) = cfg.downcast::<PyDict>() {
+            parse_crossfilter_config(dict)?
+        } else {
+            return Err(pyo3::exceptions::PyTypeError::new_err(
+                "config must be a CrossfilterConfig, dict, int, or None",
+            ));
+        }
+    } else {
+        (100, None)
+    };
+
+    // Override with explicit parameters if provided
+    let final_count = count.unwrap_or(cfg_count);
+    let final_seed = seed.or(cfg_seed);
+
+    let machines = rust_machines(final_count, final_seed);
     let list = PyList::empty(py);
     for m in &machines {
         list.append(machine_to_pydict(py, m)?)?;
