@@ -18,6 +18,76 @@ const SEGMENTS: [&str; 4] = ["A", "B", "C", "D"];
 const PREFIXES: [&str; 6] = ["Mr.", "Mrs.", "Ms.", "Dr.", "Prof.", "Rev."];
 const SUFFIXES: [&str; 4] = ["Jr.", "Sr.", "III", "IV"];
 
+// Default pool size for pre-generated data
+const DEFAULT_POOL_SIZE: usize = 1000;
+
+struct LocationPool {
+    cities: Vec<String>,
+    states: Vec<String>,
+    zip_codes: Vec<String>,
+}
+
+impl LocationPool {
+    fn generate<R: Rng>(rng: &mut R, pool_size: usize) -> Self {
+        let cities: Vec<String> = (0..pool_size)
+            .map(|_| CityName().fake_with_rng(rng))
+            .collect();
+        let states: Vec<String> = (0..pool_size)
+            .map(|_| StateName().fake_with_rng(rng))
+            .collect();
+        let zip_codes: Vec<String> = (0..pool_size)
+            .map(|_| ZipCode().fake_with_rng(rng))
+            .collect();
+        Self {
+            cities,
+            states,
+            zip_codes,
+        }
+    }
+
+    fn random_city<R: Rng>(&self, rng: &mut R) -> &str {
+        self.cities.choose(rng).unwrap()
+    }
+
+    fn random_state<R: Rng>(&self, rng: &mut R) -> &str {
+        self.states.choose(rng).unwrap()
+    }
+
+    fn random_zip<R: Rng>(&self, rng: &mut R) -> &str {
+        self.zip_codes.choose(rng).unwrap()
+    }
+}
+
+struct NamePool {
+    first_names: Vec<String>,
+    last_names: Vec<String>,
+    emails: Vec<String>,
+    phone_numbers: Vec<String>,
+}
+
+impl NamePool {
+    fn generate<R: Rng>(rng: &mut R, pool_size: usize) -> Self {
+        let first_names: Vec<String> = (0..pool_size)
+            .map(|_| FirstName().fake_with_rng(rng))
+            .collect();
+        let last_names: Vec<String> = (0..pool_size)
+            .map(|_| LastName().fake_with_rng(rng))
+            .collect();
+        let emails: Vec<String> = (0..pool_size)
+            .map(|_| SafeEmail().fake_with_rng(rng))
+            .collect();
+        let phone_numbers: Vec<String> = (0..pool_size)
+            .map(|_| PhoneNumber().fake_with_rng(rng))
+            .collect();
+        Self {
+            first_names,
+            last_names,
+            emails,
+            phone_numbers,
+        }
+    }
+}
+
 fn generate_ein<R: Rng>(rng: &mut R) -> String {
     format!(
         "{:02}-{:07}",
@@ -157,11 +227,24 @@ pub struct EmployeeRow {
     pub date_of_birth: NaiveDate,
 }
 
-pub fn superstore(count: usize, seed: Option<u64>) -> Vec<SuperstoreRow> {
+pub fn superstore(count: usize, seed: Option<u64>, pool_size: Option<usize>) -> Vec<SuperstoreRow> {
     let mut rng = create_rng(seed);
     let mut data = Vec::with_capacity(count);
 
     let sectors: Vec<&str> = US_SECTORS.clone();
+
+    // Pre-generate location pool for performance (avoids calling fake crate 3M times)
+    let actual_pool_size = pool_size.unwrap_or(DEFAULT_POOL_SIZE);
+    let location_pool = LocationPool::generate(&mut rng, actual_pool_size);
+
+    // Pre-generate region strings to avoid format! in hot loop
+    let regions: [String; 5] = [
+        "Region 0".to_string(),
+        "Region 1".to_string(),
+        "Region 2".to_string(),
+        "Region 3".to_string(),
+        "Region 4".to_string(),
+    ];
 
     // Correlation matrix for Sales, Quantity, Discount, Profit
     // Sales-Quantity: 0.7, Sales-Profit: 0.6, Quantity-Profit: 0.5
@@ -217,10 +300,10 @@ pub fn superstore(count: usize, seed: Option<u64>) -> Vec<SuperstoreRow> {
             customer_id: generate_license_plate(&mut rng),
             segment: SEGMENTS.choose(&mut rng).unwrap().to_string(),
             country: "US".to_string(),
-            city: CityName().fake_with_rng(&mut rng),
-            state: StateName().fake_with_rng(&mut rng),
-            postal_code: ZipCode().fake_with_rng(&mut rng),
-            region: format!("Region {}", rng.gen_range(0..5)),
+            city: location_pool.random_city(&mut rng).to_string(),
+            state: location_pool.random_state(&mut rng).to_string(),
+            postal_code: location_pool.random_zip(&mut rng).to_string(),
+            region: regions[rng.gen_range(0..5)].clone(),
             product_id: generate_bban(&mut rng),
             category: sector.to_string(),
             sub_category: industry.to_string(),
@@ -235,26 +318,40 @@ pub fn superstore(count: usize, seed: Option<u64>) -> Vec<SuperstoreRow> {
     data
 }
 
-pub fn employees(count: usize, seed: Option<u64>) -> Vec<EmployeeRow> {
+pub fn employees(count: usize, seed: Option<u64>, pool_size: Option<usize>) -> Vec<EmployeeRow> {
     let mut rng = create_rng(seed);
     let mut data = Vec::with_capacity(count);
+
+    // Pre-generate pools for performance
+    let actual_pool_size = pool_size.unwrap_or(DEFAULT_POOL_SIZE);
+    let location_pool = LocationPool::generate(&mut rng, actual_pool_size);
+    let name_pool = NamePool::generate(&mut rng, actual_pool_size);
+
+    // Pre-generate region strings
+    let regions: [String; 5] = [
+        "Region 0".to_string(),
+        "Region 1".to_string(),
+        "Region 2".to_string(),
+        "Region 3".to_string(),
+        "Region 4".to_string(),
+    ];
 
     for id in 0..count {
         let row = EmployeeRow {
             row_id: id as i32,
             employee_id: generate_license_plate(&mut rng),
-            first_name: FirstName().fake_with_rng(&mut rng),
-            surname: LastName().fake_with_rng(&mut rng),
+            first_name: name_pool.first_names.choose(&mut rng).unwrap().clone(),
+            surname: name_pool.last_names.choose(&mut rng).unwrap().clone(),
             prefix: PREFIXES.choose(&mut rng).unwrap().to_string(),
             suffix: SUFFIXES.choose(&mut rng).unwrap().to_string(),
-            phone_number: PhoneNumber().fake_with_rng(&mut rng),
-            email: SafeEmail().fake_with_rng(&mut rng),
+            phone_number: name_pool.phone_numbers.choose(&mut rng).unwrap().clone(),
+            email: name_pool.emails.choose(&mut rng).unwrap().clone(),
             ssn: generate_ssn(&mut rng),
             street: generate_street_address(&mut rng),
-            city: CityName().fake_with_rng(&mut rng),
-            postal_code: ZipCode().fake_with_rng(&mut rng),
-            region: format!("Region {}", rng.gen_range(0..5)),
-            state: StateName().fake_with_rng(&mut rng),
+            city: location_pool.random_city(&mut rng).to_string(),
+            postal_code: location_pool.random_zip(&mut rng).to_string(),
+            region: regions[rng.gen_range(0..5)].clone(),
+            state: location_pool.random_state(&mut rng).to_string(),
             country: "US".to_string(),
             start_date: random_date_30_years(&mut rng),
             date_of_birth: random_date_of_birth(&mut rng),
@@ -271,7 +368,7 @@ mod tests {
 
     #[test]
     fn test_superstore() {
-        let data = superstore(100, None);
+        let data = superstore(100, None, None);
         assert_eq!(data.len(), 100);
         for (i, row) in data.iter().enumerate() {
             assert_eq!(row.row_id, i as i32);
@@ -283,8 +380,8 @@ mod tests {
 
     #[test]
     fn test_superstore_seeded() {
-        let data1 = superstore(10, Some(12345));
-        let data2 = superstore(10, Some(12345));
+        let data1 = superstore(10, Some(12345), None);
+        let data2 = superstore(10, Some(12345), None);
         // Same seed should produce same results
         for (r1, r2) in data1.iter().zip(data2.iter()) {
             assert_eq!(r1.order_id, r2.order_id);
@@ -296,7 +393,7 @@ mod tests {
 
     #[test]
     fn test_employees() {
-        let data = employees(100, None);
+        let data = employees(100, None, None);
         assert_eq!(data.len(), 100);
         for (i, row) in data.iter().enumerate() {
             assert_eq!(row.row_id, i as i32);
@@ -306,8 +403,8 @@ mod tests {
 
     #[test]
     fn test_employees_seeded() {
-        let data1 = employees(10, Some(54321));
-        let data2 = employees(10, Some(54321));
+        let data1 = employees(10, Some(54321), None);
+        let data2 = employees(10, Some(54321), None);
         // Same seed should produce same results
         for (r1, r2) in data1.iter().zip(data2.iter()) {
             assert_eq!(r1.employee_id, r2.employee_id);

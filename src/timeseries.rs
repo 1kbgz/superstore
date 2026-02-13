@@ -142,25 +142,103 @@ fn create_hashmap_dict(
     Ok(result_dict.into())
 }
 
+/// Parse TimeseriesConfig dict into (nper, freq, ncol, output, seed)
+fn parse_timeseries_config(
+    dict: &Bound<'_, PyDict>,
+) -> PyResult<(usize, String, usize, String, Option<u64>)> {
+    let nper: usize = dict
+        .get_item("nper")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(30);
+
+    let freq: String = dict
+        .get_item("freq")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or_else(|| "B".to_string());
+
+    let ncol: usize = dict
+        .get_item("ncol")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(4);
+
+    let output: String = dict
+        .get_item("output")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or_else(|| "pandas".to_string());
+
+    let seed: Option<u64> = dict.get_item("seed")?.and_then(|v| v.extract().ok());
+
+    Ok((nper, freq, ncol, output, seed))
+}
+
+/// Generate time series data with structured configuration.
+///
+/// Args:
+///     config: Optional TimeseriesConfig pydantic model, dict, or int (for backward compatibility).
+///             If int, treated as nper. If None, uses default configuration.
+///     nper: Number of periods (overrides config if provided)
+///     freq: Frequency string (overrides config if provided)
+///     ncol: Number of columns (overrides config if provided)
+///     output: Output format ("pandas", "polars", or "dict")
+///     seed: Random seed (overrides config if provided)
+///
+/// Returns:
+///     Time series data in the specified format.
 #[pyfunction]
-#[pyo3(name = "timeseries", signature = (nper=30, freq="B", ncol=4, output="pandas", seed=None))]
+#[pyo3(name = "timeseries", signature = (config=None, nper=None, freq=None, ncol=None, output=None, seed=None))]
 pub fn py_get_time_series(
     py: Python<'_>,
-    nper: usize,
-    freq: &str,
-    ncol: usize,
-    output: &str,
+    config: Option<&Bound<'_, PyAny>>,
+    nper: Option<usize>,
+    freq: Option<&str>,
+    ncol: Option<usize>,
+    output: Option<&str>,
     seed: Option<u64>,
 ) -> PyResult<Py<PyAny>> {
-    let data = get_time_series(nper, freq, ncol, seed);
+    // Parse config from pydantic model, dict, or int (backward compat)
+    let (cfg_nper, cfg_freq, cfg_ncol, cfg_output, cfg_seed) = if let Some(cfg) = config {
+        // Check if it's an integer (backward compatibility: timeseries(30))
+        if let Ok(int_val) = cfg.extract::<usize>() {
+            (int_val, "B".to_string(), 4, "pandas".to_string(), None)
+        // Check if it's a pydantic model (has model_dump method)
+        } else if cfg.hasattr("model_dump")? {
+            // Use mode="json" to ensure enums are serialized as strings
+            let kwargs = PyDict::new(py);
+            kwargs.set_item("mode", "json")?;
+            let dict = cfg.call_method("model_dump", (), Some(&kwargs))?;
+            let dict = dict.downcast::<PyDict>()?;
+            parse_timeseries_config(dict)?
+        } else if let Ok(dict) = cfg.downcast::<PyDict>() {
+            parse_timeseries_config(dict)?
+        } else {
+            return Err(pyo3::exceptions::PyTypeError::new_err(
+                "config must be a TimeseriesConfig, dict, int, or None",
+            ));
+        }
+    } else {
+        (30, "B".to_string(), 4, "pandas".to_string(), None)
+    };
 
-    match output {
+    // Override with explicit parameters if provided
+    let final_nper = nper.unwrap_or(cfg_nper);
+    let final_freq = freq.unwrap_or(&cfg_freq);
+    let final_ncol = ncol.unwrap_or(cfg_ncol);
+    let final_output = output.unwrap_or(&cfg_output);
+    let final_seed = seed.or(cfg_seed);
+
+    let data = get_time_series(final_nper, final_freq, final_ncol, final_seed);
+
+    match final_output {
         "pandas" => create_timeseries_pandas(py, &data),
         "polars" => create_timeseries_polars(py, &data),
         "dict" => create_timeseries_dict(py, &data),
         _ => Err(pyo3::exceptions::PyValueError::new_err(format!(
             "Invalid output format '{}'. Must be 'pandas', 'polars', or 'dict'",
-            output
+            output.unwrap_or("unknown")
         ))),
     }
 }
