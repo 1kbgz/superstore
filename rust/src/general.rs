@@ -21,6 +21,206 @@ const SUFFIXES: [&str; 4] = ["Jr.", "Sr.", "III", "IV"];
 // Default pool size for pre-generated data
 const DEFAULT_POOL_SIZE: usize = 1000;
 
+// Realistic price points ($9.99, $19.99, etc.)
+const PRICE_POINTS: [f64; 12] = [
+    9.99, 14.99, 19.99, 24.99, 29.99, 39.99, 49.99, 79.99, 99.99, 149.99, 199.99, 299.99,
+];
+
+// =============================================================================
+// Superstore Configuration Structs
+// =============================================================================
+
+/// Configuration for seasonal patterns in sales data
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SeasonalityConfig {
+    pub enable: bool,
+    pub q4_multiplier: f64,
+    pub summer_multiplier: f64,
+    pub back_to_school_multiplier: f64,
+}
+
+impl Default for SeasonalityConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            q4_multiplier: 1.5,
+            summer_multiplier: 0.9,
+            back_to_school_multiplier: 1.2,
+        }
+    }
+}
+
+/// Configuration for promotional effects
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct PromotionalConfig {
+    pub enable: bool,
+    pub discount_quantity_correlation: f64,
+    pub price_elasticity: f64,
+}
+
+impl Default for PromotionalConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            discount_quantity_correlation: 0.5,
+            price_elasticity: -0.8,
+        }
+    }
+}
+
+/// Configuration for customer behavior patterns
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct CustomerConfig {
+    pub enable_cohorts: bool,
+    pub repeat_customer_rate: f64,
+    pub vip_segment_rate: f64,
+    pub vip_order_multiplier: f64,
+}
+
+impl Default for CustomerConfig {
+    fn default() -> Self {
+        Self {
+            enable_cohorts: false,
+            repeat_customer_rate: 0.3,
+            vip_segment_rate: 0.1,
+            vip_order_multiplier: 2.0,
+        }
+    }
+}
+
+/// Full superstore configuration
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SuperstoreConfig {
+    pub count: usize,
+    pub pool_size: usize,
+    pub seed: Option<u64>,
+    pub min_sales: i32,
+    pub max_sales: i32,
+    pub min_quantity: i32,
+    pub max_quantity: i32,
+    pub max_discount_percent: f64,
+    pub sales_quantity_correlation: f64,
+    pub sales_profit_correlation: f64,
+    pub discount_profit_correlation: f64,
+    pub seasonality: SeasonalityConfig,
+    pub promotions: PromotionalConfig,
+    pub customers: CustomerConfig,
+    pub regions: Vec<String>,
+}
+
+impl Default for SuperstoreConfig {
+    fn default() -> Self {
+        Self {
+            count: 1000,
+            pool_size: DEFAULT_POOL_SIZE,
+            seed: None,
+            min_sales: 100,
+            max_sales: 10000,
+            min_quantity: 1,
+            max_quantity: 100,
+            max_discount_percent: 50.0,
+            sales_quantity_correlation: 0.7,
+            sales_profit_correlation: 0.6,
+            discount_profit_correlation: -0.4,
+            seasonality: SeasonalityConfig::default(),
+            promotions: PromotionalConfig::default(),
+            customers: CustomerConfig::default(),
+            regions: vec![
+                "Region 1".to_string(),
+                "Region 2".to_string(),
+                "Region 3".to_string(),
+                "Region 4".to_string(),
+                "Region 5".to_string(),
+            ],
+        }
+    }
+}
+
+/// Calculate seasonality multiplier based on month
+fn get_seasonality_multiplier(month: u32, config: &SeasonalityConfig) -> f64 {
+    if !config.enable {
+        return 1.0;
+    }
+
+    match month {
+        // Q4 holiday season (Oct-Dec)
+        10 | 11 | 12 => config.q4_multiplier,
+        // Summer slump (Jun-Jul)
+        6 | 7 => config.summer_multiplier,
+        // Back to school (Aug-Sep)
+        8 | 9 => config.back_to_school_multiplier,
+        // Normal months
+        _ => 1.0,
+    }
+}
+
+/// Apply promotional effects: higher discount -> higher quantity
+fn apply_promotional_effects<R: Rng>(
+    rng: &mut R,
+    base_quantity: i32,
+    discount: f64,
+    config: &PromotionalConfig,
+) -> i32 {
+    if !config.enable {
+        return base_quantity;
+    }
+
+    // Higher discounts increase quantity by the correlation factor
+    // e.g., 50% discount with 0.5 correlation -> 25% quantity boost
+    let discount_boost = 1.0 + (discount / 100.0) * config.discount_quantity_correlation;
+
+    // Price elasticity adds some random variation
+    let elasticity_factor = 1.0 + rng.gen_range(-0.1..0.1) * config.price_elasticity.abs();
+
+    ((base_quantity as f64) * discount_boost * elasticity_factor).round() as i32
+}
+
+/// Generate a customer ID with cohort behavior
+fn generate_customer_id<R: Rng>(
+    rng: &mut R,
+    customer_pool: &[String],
+    config: &CustomerConfig,
+) -> (String, bool) {
+    if !config.enable_cohorts {
+        return (generate_license_plate(rng), false);
+    }
+
+    // Determine if this is a repeat customer
+    if rng.gen::<f64>() < config.repeat_customer_rate {
+        // Pick from existing customer pool
+        let customer_id = customer_pool.choose(rng).unwrap().clone();
+        let is_vip = rng.gen::<f64>() < config.vip_segment_rate;
+        (customer_id, is_vip)
+    } else {
+        // New customer
+        let is_vip = rng.gen::<f64>() < config.vip_segment_rate;
+        (generate_license_plate(rng), is_vip)
+    }
+}
+
+/// Round to realistic price point ($X.99 style)
+fn round_to_price_point(value: f64) -> f64 {
+    // Find nearest price point
+    let mut best = PRICE_POINTS[0];
+    let mut best_diff = (value - best).abs();
+
+    for &point in &PRICE_POINTS {
+        let diff = (value - point).abs();
+        if diff < best_diff {
+            best = point;
+            best_diff = diff;
+        }
+    }
+
+    // Return either the price point or just make it end in .99
+    if best_diff < value * 0.3 {
+        best
+    } else {
+        // Just round to nearest .99
+        (value.floor()) + 0.99
+    }
+}
+
 struct LocationPool {
     cities: Vec<String>,
     states: Vec<String>,
@@ -228,40 +428,55 @@ pub struct EmployeeRow {
 }
 
 pub fn superstore(count: usize, seed: Option<u64>, pool_size: Option<usize>) -> Vec<SuperstoreRow> {
-    let mut rng = create_rng(seed);
-    let mut data = Vec::with_capacity(count);
+    superstore_with_config(&SuperstoreConfig {
+        count,
+        pool_size: pool_size.unwrap_or(DEFAULT_POOL_SIZE),
+        seed,
+        ..Default::default()
+    })
+}
+
+/// Generate superstore data with full configuration
+pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
+    let mut rng = create_rng(config.seed);
+    let mut data = Vec::with_capacity(config.count);
 
     let sectors: Vec<&str> = US_SECTORS.clone();
 
-    // Pre-generate location pool for performance (avoids calling fake crate 3M times)
-    let actual_pool_size = pool_size.unwrap_or(DEFAULT_POOL_SIZE);
-    let location_pool = LocationPool::generate(&mut rng, actual_pool_size);
+    // Pre-generate location pool for performance
+    let location_pool = LocationPool::generate(&mut rng, config.pool_size);
 
-    // Pre-generate region strings to avoid format! in hot loop
-    let regions: [String; 5] = [
-        "Region 0".to_string(),
-        "Region 1".to_string(),
-        "Region 2".to_string(),
-        "Region 3".to_string(),
-        "Region 4".to_string(),
-    ];
+    // Pre-generate customer pool for repeat customer simulation
+    let customer_pool: Vec<String> = if config.customers.enable_cohorts {
+        (0..100).map(|_| generate_license_plate(&mut rng)).collect()
+    } else {
+        Vec::new()
+    };
 
-    // Correlation matrix for Sales, Quantity, Discount, Profit
-    // Sales-Quantity: 0.7, Sales-Profit: 0.6, Quantity-Profit: 0.5
-    // Discount-Profit: -0.4, Discount-Sales: -0.2, Discount-Quantity: 0.1
+    // Build correlation matrix from config
+    //   [Sales, Quantity, Discount, Profit]
+    // We use configured correlations for key relationships
+    let sq = config.sales_quantity_correlation;
+    let sp = config.sales_profit_correlation;
+    let dp = config.discount_profit_correlation;
+    // Derived correlations (keep matrix positive semi-definite)
+    let qp = (sq * sp).clamp(-0.99, 0.99); // Quantity-Profit derived
+    let ds = (-0.2_f64).clamp(-0.99, 0.99); // Discount-Sales weak negative
+    let dq = (0.1_f64).clamp(-0.99, 0.99); // Discount-Quantity weak positive (more discount -> more bought)
+
     let correlation_matrix = vec![
-        vec![1.0, 0.7, -0.2, 0.6],  // Sales
-        vec![0.7, 1.0, 0.1, 0.5],   // Quantity
-        vec![-0.2, 0.1, 1.0, -0.4], // Discount
-        vec![0.6, 0.5, -0.4, 1.0],  // Profit
+        vec![1.0, sq, ds, sp], // Sales
+        vec![sq, 1.0, dq, qp], // Quantity
+        vec![ds, dq, 1.0, dp], // Discount
+        vec![sp, qp, dp, 1.0], // Profit
     ];
 
     // Pre-generate all correlated values using copula
     let correlated_values = if let Ok(copula) = GaussianCopula::new(correlation_matrix) {
-        copula.sample_n(&mut rng, count)
+        copula.sample_n(&mut rng, config.count)
     } else {
         // Fallback to independent uniform values
-        (0..count)
+        (0..config.count)
             .map(|_| {
                 vec![
                     rng.gen::<f64>(),
@@ -273,6 +488,9 @@ pub fn superstore(count: usize, seed: Option<u64>, pool_size: Option<usize>) -> 
             .collect()
     };
 
+    let sales_range = (config.max_sales - config.min_sales) as f64;
+    let quantity_range = (config.max_quantity - config.min_quantity) as f64;
+
     for (id, uniforms) in correlated_values.into_iter().enumerate() {
         let order_date = random_date_this_year(&mut rng);
         let ship_date = random_date_between(&mut rng, order_date);
@@ -281,15 +499,51 @@ pub fn superstore(count: usize, seed: Option<u64>, pool_size: Option<usize>) -> 
         let industries = US_SECTORS_MAP.get(sector).unwrap();
         let industry = *industries.choose(&mut rng).unwrap();
 
+        // Calculate seasonality multiplier based on order date
+        let month = order_date.month();
+        let seasonality_mult = get_seasonality_multiplier(month, &config.seasonality);
+
         // Transform uniform copula values to actual ranges
-        // Sales: 100 to 10000 (log-normal-ish via quantile)
-        let sales = (100.0 + uniforms[0] * 9900.0).round() as i32;
-        // Quantity: 1 to 100
-        let quantity = (1.0 + uniforms[1] * 99.0).round() as i32;
-        // Discount: 0 to 50%
-        let discount = (uniforms[2] * 50.0 * 100.0).round() / 100.0;
-        // Profit: -500 to 3000 (can be negative)
-        let profit = ((-500.0 + uniforms[3] * 3500.0) * 100.0).round() / 100.0;
+        let base_sales = config.min_sales as f64 + uniforms[0] * sales_range;
+        let sales_with_season = base_sales * seasonality_mult;
+        let sales = round_to_price_point(sales_with_season);
+
+        // Quantity with potential promotional boost
+        let base_quantity = config.min_quantity as f64 + uniforms[1] * quantity_range;
+        let discount = (uniforms[2] * config.max_discount_percent * 100.0).round() / 100.0;
+        let quantity_with_promotion = apply_promotional_effects(
+            &mut rng,
+            base_quantity.round() as i32,
+            discount,
+            &config.promotions,
+        );
+        let quantity = quantity_with_promotion.clamp(config.min_quantity, config.max_quantity);
+
+        // Customer with cohort behavior
+        let (customer_id, is_vip) =
+            generate_customer_id(&mut rng, &customer_pool, &config.customers);
+
+        // VIP customers get bigger orders
+        let vip_mult = if is_vip && config.customers.enable_cohorts {
+            config.customers.vip_order_multiplier
+        } else {
+            1.0
+        };
+        let final_sales = (sales * vip_mult).round() as i32;
+        let final_quantity = ((quantity as f64) * vip_mult.sqrt()).round() as i32;
+
+        // Profit calculation (can be negative for high discount items)
+        let base_profit = -500.0 + uniforms[3] * 3500.0;
+        // High discounts hurt profit more
+        let discount_penalty = (discount / 100.0) * 500.0;
+        let profit = ((base_profit - discount_penalty) * seasonality_mult * 100.0).round() / 100.0;
+
+        // Choose region from config
+        let region = config
+            .regions
+            .choose(&mut rng)
+            .unwrap_or(&config.regions[0])
+            .clone();
 
         let row = SuperstoreRow {
             row_id: id as i32,
@@ -297,18 +551,18 @@ pub fn superstore(count: usize, seed: Option<u64>, pool_size: Option<usize>) -> 
             order_date: order_date.format("%Y-%m-%d").to_string(),
             ship_date: ship_date.format("%Y-%m-%d").to_string(),
             ship_mode: SHIP_MODES.choose(&mut rng).unwrap().to_string(),
-            customer_id: generate_license_plate(&mut rng),
+            customer_id,
             segment: SEGMENTS.choose(&mut rng).unwrap().to_string(),
             country: "US".to_string(),
             city: location_pool.random_city(&mut rng).to_string(),
             state: location_pool.random_state(&mut rng).to_string(),
             postal_code: location_pool.random_zip(&mut rng).to_string(),
-            region: regions[rng.gen_range(0..5)].clone(),
+            region,
             product_id: generate_bban(&mut rng),
             category: sector.to_string(),
             sub_category: industry.to_string(),
-            sales,
-            quantity,
+            sales: final_sales,
+            quantity: final_quantity,
             discount,
             profit,
         };
