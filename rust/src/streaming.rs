@@ -181,6 +181,8 @@ impl Iterator for SuperstoreIterator {
                 product_id: generate_bban(&mut self.rng),
                 category: sector.to_string(),
                 sub_category: industry.to_string(),
+                item_status: "Regular".to_string(),
+                item_price: (self.rng.gen_range(1..=100) as f64) * 10.0 + 0.99,
                 sales: self.rng.gen_range(1..=100) * 100,
                 quantity: self.rng.gen_range(1..=100) * 10,
                 discount: (self.rng.gen::<f64>() * 100.0 * 100.0).round() / 100.0,

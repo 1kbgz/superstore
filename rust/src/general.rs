@@ -21,10 +21,59 @@ const SUFFIXES: [&str; 4] = ["Jr.", "Sr.", "III", "IV"];
 // Default pool size for pre-generated data
 const DEFAULT_POOL_SIZE: usize = 1000;
 
-// Realistic price points ($9.99, $19.99, etc.)
-const PRICE_POINTS: [f64; 12] = [
-    9.99, 14.99, 19.99, 24.99, 29.99, 39.99, 49.99, 79.99, 99.99, 149.99, 199.99, 299.99,
+/// Costco-style item status based on price ending
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub enum ItemStatus {
+    /// Price ends in .99 - regular full price item
+    Regular,
+    /// Price ends in .49 or .79 - manufacturer sale or deal
+    ManufacturerSale,
+    /// Price ends in .97 - store clearance
+    Clearance,
+    /// Price ends in .88 - returned or floor model
+    ReturnedFloorModel,
+}
+
+impl ItemStatus {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            ItemStatus::Regular => "Regular",
+            ItemStatus::ManufacturerSale => "Manufacturer Sale",
+            ItemStatus::Clearance => "Clearance",
+            ItemStatus::ReturnedFloorModel => "Returned/Floor Model",
+        }
+    }
+
+    /// Profit margin multiplier for this item status
+    /// Regular items have full margins, sale/clearance have reduced margins
+    pub fn profit_multiplier(&self) -> f64 {
+        match self {
+            ItemStatus::Regular => 1.0,
+            ItemStatus::ManufacturerSale => 0.4, // Lower margins on sales
+            ItemStatus::Clearance => 0.1,        // Very low margins
+            ItemStatus::ReturnedFloorModel => 0.05, // Near-zero margins
+        }
+    }
+
+    /// Get the price ending for this status
+    fn price_ending(&self) -> f64 {
+        match self {
+            ItemStatus::Regular => 0.99,
+            ItemStatus::ManufacturerSale => 0.49, // Could also be 0.79
+            ItemStatus::Clearance => 0.97,
+            ItemStatus::ReturnedFloorModel => 0.88,
+        }
+    }
+}
+
+// Base price points (will be adjusted with status-specific endings)
+const BASE_PRICES: [f64; 12] = [
+    9.0, 14.0, 19.0, 24.0, 29.0, 39.0, 49.0, 79.0, 99.0, 149.0, 199.0, 299.0,
 ];
+
+// Item status distribution weights: [Regular, ManufacturerSale, Clearance, ReturnedFloorModel]
+// Most items are regular, with smaller portions being sale/clearance
+const ITEM_STATUS_WEIGHTS: [f64; 4] = [0.70, 0.15, 0.10, 0.05];
 
 // =============================================================================
 // Superstore Configuration Structs
@@ -198,26 +247,96 @@ fn generate_customer_id<R: Rng>(
     }
 }
 
-/// Round to realistic price point ($X.99 style)
-fn round_to_price_point(value: f64) -> f64 {
-    // Find nearest price point
-    let mut best = PRICE_POINTS[0];
-    let mut best_diff = (value - best).abs();
+/// Generate item status based on weighted distribution
+/// Can optionally bias toward sale/clearance for high-discount items
+fn generate_item_status<R: Rng>(rng: &mut R, discount_factor: f64) -> ItemStatus {
+    // Higher discounts increase chance of being a sale/clearance item
+    let discount_bias = discount_factor.clamp(0.0, 1.0);
 
-    for &point in &PRICE_POINTS {
-        let diff = (value - point).abs();
+    // Adjust weights: high discount -> more likely to be sale/clearance
+    let regular_weight = ITEM_STATUS_WEIGHTS[0] * (1.0 - discount_bias * 0.5);
+    let sale_weight = ITEM_STATUS_WEIGHTS[1] * (1.0 + discount_bias * 1.5);
+    let clearance_weight = ITEM_STATUS_WEIGHTS[2] * (1.0 + discount_bias * 2.0);
+    let returned_weight = ITEM_STATUS_WEIGHTS[3] * (1.0 + discount_bias * 0.5);
+
+    let total = regular_weight + sale_weight + clearance_weight + returned_weight;
+    let roll = rng.gen::<f64>() * total;
+
+    if roll < regular_weight {
+        ItemStatus::Regular
+    } else if roll < regular_weight + sale_weight {
+        ItemStatus::ManufacturerSale
+    } else if roll < regular_weight + sale_weight + clearance_weight {
+        ItemStatus::Clearance
+    } else {
+        ItemStatus::ReturnedFloorModel
+    }
+}
+
+/// Round to realistic Costco-style price point based on item status
+/// Returns the price with appropriate ending (.99, .49/.79, .97, .88)
+fn round_to_price_point_with_status(value: f64, status: &ItemStatus) -> f64 {
+    // Find nearest base price
+    let mut best_base = BASE_PRICES[0];
+    let mut best_diff = (value - best_base).abs();
+
+    for &base in &BASE_PRICES {
+        let diff = (value - base).abs();
         if diff < best_diff {
-            best = point;
+            best_base = base;
             best_diff = diff;
         }
     }
 
-    // Return either the price point or just make it end in .99
-    if best_diff < value * 0.3 {
-        best
+    // Use the base price if close enough, otherwise use the value's floor
+    let final_base = if best_diff < value * 0.3 {
+        best_base
     } else {
-        // Just round to nearest .99
-        (value.floor()) + 0.99
+        value.floor()
+    };
+
+    // Apply status-specific price ending
+    final_base + status.price_ending()
+}
+
+/// Apply volume effects based on item status
+/// Sale items have bimodal distribution: either high volume (good deal) or low volume (unwanted)
+fn apply_item_status_volume_effect<R: Rng>(
+    rng: &mut R,
+    base_quantity: i32,
+    status: &ItemStatus,
+) -> i32 {
+    match status {
+        ItemStatus::Regular => base_quantity,
+        ItemStatus::ManufacturerSale => {
+            // Bimodal: 70% chance of high volume (good deal), 30% low volume
+            if rng.gen::<f64>() < 0.7 {
+                // Good deal - higher volume (1.3x to 2.0x)
+                ((base_quantity as f64) * rng.gen_range(1.3..2.0)).round() as i32
+            } else {
+                // Not in demand - lower volume (0.5x to 0.8x)
+                ((base_quantity as f64) * rng.gen_range(0.5..0.8)).round() as i32
+            }
+        }
+        ItemStatus::Clearance => {
+            // Bimodal: 40% high volume (finally affordable), 60% low (nobody wants it)
+            if rng.gen::<f64>() < 0.4 {
+                // Clearance deal hunters - moderate boost (1.2x to 1.5x)
+                ((base_quantity as f64) * rng.gen_range(1.2..1.5)).round() as i32
+            } else {
+                // Unwanted items - low volume (0.3x to 0.6x)
+                ((base_quantity as f64) * rng.gen_range(0.3..0.6)).round() as i32
+            }
+        }
+        ItemStatus::ReturnedFloorModel => {
+            // Generally low volume - these are one-off items (0.4x to 0.7x)
+            // Occasionally someone snags a deal (1.0x)
+            if rng.gen::<f64>() < 0.2 {
+                base_quantity // Lucky find
+            } else {
+                ((base_quantity as f64) * rng.gen_range(0.4..0.7)).round() as i32
+            }
+        }
     }
 }
 
@@ -400,6 +519,8 @@ pub struct SuperstoreRow {
     pub product_id: String,
     pub category: String,
     pub sub_category: String,
+    pub item_status: String,
+    pub item_price: f64,
     pub sales: i32,
     pub quantity: i32,
     pub discount: f64,
@@ -506,18 +627,27 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
         // Transform uniform copula values to actual ranges
         let base_sales = config.min_sales as f64 + uniforms[0] * sales_range;
         let sales_with_season = base_sales * seasonality_mult;
-        let sales = round_to_price_point(sales_with_season);
 
-        // Quantity with potential promotional boost
-        let base_quantity = config.min_quantity as f64 + uniforms[1] * quantity_range;
+        // Generate item status with discount-biased distribution
         let discount = (uniforms[2] * config.max_discount_percent * 100.0).round() / 100.0;
+        let discount_factor = discount / config.max_discount_percent;
+        let item_status = generate_item_status(&mut rng, discount_factor);
+
+        // Round to Costco-style price point based on item status
+        let item_price = round_to_price_point_with_status(sales_with_season, &item_status);
+
+        // Quantity with promotional boost and item status effects
+        let base_quantity = config.min_quantity as f64 + uniforms[1] * quantity_range;
         let quantity_with_promotion = apply_promotional_effects(
             &mut rng,
             base_quantity.round() as i32,
             discount,
             &config.promotions,
         );
-        let quantity = quantity_with_promotion.clamp(config.min_quantity, config.max_quantity);
+        // Apply item status volume effects (bimodal for sale/clearance)
+        let quantity_with_status =
+            apply_item_status_volume_effect(&mut rng, quantity_with_promotion, &item_status);
+        let quantity = quantity_with_status.clamp(config.min_quantity, config.max_quantity);
 
         // Customer with cohort behavior
         let (customer_id, is_vip) =
@@ -529,14 +659,18 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
         } else {
             1.0
         };
-        let final_sales = (sales * vip_mult).round() as i32;
+        let final_sales = (item_price * vip_mult).round() as i32;
         let final_quantity = ((quantity as f64) * vip_mult.sqrt()).round() as i32;
 
-        // Profit calculation (can be negative for high discount items)
+        // Profit calculation with item status correlation
+        // Sale/clearance items have reduced profit margins
         let base_profit = -500.0 + uniforms[3] * 3500.0;
         // High discounts hurt profit more
         let discount_penalty = (discount / 100.0) * 500.0;
-        let profit = ((base_profit - discount_penalty) * seasonality_mult * 100.0).round() / 100.0;
+        // Apply item status profit multiplier (regular=1.0, sale=0.4, clearance=0.1, returned=0.05)
+        let status_adjusted_profit =
+            (base_profit - discount_penalty) * item_status.profit_multiplier();
+        let profit = (status_adjusted_profit * seasonality_mult * 100.0).round() / 100.0;
 
         // Choose region from config
         let region = config
@@ -561,6 +695,8 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
             product_id: generate_bban(&mut rng),
             category: sector.to_string(),
             sub_category: industry.to_string(),
+            item_status: item_status.as_str().to_string(),
+            item_price,
             sales: final_sales,
             quantity: final_quantity,
             discount,

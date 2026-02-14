@@ -15,6 +15,8 @@ MACHINE_SCHEMA: dict[str, str]
 USAGE_SCHEMA: dict[str, str]
 STATUS_SCHEMA: dict[str, str]
 JOBS_SCHEMA: dict[str, str]
+TELEMETRY_SCHEMA: dict[str, str]
+TELEMETRY_SCENARIOS: list[str]
 
 # =============================================================================
 # Core generators
@@ -234,6 +236,42 @@ def weather(
     output: Literal["dict"],
     seed: int | None = ...,
 ) -> list[dict[str, Any]]: ...
+
+# =============================================================================
+# Logs generators
+# =============================================================================
+
+def logs(
+    config: dict[str, Any] | None = ...,
+) -> pd.DataFrame | pl.DataFrame | list[dict[str, Any]]: ...
+def app_logs(
+    config: dict[str, Any] | None = ...,
+) -> pd.DataFrame | pl.DataFrame | list[dict[str, Any]]: ...
+
+# =============================================================================
+# Finance generators
+# =============================================================================
+
+def stock_prices(
+    config: dict[str, Any] | None = ...,
+) -> pd.DataFrame | pl.DataFrame | list[dict[str, Any]]: ...
+def options_chain(
+    config: dict[str, Any] | None = ...,
+    spot_price: float | None = ...,
+    date: str | None = ...,
+) -> pd.DataFrame | pl.DataFrame | list[dict[str, Any]]: ...
+def finance(
+    config: dict[str, Any] | None = ...,
+) -> tuple[pd.DataFrame, pd.DataFrame]: ...
+
+# =============================================================================
+# Telemetry generators
+# =============================================================================
+
+def telemetry(
+    config: dict[str, Any] | None = ...,
+    scenario: str | None = ...,
+) -> pd.DataFrame | pl.DataFrame | list[dict[str, Any]]: ...
 
 # =============================================================================
 # Streaming generators

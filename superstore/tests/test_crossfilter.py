@@ -265,3 +265,106 @@ class TestCrossfilters:
                 break
 
         # It's ok if we didn't find jobs - random chance
+
+
+class TestTelemetry:
+    """Test telemetry IoT data generation with scenarios."""
+
+    def test_telemetry_default(self):
+        """Test default telemetry generation."""
+        from superstore import TELEMETRY_SCHEMA, telemetry
+
+        df = telemetry()
+        assert len(df) == 1000  # 10 machines * 100 readings
+
+        # Verify schema columns
+        for col in TELEMETRY_SCHEMA.keys():
+            assert col in df.columns, f"Missing column: {col}"
+
+    def test_telemetry_scenarios(self):
+        """Test telemetry scenarios."""
+        from superstore import TELEMETRY_SCENARIOS, telemetry
+
+        for scenario in TELEMETRY_SCENARIOS:
+            df = telemetry(scenario=scenario)
+            assert len(df) > 0, f"Scenario {scenario} returned no data"
+            assert "state" in df.columns
+            assert "anomaly_type" in df.columns
+            assert "health_score" in df.columns
+
+    def test_telemetry_cpu_spikes_scenario(self):
+        """Test CPU spikes scenario generates anomalies."""
+        from superstore import telemetry
+
+        df = telemetry(scenario="cpu_spikes")
+        # Should have non-healthy states
+        states = df["state"].unique()
+        assert any(s in ["degraded", "critical"] for s in states), "CPU spikes should cause degraded/critical states"
+
+    def test_telemetry_memory_leak_scenario(self):
+        """Test memory leak scenario."""
+        from superstore import telemetry
+
+        df = telemetry(scenario="memory_leak")
+        # Memory leak should cause critical states
+        states = df["state"].unique()
+        assert "critical" in states, "Memory leak should cause critical states"
+
+    def test_telemetry_chaos_scenario(self):
+        """Test chaos scenario generates many anomalies."""
+        from superstore import telemetry
+
+        df = telemetry(scenario="chaos")
+        # Chaos should have many non-healthy states
+        healthy_count = (df["state"] == "healthy").sum()
+        non_healthy_count = len(df) - healthy_count
+        assert non_healthy_count > healthy_count * 0.3, "Chaos should have significant anomalies"
+
+    def test_telemetry_custom_config(self):
+        """Test telemetry with custom config."""
+        from superstore import telemetry
+
+        df = telemetry({"machine_count": 5, "readings_per_machine": 20})
+        assert len(df) == 100  # 5 machines * 20 readings
+
+    def test_telemetry_seed_reproducibility(self):
+        """Test that same seed produces identical results."""
+        from superstore import telemetry
+
+        df1 = telemetry({"seed": 42, "machine_count": 3, "readings_per_machine": 10})
+        df2 = telemetry({"seed": 42, "machine_count": 3, "readings_per_machine": 10})
+
+        assert df1["machine_id"].tolist() == df2["machine_id"].tolist()
+        assert df1["cpu"].tolist() == df2["cpu"].tolist()
+
+    def test_telemetry_polars_output(self):
+        """Test telemetry polars output."""
+        import polars as pl
+
+        from superstore import telemetry
+
+        df = telemetry({"output": "polars", "machine_count": 2, "readings_per_machine": 5})
+        assert isinstance(df, pl.DataFrame)
+        assert len(df) == 10
+
+    def test_telemetry_dict_output(self):
+        """Test telemetry dict output."""
+        from superstore import telemetry
+
+        data = telemetry({"output": "dict", "machine_count": 2, "readings_per_machine": 5})
+        assert isinstance(data, list)
+        assert len(data) == 10
+        assert "machine_id" in data[0]
+
+    def test_telemetry_schema_export(self):
+        """Test telemetry schema and scenarios exports."""
+        from superstore import TELEMETRY_SCENARIOS, TELEMETRY_SCHEMA
+
+        assert isinstance(TELEMETRY_SCHEMA, dict)
+        assert "timestamp" in TELEMETRY_SCHEMA
+        assert "health_score" in TELEMETRY_SCHEMA
+
+        assert isinstance(TELEMETRY_SCENARIOS, list)
+        assert "normal" in TELEMETRY_SCENARIOS
+        assert "chaos" in TELEMETRY_SCENARIOS
+        assert "production" in TELEMETRY_SCENARIOS
