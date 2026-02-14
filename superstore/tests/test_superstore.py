@@ -14,6 +14,8 @@ SUPERSTORE_COLUMNS = [
     "Product ID",
     "Category",
     "Sub-Category",
+    "Item Status",
+    "Item Price",
     "Sales",
     "Quantity",
     "Discount",

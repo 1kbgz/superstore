@@ -7,15 +7,24 @@ from .config import (
     ClimateZone,
     # Config classes
     CrossfilterConfig,
+    FinanceConfig,
+    LogFormat,
+    LogLevel,
+    LogsConfig,
     MachineType,
+    OhlcvConfig,
+    OptionsConfig,
     OutputFormat,
     Season,
+    StockConfig,
     SuperstoreConfig,
     TimeseriesConfig,
     WeatherConfig,
     WeatherEvent,
     # Factory functions
     crossfilter_config,
+    finance_config,
+    logs_config,
     superstore_config,
     timeseries_config,
     weather_config,
@@ -26,6 +35,8 @@ from .superstore import (
     JOBS_SCHEMA,
     MACHINE_SCHEMA,
     STATUS_SCHEMA,
+    TELEMETRY_SCENARIOS,
+    TELEMETRY_SCHEMA,
     USAGE_SCHEMA,
     ARp,
     # Copula models
@@ -41,6 +52,7 @@ from .superstore import (
     RandomWalk,
     SuperstoreStream,
     addGaussianNoise,
+    app_logs,
     applyMissing,
     # Core generators
     employees,
@@ -51,9 +63,13 @@ from .superstore import (
     # File export
     employeesToCsv,
     employeesToParquet,
+    finance,
     jobs,
+    # Logs generators
+    logs,
     machines,
     numThreads,
+    options_chain,
     pearsonCorrelation,
     sampleBeta,
     sampleBivariate,
@@ -72,6 +88,8 @@ from .superstore import (
     setDeterministicMode,
     setNumThreads,
     status,
+    # Finance generators
+    stock_prices,
     superstore,
     superstoreArrowIpc,
     # Parallel generators
@@ -80,6 +98,7 @@ from .superstore import (
     superstoreStream,
     superstoreToCsv,
     superstoreToParquet,
+    telemetry,
     timeseries,
     timeseriesData,
     usage,
@@ -92,6 +111,8 @@ __all__ = (
     "JOBS_SCHEMA",
     "MACHINE_SCHEMA",
     "STATUS_SCHEMA",
+    "TELEMETRY_SCHEMA",
+    "TELEMETRY_SCENARIOS",
     "USAGE_SCHEMA",
     # Core generators
     "employees",
@@ -101,8 +122,11 @@ __all__ = (
     "machines",
     "status",
     "superstore",
+    "telemetry",
     "usage",
     "weather",
+    "logs",
+    "app_logs",
     # Streaming generators
     "superstoreStream",
     "employeesStream",
@@ -167,4 +191,19 @@ __all__ = (
     "superstore_config",
     "timeseries_config",
     "crossfilter_config",
+    # Logs config
+    "LogsConfig",
+    "LogFormat",
+    "LogLevel",
+    "logs_config",
+    # Finance generators
+    "stock_prices",
+    "options_chain",
+    "finance",
+    # Finance config
+    "FinanceConfig",
+    "StockConfig",
+    "OhlcvConfig",
+    "OptionsConfig",
+    "finance_config",
 )

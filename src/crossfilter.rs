@@ -2,8 +2,10 @@ use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList};
 
 use superstore::crossfilter::{
-    job as rust_job, machines as rust_machines, status as rust_status, usage as rust_usage, Job,
-    Machine, Status, Usage,
+    generate_telemetry, job as rust_job, machines as rust_machines, status as rust_status,
+    usage as rust_usage, AnomalyConfig, DegradationConfig, FailureCascadeConfig, Job, Machine,
+    MaintenanceConfig, SensorDriftConfig, Status, TelemetryConfig, TelemetryReading,
+    TemporalConfig, Usage,
 };
 
 fn machine_to_pydict(py: Python<'_>, m: &Machine) -> PyResult<Py<PyDict>> {
@@ -457,6 +459,471 @@ pub fn py_randrange(low: f64, high: f64) -> f64 {
     rng.gen::<f64>() * (high - low) + low
 }
 
+// =============================================================================
+// Telemetry Functions
+// =============================================================================
+
+fn telemetry_to_pydict(py: Python<'_>, r: &TelemetryReading) -> PyResult<Py<PyDict>> {
+    let dict = PyDict::new(py);
+    dict.set_item("timestamp", &r.timestamp)?;
+    dict.set_item("machine_id", &r.machine_id)?;
+    dict.set_item("kind", &r.kind)?;
+    dict.set_item("cores", r.cores)?;
+    dict.set_item("region", &r.region)?;
+    dict.set_item("zone", &r.zone)?;
+    dict.set_item("cpu", r.cpu)?;
+    dict.set_item("mem", r.mem)?;
+    dict.set_item("free", r.free)?;
+    dict.set_item("network", r.network)?;
+    dict.set_item("disk", r.disk)?;
+    dict.set_item("state", &r.state)?;
+    dict.set_item("anomaly_type", &r.anomaly_type)?;
+    dict.set_item("health_score", r.health_score)?;
+    Ok(dict.into())
+}
+
+/// Create pandas DataFrame from TelemetryReading rows
+fn create_telemetry_pandas(py: Python<'_>, rows: &[TelemetryReading]) -> PyResult<Py<PyAny>> {
+    let pandas = py.import("pandas")?;
+    let data = PyDict::new(py);
+
+    let timestamps: Vec<&str> = rows.iter().map(|r| r.timestamp.as_str()).collect();
+    let machine_ids: Vec<&str> = rows.iter().map(|r| r.machine_id.as_str()).collect();
+    let kinds: Vec<&str> = rows.iter().map(|r| r.kind.as_str()).collect();
+    let cores: Vec<i32> = rows.iter().map(|r| r.cores).collect();
+    let regions: Vec<&str> = rows.iter().map(|r| r.region.as_str()).collect();
+    let zones: Vec<&str> = rows.iter().map(|r| r.zone.as_str()).collect();
+    let cpus: Vec<f64> = rows.iter().map(|r| r.cpu).collect();
+    let mems: Vec<f64> = rows.iter().map(|r| r.mem).collect();
+    let frees: Vec<f64> = rows.iter().map(|r| r.free).collect();
+    let networks: Vec<f64> = rows.iter().map(|r| r.network).collect();
+    let disks: Vec<f64> = rows.iter().map(|r| r.disk).collect();
+    let states: Vec<&str> = rows.iter().map(|r| r.state.as_str()).collect();
+    let anomaly_types: Vec<&str> = rows.iter().map(|r| r.anomaly_type.as_str()).collect();
+    let health_scores: Vec<f64> = rows.iter().map(|r| r.health_score).collect();
+
+    data.set_item("timestamp", PyList::new(py, &timestamps)?)?;
+    data.set_item("machine_id", PyList::new(py, &machine_ids)?)?;
+    data.set_item("kind", PyList::new(py, &kinds)?)?;
+    data.set_item("cores", PyList::new(py, &cores)?)?;
+    data.set_item("region", PyList::new(py, &regions)?)?;
+    data.set_item("zone", PyList::new(py, &zones)?)?;
+    data.set_item("cpu", PyList::new(py, &cpus)?)?;
+    data.set_item("mem", PyList::new(py, &mems)?)?;
+    data.set_item("free", PyList::new(py, &frees)?)?;
+    data.set_item("network", PyList::new(py, &networks)?)?;
+    data.set_item("disk", PyList::new(py, &disks)?)?;
+    data.set_item("state", PyList::new(py, &states)?)?;
+    data.set_item("anomaly_type", PyList::new(py, &anomaly_types)?)?;
+    data.set_item("health_score", PyList::new(py, &health_scores)?)?;
+
+    let df = pandas.call_method1("DataFrame", (data,))?;
+    Ok(df.into())
+}
+
+/// Create polars DataFrame from TelemetryReading rows
+fn create_telemetry_polars(py: Python<'_>, rows: &[TelemetryReading]) -> PyResult<Py<PyAny>> {
+    let polars = py.import("polars")?;
+    let data = PyDict::new(py);
+
+    let timestamps: Vec<&str> = rows.iter().map(|r| r.timestamp.as_str()).collect();
+    let machine_ids: Vec<&str> = rows.iter().map(|r| r.machine_id.as_str()).collect();
+    let kinds: Vec<&str> = rows.iter().map(|r| r.kind.as_str()).collect();
+    let cores: Vec<i32> = rows.iter().map(|r| r.cores).collect();
+    let regions: Vec<&str> = rows.iter().map(|r| r.region.as_str()).collect();
+    let zones: Vec<&str> = rows.iter().map(|r| r.zone.as_str()).collect();
+    let cpus: Vec<f64> = rows.iter().map(|r| r.cpu).collect();
+    let mems: Vec<f64> = rows.iter().map(|r| r.mem).collect();
+    let frees: Vec<f64> = rows.iter().map(|r| r.free).collect();
+    let networks: Vec<f64> = rows.iter().map(|r| r.network).collect();
+    let disks: Vec<f64> = rows.iter().map(|r| r.disk).collect();
+    let states: Vec<&str> = rows.iter().map(|r| r.state.as_str()).collect();
+    let anomaly_types: Vec<&str> = rows.iter().map(|r| r.anomaly_type.as_str()).collect();
+    let health_scores: Vec<f64> = rows.iter().map(|r| r.health_score).collect();
+
+    data.set_item("timestamp", PyList::new(py, &timestamps)?)?;
+    data.set_item("machine_id", PyList::new(py, &machine_ids)?)?;
+    data.set_item("kind", PyList::new(py, &kinds)?)?;
+    data.set_item("cores", PyList::new(py, &cores)?)?;
+    data.set_item("region", PyList::new(py, &regions)?)?;
+    data.set_item("zone", PyList::new(py, &zones)?)?;
+    data.set_item("cpu", PyList::new(py, &cpus)?)?;
+    data.set_item("mem", PyList::new(py, &mems)?)?;
+    data.set_item("free", PyList::new(py, &frees)?)?;
+    data.set_item("network", PyList::new(py, &networks)?)?;
+    data.set_item("disk", PyList::new(py, &disks)?)?;
+    data.set_item("state", PyList::new(py, &states)?)?;
+    data.set_item("anomaly_type", PyList::new(py, &anomaly_types)?)?;
+    data.set_item("health_score", PyList::new(py, &health_scores)?)?;
+
+    let df = polars.call_method1("DataFrame", (data,))?;
+    Ok(df.into())
+}
+
+/// Parse TelemetryConfig from Python dict
+fn parse_telemetry_config(dict: &Bound<'_, PyDict>) -> PyResult<(TelemetryConfig, String)> {
+    let machine_count: usize = dict
+        .get_item("machine_count")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(10);
+
+    let readings_per_machine: usize = dict
+        .get_item("readings_per_machine")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(100);
+
+    let seed: Option<u64> = dict.get_item("seed")?.and_then(|v| v.extract().ok());
+
+    let start_time: Option<String> = dict.get_item("start_time")?.and_then(|v| v.extract().ok());
+
+    let frequency_seconds: u32 = dict
+        .get_item("frequency_seconds")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(60);
+
+    let output: String = dict
+        .get_item("output")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or_else(|| "pandas".to_string());
+
+    // Parse nested AnomalyConfig
+    let anomalies = if let Some(anom_val) = dict.get_item("anomalies")? {
+        if let Ok(anom_dict) = anom_val.downcast::<PyDict>() {
+            AnomalyConfig {
+                enable: anom_dict
+                    .get_item("enable")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(false),
+                cpu_spike_probability: anom_dict
+                    .get_item("cpu_spike_probability")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.02),
+                cpu_spike_magnitude: anom_dict
+                    .get_item("cpu_spike_magnitude")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(40.0),
+                memory_leak_probability: anom_dict
+                    .get_item("memory_leak_probability")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.01),
+                memory_leak_rate: anom_dict
+                    .get_item("memory_leak_rate")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.5),
+                network_saturation_probability: anom_dict
+                    .get_item("network_saturation_probability")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.01),
+                disk_fill_probability: anom_dict
+                    .get_item("disk_fill_probability")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.005),
+                multi_resource_probability: anom_dict
+                    .get_item("multi_resource_probability")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.005),
+                anomaly_duration_min: anom_dict
+                    .get_item("anomaly_duration_min")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(5),
+                anomaly_duration_max: anom_dict
+                    .get_item("anomaly_duration_max")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(30),
+            }
+        } else {
+            AnomalyConfig::default()
+        }
+    } else {
+        AnomalyConfig::default()
+    };
+
+    // Parse nested SensorDriftConfig
+    let sensor_drift = if let Some(sd_val) = dict.get_item("sensor_drift")? {
+        if let Ok(sd_dict) = sd_val.downcast::<PyDict>() {
+            SensorDriftConfig {
+                enable: sd_dict
+                    .get_item("enable")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(false),
+                drift_rate: sd_dict
+                    .get_item("drift_rate")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.001),
+                drift_bias: sd_dict
+                    .get_item("drift_bias")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.7),
+                recalibration_probability: sd_dict
+                    .get_item("recalibration_probability")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.01),
+            }
+        } else {
+            SensorDriftConfig::default()
+        }
+    } else {
+        SensorDriftConfig::default()
+    };
+
+    // Parse nested TemporalConfig
+    let temporal = if let Some(temp_val) = dict.get_item("temporal")? {
+        if let Ok(temp_dict) = temp_val.downcast::<PyDict>() {
+            TemporalConfig {
+                enable: temp_dict
+                    .get_item("enable")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(false),
+                diurnal_amplitude: temp_dict
+                    .get_item("diurnal_amplitude")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.3),
+                peak_hour: temp_dict
+                    .get_item("peak_hour")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(14),
+                weekend_reduction: temp_dict
+                    .get_item("weekend_reduction")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.4),
+            }
+        } else {
+            TemporalConfig::default()
+        }
+    } else {
+        TemporalConfig::default()
+    };
+
+    // Parse nested FailureCascadeConfig
+    let failure_cascade = if let Some(fc_val) = dict.get_item("failure_cascade")? {
+        if let Ok(fc_dict) = fc_val.downcast::<PyDict>() {
+            FailureCascadeConfig {
+                enable: fc_dict
+                    .get_item("enable")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(false),
+                cascade_probability: fc_dict
+                    .get_item("cascade_probability")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.3),
+                cascade_delay_readings: fc_dict
+                    .get_item("cascade_delay_readings")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(5),
+                zone_correlation: fc_dict
+                    .get_item("zone_correlation")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.7),
+            }
+        } else {
+            FailureCascadeConfig::default()
+        }
+    } else {
+        FailureCascadeConfig::default()
+    };
+
+    // Parse nested MaintenanceConfig
+    let maintenance = if let Some(mt_val) = dict.get_item("maintenance")? {
+        if let Ok(mt_dict) = mt_val.downcast::<PyDict>() {
+            MaintenanceConfig {
+                enable: mt_dict
+                    .get_item("enable")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(false),
+                window_probability: mt_dict
+                    .get_item("window_probability")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.02),
+                window_duration_min: mt_dict
+                    .get_item("window_duration_min")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(10),
+                window_duration_max: mt_dict
+                    .get_item("window_duration_max")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(60),
+                scheduled_hours: mt_dict
+                    .get_item("scheduled_hours")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or_else(|| vec![2, 3, 4]),
+            }
+        } else {
+            MaintenanceConfig::default()
+        }
+    } else {
+        MaintenanceConfig::default()
+    };
+
+    // Parse nested DegradationConfig
+    let degradation = if let Some(dg_val) = dict.get_item("degradation")? {
+        if let Ok(dg_dict) = dg_val.downcast::<PyDict>() {
+            DegradationConfig {
+                enable: dg_dict
+                    .get_item("enable")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(false),
+                degradation_rate: dg_dict
+                    .get_item("degradation_rate")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.002),
+                failure_threshold: dg_dict
+                    .get_item("failure_threshold")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.95),
+                recovery_rate: dg_dict
+                    .get_item("recovery_rate")?
+                    .map(|v| v.extract())
+                    .transpose()?
+                    .unwrap_or(0.1),
+            }
+        } else {
+            DegradationConfig::default()
+        }
+    } else {
+        DegradationConfig::default()
+    };
+
+    let config = TelemetryConfig {
+        machine_count,
+        readings_per_machine,
+        seed,
+        start_time,
+        frequency_seconds,
+        anomalies,
+        sensor_drift,
+        temporal,
+        failure_cascade,
+        maintenance,
+        degradation,
+    };
+
+    Ok((config, output))
+}
+
+/// Generate IoT telemetry data with configurable behaviors and preset scenarios.
+///
+/// # Arguments
+/// * `config` - Optional TelemetryConfig dict or None for defaults
+/// * `scenario` - Optional preset scenario name: "normal", "cpu_spikes", "memory_leak",
+///   "network_congestion", "disk_pressure", "cascade_failure", "maintenance_window",
+///   "sensor_drift", "degradation_cycle", "production", "chaos"
+///
+/// # Returns
+/// * DataFrame (pandas/polars) with telemetry readings
+#[pyfunction]
+#[pyo3(signature = (config=None, scenario=None))]
+pub fn telemetry(
+    py: Python<'_>,
+    config: Option<&Bound<'_, PyDict>>,
+    scenario: Option<&str>,
+) -> PyResult<Py<PyAny>> {
+    // Start with preset scenario if specified
+    let mut telemetry_config = match scenario {
+        Some("normal") => TelemetryConfig::normal(),
+        Some("cpu_spikes") => TelemetryConfig::cpu_spikes(),
+        Some("memory_leak") => TelemetryConfig::memory_leak(),
+        Some("network_congestion") => TelemetryConfig::network_congestion(),
+        Some("disk_pressure") => TelemetryConfig::disk_pressure(),
+        Some("cascade_failure") => TelemetryConfig::cascade_failure(),
+        Some("maintenance_window") => TelemetryConfig::maintenance_window(),
+        Some("sensor_drift") => TelemetryConfig::sensor_drift_scenario(),
+        Some("degradation_cycle") => TelemetryConfig::degradation_cycle(),
+        Some("production") => TelemetryConfig::production(),
+        Some("chaos") => TelemetryConfig::chaos(),
+        _ => TelemetryConfig::default(),
+    };
+
+    let mut output_format = "pandas".to_string();
+
+    // Override with config if provided
+    if let Some(dict) = config {
+        let (parsed_config, out) = parse_telemetry_config(dict)?;
+        // Merge: config overrides scenario defaults only for explicitly set values
+        if dict.get_item("machine_count")?.is_some() {
+            telemetry_config.machine_count = parsed_config.machine_count;
+        }
+        if dict.get_item("readings_per_machine")?.is_some() {
+            telemetry_config.readings_per_machine = parsed_config.readings_per_machine;
+        }
+        if dict.get_item("seed")?.is_some() {
+            telemetry_config.seed = parsed_config.seed;
+        }
+        if dict.get_item("start_time")?.is_some() {
+            telemetry_config.start_time = parsed_config.start_time;
+        }
+        if dict.get_item("frequency_seconds")?.is_some() {
+            telemetry_config.frequency_seconds = parsed_config.frequency_seconds;
+        }
+        if dict.get_item("anomalies")?.is_some() {
+            telemetry_config.anomalies = parsed_config.anomalies;
+        }
+        if dict.get_item("sensor_drift")?.is_some() {
+            telemetry_config.sensor_drift = parsed_config.sensor_drift;
+        }
+        if dict.get_item("temporal")?.is_some() {
+            telemetry_config.temporal = parsed_config.temporal;
+        }
+        if dict.get_item("failure_cascade")?.is_some() {
+            telemetry_config.failure_cascade = parsed_config.failure_cascade;
+        }
+        if dict.get_item("maintenance")?.is_some() {
+            telemetry_config.maintenance = parsed_config.maintenance;
+        }
+        if dict.get_item("degradation")?.is_some() {
+            telemetry_config.degradation = parsed_config.degradation;
+        }
+        output_format = out;
+    }
+
+    let readings = generate_telemetry(&telemetry_config);
+
+    match output_format.to_lowercase().as_str() {
+        "polars" => create_telemetry_polars(py, &readings),
+        "dict" => {
+            let list = PyList::empty(py);
+            for r in &readings {
+                list.append(telemetry_to_pydict(py, r)?)?;
+            }
+            Ok(list.into())
+        }
+        _ => create_telemetry_pandas(py, &readings),
+    }
+}
+
 // Add schemas as module attributes
 pub fn add_schemas(m: &Bound<PyModule>) -> PyResult<()> {
     let py = m.py();
@@ -505,6 +972,42 @@ pub fn add_schemas(m: &Bound<PyModule>) -> PyResult<()> {
     jobs_schema.set_item("start_time", "datetime")?;
     jobs_schema.set_item("end_time", "datetime")?;
     m.add("JOBS_SCHEMA", jobs_schema)?;
+
+    let telemetry_schema = PyDict::new(py);
+    telemetry_schema.set_item("timestamp", "datetime")?;
+    telemetry_schema.set_item("machine_id", "string")?;
+    telemetry_schema.set_item("kind", "string")?;
+    telemetry_schema.set_item("cores", "integer")?;
+    telemetry_schema.set_item("region", "string")?;
+    telemetry_schema.set_item("zone", "string")?;
+    telemetry_schema.set_item("cpu", "float")?;
+    telemetry_schema.set_item("mem", "float")?;
+    telemetry_schema.set_item("free", "float")?;
+    telemetry_schema.set_item("network", "float")?;
+    telemetry_schema.set_item("disk", "float")?;
+    telemetry_schema.set_item("state", "string")?;
+    telemetry_schema.set_item("anomaly_type", "string")?;
+    telemetry_schema.set_item("health_score", "float")?;
+    m.add("TELEMETRY_SCHEMA", telemetry_schema)?;
+
+    // Telemetry scenarios list
+    let scenarios = PyList::new(
+        py,
+        vec![
+            "normal",
+            "cpu_spikes",
+            "memory_leak",
+            "network_congestion",
+            "disk_pressure",
+            "cascade_failure",
+            "maintenance_window",
+            "sensor_drift",
+            "degradation_cycle",
+            "production",
+            "chaos",
+        ],
+    )?;
+    m.add("TELEMETRY_SCENARIOS", scenarios)?;
 
     Ok(())
 }

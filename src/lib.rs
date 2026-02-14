@@ -6,7 +6,9 @@ mod correlation;
 mod crossfilter;
 mod distributions;
 mod export;
+mod finance;
 mod general;
+mod logs;
 mod parallel;
 mod streaming;
 mod temporal;
@@ -28,6 +30,7 @@ fn superstore(m: &Bound<PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(crossfilter::py_usage, m)?)?;
     m.add_function(wrap_pyfunction!(crossfilter::py_status, m)?)?;
     m.add_function(wrap_pyfunction!(crossfilter::py_jobs, m)?)?;
+    m.add_function(wrap_pyfunction!(crossfilter::telemetry, m)?)?;
 
     // Crossfilter helper functions for tests
     m.add_function(wrap_pyfunction!(crossfilter::py_id, m)?)?;
@@ -63,6 +66,15 @@ fn superstore(m: &Bound<PyModule>) -> PyResult<()> {
 
     // Weather module
     weather::register_weather(m)?;
+
+    // Logs module
+    m.add_function(wrap_pyfunction!(logs::logs, m)?)?;
+    m.add_function(wrap_pyfunction!(logs::app_logs, m)?)?;
+
+    // Finance module
+    m.add_function(wrap_pyfunction!(finance::stock_prices, m)?)?;
+    m.add_function(wrap_pyfunction!(finance::options_chain, m)?)?;
+    m.add_function(wrap_pyfunction!(finance::finance, m)?)?;
 
     Ok(())
 }

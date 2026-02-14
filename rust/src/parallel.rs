@@ -174,6 +174,8 @@ pub fn superstore_parallel(count: usize, seed: Option<u64>) -> Vec<SuperstoreRow
                     product_id: generate_bban(&mut rng),
                     category: sector.to_string(),
                     sub_category: industry.to_string(),
+                    item_status: "Regular".to_string(),
+                    item_price: (rng.gen_range(1..=100) as f64) * 10.0 + 0.99,
                     sales: rng.gen_range(1..=100) * 100,
                     quantity: rng.gen_range(1..=100) * 10,
                     discount: (rng.gen::<f64>() * 100.0 * 100.0).round() / 100.0,

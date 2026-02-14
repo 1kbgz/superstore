@@ -23,6 +23,8 @@ fn superstore_row_to_pydict(py: Python<'_>, row: &SuperstoreRow) -> PyResult<Py<
     dict.set_item("Product ID", &row.product_id)?;
     dict.set_item("Category", &row.category)?;
     dict.set_item("Sub-Category", &row.sub_category)?;
+    dict.set_item("Item Status", &row.item_status)?;
+    dict.set_item("Item Price", row.item_price)?;
     dict.set_item("Sales", row.sales)?;
     dict.set_item("Quantity", row.quantity)?;
     dict.set_item("Discount", row.discount)?;
@@ -74,6 +76,8 @@ fn create_superstore_pandas(py: Python<'_>, rows: &[SuperstoreRow]) -> PyResult<
     let product_ids: Vec<&str> = rows.iter().map(|r| r.product_id.as_str()).collect();
     let categories: Vec<&str> = rows.iter().map(|r| r.category.as_str()).collect();
     let sub_categories: Vec<&str> = rows.iter().map(|r| r.sub_category.as_str()).collect();
+    let item_statuses: Vec<&str> = rows.iter().map(|r| r.item_status.as_str()).collect();
+    let item_prices: Vec<f64> = rows.iter().map(|r| r.item_price).collect();
     let sales: Vec<i32> = rows.iter().map(|r| r.sales).collect();
     let quantities: Vec<i32> = rows.iter().map(|r| r.quantity).collect();
     let discounts: Vec<f64> = rows.iter().map(|r| r.discount).collect();
@@ -94,6 +98,8 @@ fn create_superstore_pandas(py: Python<'_>, rows: &[SuperstoreRow]) -> PyResult<
     data.set_item("Product ID", PyList::new(py, &product_ids)?)?;
     data.set_item("Category", PyList::new(py, &categories)?)?;
     data.set_item("Sub-Category", PyList::new(py, &sub_categories)?)?;
+    data.set_item("Item Status", PyList::new(py, &item_statuses)?)?;
+    data.set_item("Item Price", PyList::new(py, &item_prices)?)?;
     data.set_item("Sales", PyList::new(py, &sales)?)?;
     data.set_item("Quantity", PyList::new(py, &quantities)?)?;
     data.set_item("Discount", PyList::new(py, &discounts)?)?;
@@ -124,6 +130,8 @@ fn create_superstore_polars(py: Python<'_>, rows: &[SuperstoreRow]) -> PyResult<
     let product_ids: Vec<&str> = rows.iter().map(|r| r.product_id.as_str()).collect();
     let categories: Vec<&str> = rows.iter().map(|r| r.category.as_str()).collect();
     let sub_categories: Vec<&str> = rows.iter().map(|r| r.sub_category.as_str()).collect();
+    let item_statuses: Vec<&str> = rows.iter().map(|r| r.item_status.as_str()).collect();
+    let item_prices: Vec<f64> = rows.iter().map(|r| r.item_price).collect();
     let sales: Vec<i32> = rows.iter().map(|r| r.sales).collect();
     let quantities: Vec<i32> = rows.iter().map(|r| r.quantity).collect();
     let discounts: Vec<f64> = rows.iter().map(|r| r.discount).collect();
@@ -144,6 +152,8 @@ fn create_superstore_polars(py: Python<'_>, rows: &[SuperstoreRow]) -> PyResult<
     data.set_item("Product ID", PyList::new(py, &product_ids)?)?;
     data.set_item("Category", PyList::new(py, &categories)?)?;
     data.set_item("Sub-Category", PyList::new(py, &sub_categories)?)?;
+    data.set_item("Item Status", PyList::new(py, &item_statuses)?)?;
+    data.set_item("Item Price", PyList::new(py, &item_prices)?)?;
     data.set_item("Sales", PyList::new(py, &sales)?)?;
     data.set_item("Quantity", PyList::new(py, &quantities)?)?;
     data.set_item("Discount", PyList::new(py, &discounts)?)?;

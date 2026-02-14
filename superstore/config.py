@@ -67,6 +67,25 @@ class OutputFormat(str, Enum):
     DICT = "dict"
 
 
+class LogFormat(str, Enum):
+    """Log output format styles."""
+
+    COMBINED = "combined"  # Apache Combined Log Format
+    COMMON = "common"  # Apache Common Log Format
+    JSON = "json"  # JSON structured logs
+    APPLICATION = "application"  # Application event logs
+
+
+class LogLevel(str, Enum):
+    """Log severity levels."""
+
+    TRACE = "trace"
+    DEBUG = "debug"
+    INFO = "info"
+    WARN = "warn"
+    ERROR = "error"
+
+
 # =============================================================================
 # Weather Generator Configuration
 # =============================================================================
@@ -387,6 +406,287 @@ class CrossfilterConfig(BaseModel):
 
 
 # =============================================================================
+# Logs Generator Configuration
+# =============================================================================
+
+
+class ErrorBurstConfig(BaseModel):
+    """Configuration for error burst behavior in logs."""
+
+    enable: bool = Field(default=True, description="Enable error burst simulation")
+    burst_probability: float = Field(
+        default=0.02,
+        ge=0.0,
+        le=1.0,
+        description="Probability of entering a burst state per second",
+    )
+    burst_duration_seconds: int = Field(
+        default=30,
+        ge=1,
+        description="Average duration of error bursts in seconds",
+    )
+    burst_error_rate: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="Error rate during burst periods",
+    )
+
+
+class LatencyConfig(BaseModel):
+    """Configuration for request latency distribution."""
+
+    base_latency_ms: float = Field(
+        default=50.0,
+        ge=1.0,
+        description="Base latency in milliseconds (median)",
+    )
+    latency_stddev: float = Field(
+        default=0.8,
+        ge=0.1,
+        description="Standard deviation for log-normal distribution",
+    )
+    slow_request_probability: float = Field(
+        default=0.05,
+        ge=0.0,
+        le=1.0,
+        description="Probability of a slow request",
+    )
+    slow_request_multiplier: float = Field(
+        default=10.0,
+        ge=1.0,
+        description="Multiplier for slow request latency",
+    )
+
+
+class LogsConfig(BaseModel):
+    """Configuration for the logs data generator.
+
+    Generates realistic web server access logs and application event logs
+    with configurable traffic patterns, error rates, and latency distributions.
+    """
+
+    # Basic settings
+    count: int = Field(default=1000, ge=1, description="Number of log entries to generate")
+    output: OutputFormat = Field(
+        default=OutputFormat.PANDAS,
+        description="Output format (pandas, polars, or dict)",
+    )
+    seed: int | None = Field(
+        default=None,
+        description="Random seed for reproducibility",
+    )
+    format: LogFormat = Field(
+        default=LogFormat.COMBINED,
+        description="Log format style",
+    )
+
+    # Traffic patterns
+    start_time: str | None = Field(
+        default=None,
+        description="Start timestamp (ISO format). Defaults to current time.",
+    )
+    requests_per_second: float = Field(
+        default=100.0,
+        ge=0.1,
+        description="Average requests per second (Poisson rate)",
+    )
+
+    # Status code distribution
+    success_rate: float = Field(
+        default=0.95,
+        ge=0.0,
+        le=1.0,
+        description="Base success rate (2xx responses)",
+    )
+
+    # Error bursts
+    error_burst: ErrorBurstConfig = Field(
+        default_factory=ErrorBurstConfig,
+        description="Error burst configuration",
+    )
+
+    # Latency
+    latency: LatencyConfig = Field(
+        default_factory=LatencyConfig,
+        description="Latency distribution configuration",
+    )
+
+    # Request details
+    include_user_agent: bool = Field(
+        default=True,
+        description="Include user agent strings",
+    )
+    unique_ips: int = Field(
+        default=1000,
+        ge=1,
+        description="Number of unique IP addresses to generate",
+    )
+    unique_users: int = Field(
+        default=500,
+        ge=1,
+        description="Number of unique user IDs",
+    )
+    api_path_ratio: float = Field(
+        default=0.7,
+        ge=0.0,
+        le=1.0,
+        description="Ratio of API paths vs static paths",
+    )
+
+    model_config = {"use_enum_values": True}
+
+
+# =============================================================================
+# Finance Config Classes
+# =============================================================================
+
+
+class StockConfig(BaseModel):
+    """Configuration for stock price generation using Geometric Brownian Motion."""
+
+    annual_drift: float = Field(
+        default=0.08,
+        description="Annual expected return (mu). E.g., 0.08 = 8% annual return",
+    )
+    annual_volatility: float = Field(
+        default=0.20,
+        ge=0.0,
+        description="Annual volatility (sigma). E.g., 0.20 = 20% annual volatility",
+    )
+    initial_price: float = Field(
+        default=100.0,
+        gt=0.0,
+        description="Initial stock price",
+    )
+    enable_jumps: bool = Field(
+        default=False,
+        description="Enable jump diffusion for more realistic price movements",
+    )
+    jump_probability: float = Field(
+        default=0.02,
+        ge=0.0,
+        le=1.0,
+        description="Daily probability of a jump event",
+    )
+    jump_mean: float = Field(
+        default=0.0,
+        description="Mean of jump size (log-normal)",
+    )
+    jump_stddev: float = Field(
+        default=0.05,
+        ge=0.0,
+        description="Standard deviation of jump size",
+    )
+
+
+class OhlcvConfig(BaseModel):
+    """Configuration for OHLCV (Open-High-Low-Close-Volume) bar generation."""
+
+    avg_volume: int = Field(
+        default=1_000_000,
+        ge=1,
+        description="Average daily trading volume",
+    )
+    volume_volatility: float = Field(
+        default=0.5,
+        ge=0.0,
+        description="Volatility of volume (log-normal sigma)",
+    )
+    intraday_volatility: float = Field(
+        default=0.02,
+        ge=0.0,
+        description="Intraday price range volatility",
+    )
+    volume_price_correlation: float = Field(
+        default=0.3,
+        ge=-1.0,
+        le=1.0,
+        description="Correlation between volume and absolute returns",
+    )
+
+
+class OptionsConfig(BaseModel):
+    """Configuration for options chain generation with Black-Scholes pricing."""
+
+    risk_free_rate: float = Field(
+        default=0.05,
+        description="Annual risk-free interest rate",
+    )
+    dividend_yield: float = Field(
+        default=0.02,
+        ge=0.0,
+        description="Annual dividend yield",
+    )
+    expirations: list[int] = Field(
+        default_factory=lambda: [7, 14, 30, 60, 90],
+        description="Days to expiration for option contracts",
+    )
+    strike_offsets: list[float] = Field(
+        default_factory=lambda: [0.90, 0.95, 0.97, 1.0, 1.03, 1.05, 1.10],
+        description="Strike prices as multipliers of spot price",
+    )
+
+
+class FinanceConfig(BaseModel):
+    """Configuration for the finance data generator.
+
+    Generates realistic financial market data including OHLCV stock prices,
+    multi-asset correlated returns, and options chains with Black-Scholes pricing.
+    """
+
+    # Basic settings
+    ndays: int = Field(
+        default=252,
+        ge=1,
+        description="Number of trading days to generate (252 = 1 year)",
+    )
+    n_assets: int = Field(
+        default=1,
+        ge=1,
+        description="Number of assets (1 = single stock, >1 = correlated multi-asset)",
+    )
+    output: OutputFormat = Field(
+        default=OutputFormat.PANDAS,
+        description="Output format (pandas, polars, or dict)",
+    )
+    seed: int | None = Field(
+        default=None,
+        description="Random seed for reproducibility",
+    )
+    start_date: str | None = Field(
+        default=None,
+        description="Start date (ISO format YYYY-MM-DD). Defaults to 2024-01-02.",
+    )
+    tickers: list[str] = Field(
+        default_factory=lambda: ["AAPL"],
+        description="Ticker symbols for the assets",
+    )
+    asset_correlation: float = Field(
+        default=0.5,
+        ge=-1.0,
+        le=1.0,
+        description="Correlation between assets (for multi-asset generation)",
+    )
+
+    # Nested configurations
+    stock: StockConfig = Field(
+        default_factory=StockConfig,
+        description="Stock price generation configuration",
+    )
+    ohlcv: OhlcvConfig = Field(
+        default_factory=OhlcvConfig,
+        description="OHLCV bar configuration",
+    )
+    options: OptionsConfig = Field(
+        default_factory=OptionsConfig,
+        description="Options chain configuration",
+    )
+
+    model_config = {"use_enum_values": True}
+
+
+# =============================================================================
 # Convenience factory functions
 # =============================================================================
 
@@ -409,3 +709,13 @@ def timeseries_config(**kwargs) -> TimeseriesConfig:
 def crossfilter_config(**kwargs) -> CrossfilterConfig:
     """Create a crossfilter configuration with the given parameters."""
     return CrossfilterConfig(**kwargs)
+
+
+def logs_config(**kwargs) -> LogsConfig:
+    """Create a logs configuration with the given parameters."""
+    return LogsConfig(**kwargs)
+
+
+def finance_config(**kwargs) -> FinanceConfig:
+    """Create a finance configuration with the given parameters."""
+    return FinanceConfig(**kwargs)
