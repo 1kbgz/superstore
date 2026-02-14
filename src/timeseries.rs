@@ -3,7 +3,10 @@ use pyo3::prelude::*;
 use pyo3::types::{IntoPyDict, PyDict, PyList};
 use std::collections::HashMap;
 
-use superstore::timeseries::{get_time_series, get_time_series_data, TimeSeriesData};
+use superstore::timeseries::{
+    get_time_series_data, get_time_series_with_config, JumpConfig, RegimeConfig, TimeSeriesData,
+    TimeseriesConfig,
+};
 
 /// Create pandas DataFrame from TimeSeriesData struct
 fn create_timeseries_pandas(py: Python<'_>, data: &TimeSeriesData) -> PyResult<Py<PyAny>> {
@@ -175,6 +178,167 @@ fn parse_timeseries_config(
     Ok((nper, freq, ncol, output, seed))
 }
 
+/// Parse full TimeseriesConfig dict into Rust struct
+fn parse_full_timeseries_config(dict: &Bound<'_, PyDict>) -> PyResult<(TimeseriesConfig, String)> {
+    let nper: usize = dict
+        .get_item("nper")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(30);
+
+    let freq: String = dict
+        .get_item("freq")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or_else(|| "B".to_string());
+
+    let ncol: usize = dict
+        .get_item("ncol")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(4);
+
+    let output: String = dict
+        .get_item("output")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or_else(|| "pandas".to_string());
+
+    let seed: Option<u64> = dict.get_item("seed")?.and_then(|v| v.extract().ok());
+
+    let ar_phi: f64 = dict
+        .get_item("ar_phi")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(0.95);
+
+    let sigma: f64 = dict
+        .get_item("sigma")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(1.0);
+
+    let drift: f64 = dict
+        .get_item("drift")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(0.0);
+
+    let cumulative: bool = dict
+        .get_item("cumulative")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(true);
+
+    let use_fat_tails: bool = dict
+        .get_item("use_fat_tails")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(false);
+
+    let degrees_freedom: f64 = dict
+        .get_item("degrees_freedom")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(5.0);
+
+    let cross_correlation: f64 = dict
+        .get_item("cross_correlation")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(0.0);
+
+    // Parse nested RegimeConfig
+    let regimes = if let Some(regimes_val) = dict.get_item("regimes")? {
+        if let Ok(regimes_dict) = regimes_val.downcast::<PyDict>() {
+            let enable: bool = regimes_dict
+                .get_item("enable")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(false);
+            let n_regimes: usize = regimes_dict
+                .get_item("n_regimes")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(2);
+            let regime_persistence: f64 = regimes_dict
+                .get_item("regime_persistence")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(0.95);
+            let volatility_multipliers: Vec<f64> = regimes_dict
+                .get_item("volatility_multipliers")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or_else(|| vec![1.0, 2.5]);
+            RegimeConfig {
+                enable,
+                n_regimes,
+                regime_persistence,
+                volatility_multipliers,
+            }
+        } else {
+            RegimeConfig::default()
+        }
+    } else {
+        RegimeConfig::default()
+    };
+
+    // Parse nested JumpConfig
+    let jumps = if let Some(jumps_val) = dict.get_item("jumps")? {
+        if let Ok(jumps_dict) = jumps_val.downcast::<PyDict>() {
+            let enable: bool = jumps_dict
+                .get_item("enable")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(false);
+            let jump_probability: f64 = jumps_dict
+                .get_item("jump_probability")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(0.01);
+            let jump_mean: f64 = jumps_dict
+                .get_item("jump_mean")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(0.0);
+            let jump_stddev: f64 = jumps_dict
+                .get_item("jump_stddev")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(0.05);
+            JumpConfig {
+                enable,
+                jump_probability,
+                jump_mean,
+                jump_stddev,
+            }
+        } else {
+            JumpConfig::default()
+        }
+    } else {
+        JumpConfig::default()
+    };
+
+    let config = TimeseriesConfig {
+        nper,
+        ncol,
+        freq,
+        seed,
+        ar_phi,
+        sigma,
+        drift,
+        cumulative,
+        use_fat_tails,
+        degrees_freedom,
+        cross_correlation,
+        regimes,
+        jumps,
+    };
+
+    Ok((config, output))
+}
+
 /// Generate time series data with structured configuration.
 ///
 /// Args:
@@ -200,10 +364,16 @@ pub fn py_get_time_series(
     seed: Option<u64>,
 ) -> PyResult<Py<PyAny>> {
     // Parse config from pydantic model, dict, or int (backward compat)
-    let (cfg_nper, cfg_freq, cfg_ncol, cfg_output, cfg_seed) = if let Some(cfg) = config {
+    let (mut ts_config, cfg_output) = if let Some(cfg) = config {
         // Check if it's an integer (backward compatibility: timeseries(30))
         if let Ok(int_val) = cfg.extract::<usize>() {
-            (int_val, "B".to_string(), 4, "pandas".to_string(), None)
+            (
+                TimeseriesConfig {
+                    nper: int_val,
+                    ..Default::default()
+                },
+                "pandas".to_string(),
+            )
         // Check if it's a pydantic model (has model_dump method)
         } else if cfg.hasattr("model_dump")? {
             // Use mode="json" to ensure enums are serialized as strings
@@ -211,26 +381,36 @@ pub fn py_get_time_series(
             kwargs.set_item("mode", "json")?;
             let dict = cfg.call_method("model_dump", (), Some(&kwargs))?;
             let dict = dict.downcast::<PyDict>()?;
-            parse_timeseries_config(dict)?
+            parse_full_timeseries_config(dict)?
         } else if let Ok(dict) = cfg.downcast::<PyDict>() {
-            parse_timeseries_config(dict)?
+            parse_full_timeseries_config(dict)?
         } else {
             return Err(pyo3::exceptions::PyTypeError::new_err(
                 "config must be a TimeseriesConfig, dict, int, or None",
             ));
         }
     } else {
-        (30, "B".to_string(), 4, "pandas".to_string(), None)
+        (TimeseriesConfig::default(), "pandas".to_string())
     };
 
     // Override with explicit parameters if provided
-    let final_nper = nper.unwrap_or(cfg_nper);
-    let final_freq = freq.unwrap_or(&cfg_freq);
-    let final_ncol = ncol.unwrap_or(cfg_ncol);
-    let final_output = output.unwrap_or(&cfg_output);
-    let final_seed = seed.or(cfg_seed);
+    if let Some(n) = nper {
+        ts_config.nper = n;
+    }
+    if let Some(f) = freq {
+        ts_config.freq = f.to_string();
+    }
+    if let Some(n) = ncol {
+        ts_config.ncol = n;
+    }
+    if let Some(s) = seed {
+        ts_config.seed = Some(s);
+    }
 
-    let data = get_time_series(final_nper, final_freq, final_ncol, final_seed);
+    let final_output = output.unwrap_or(&cfg_output);
+
+    // Use enhanced config-based generation
+    let data = get_time_series_with_config(&ts_config);
 
     match final_output {
         "pandas" => create_timeseries_pandas(py, &data),

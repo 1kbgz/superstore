@@ -165,7 +165,7 @@ class WeatherConfig(BaseModel):
 class SeasonalityConfig(BaseModel):
     """Configuration for seasonal patterns in sales data."""
 
-    enable: bool = Field(default=False, description="Enable seasonal effects")
+    enable: bool = Field(default=True, description="Enable seasonal effects")
     q4_multiplier: float = Field(default=1.5, ge=1.0, le=3.0, description="Q4 (holiday) sales multiplier")
     summer_multiplier: float = Field(default=0.9, ge=0.5, le=1.5, description="Summer sales multiplier")
     back_to_school_multiplier: float = Field(
@@ -179,12 +179,12 @@ class SeasonalityConfig(BaseModel):
 class PromotionalConfig(BaseModel):
     """Configuration for promotional effects."""
 
-    enable: bool = Field(default=False, description="Enable promotional patterns")
+    enable: bool = Field(default=True, description="Enable promotional patterns")
     discount_quantity_correlation: float = Field(
         default=0.5,
         ge=0.0,
         le=1.0,
-        description="How much discounts increase quantity",
+        description="How much discounts increase quantity (correlation factor)",
     )
     price_elasticity: float = Field(default=-0.8, ge=-2.0, le=0.0, description="Price elasticity of demand")
 
@@ -192,9 +192,9 @@ class PromotionalConfig(BaseModel):
 class CustomerConfig(BaseModel):
     """Configuration for customer behavior patterns."""
 
-    enable_cohorts: bool = Field(default=False, description="Enable customer cohort modeling")
+    enable_cohorts: bool = Field(default=True, description="Enable customer cohort modeling")
     repeat_customer_rate: float = Field(
-        default=0.3,
+        default=0.7,
         ge=0.0,
         le=1.0,
         description="Fraction of orders from repeat customers",
@@ -221,32 +221,18 @@ class SuperstoreConfig(BaseModel):
     seed: int | None = Field(default=None, description="Random seed for reproducibility")
     pool_size: int = Field(default=1000, ge=1, le=100000, description="Size of pre-generated data pools for performance")
 
-    # Date range
-    start_date: str | None = Field(default=None, description="Start date (YYYY-MM-DD). Defaults to start of year.")
-    end_date: str | None = Field(default=None, description="End date (YYYY-MM-DD). Defaults to today.")
-
-    # Sales configuration
-    min_sales: int = Field(default=100, ge=1, description="Minimum sales amount")
-    max_sales: int = Field(default=10000, ge=1, description="Maximum sales amount")
-    min_quantity: int = Field(default=1, ge=1, description="Minimum quantity")
-    max_quantity: int = Field(default=100, ge=1, description="Maximum quantity")
-    max_discount_percent: float = Field(default=50.0, ge=0.0, le=100.0, description="Maximum discount percentage")
-
     # Correlation settings
-    sales_quantity_correlation: float = Field(default=0.7, ge=-1.0, le=1.0, description="Sales-quantity correlation")
-    sales_profit_correlation: float = Field(default=0.6, ge=-1.0, le=1.0, description="Sales-profit correlation")
-    discount_profit_correlation: float = Field(default=-0.4, ge=-1.0, le=1.0, description="Discount-profit correlation")
+    sales_quantity_correlation: float = Field(default=0.8, ge=-1.0, le=1.0, description="Sales-quantity correlation")
+    sales_profit_correlation: float = Field(default=0.9, ge=-1.0, le=1.0, description="Sales-profit correlation")
+    discount_profit_correlation: float = Field(default=-0.6, ge=-1.0, le=1.0, description="Discount-profit correlation")
+
+    # Pricing
+    enable_price_points: bool = Field(default=True, description="Round prices to realistic $X.99 values")
 
     # Advanced features
     seasonality: SeasonalityConfig = Field(default_factory=SeasonalityConfig, description="Seasonal patterns")
     promotions: PromotionalConfig = Field(default_factory=PromotionalConfig, description="Promotional effects")
     customers: CustomerConfig = Field(default_factory=CustomerConfig, description="Customer behavior")
-
-    # Regional settings
-    regions: list[str] = Field(
-        default_factory=lambda: ["Region 1", "Region 2", "Region 3", "Region 4", "Region 5"],
-        description="Region names",
-    )
 
     model_config = {"use_enum_values": True}
 

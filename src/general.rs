@@ -1,7 +1,10 @@
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList};
 
-use superstore::general::{employees, superstore, EmployeeRow, SuperstoreRow};
+use superstore::general::{
+    employees, superstore_with_config, CustomerConfig, EmployeeRow, PromotionalConfig,
+    SeasonalityConfig, SuperstoreConfig, SuperstoreRow,
+};
 
 fn superstore_row_to_pydict(py: Python<'_>, row: &SuperstoreRow) -> PyResult<Py<PyDict>> {
     let dict = PyDict::new(py);
@@ -280,10 +283,16 @@ pub fn py_superstore(
     seed: Option<u64>,
 ) -> PyResult<Py<PyAny>> {
     // Parse config from pydantic model, dict, or int (backward compat)
-    let (cfg_count, cfg_output, cfg_seed, cfg_pool_size) = if let Some(cfg) = config {
+    let (mut store_config, cfg_output) = if let Some(cfg) = config {
         // Check if it's an integer (backward compatibility: superstore(1000))
         if let Ok(int_val) = cfg.extract::<usize>() {
-            (int_val, "pandas".to_string(), None, None)
+            (
+                SuperstoreConfig {
+                    count: int_val,
+                    ..Default::default()
+                },
+                "pandas".to_string(),
+            )
         // Check if it's a pydantic model (has model_dump method)
         } else if cfg.hasattr("model_dump")? {
             // Use mode="json" to ensure enums are serialized as strings
@@ -291,24 +300,30 @@ pub fn py_superstore(
             kwargs.set_item("mode", "json")?;
             let dict = cfg.call_method("model_dump", (), Some(&kwargs))?;
             let dict = dict.downcast::<PyDict>()?;
-            parse_superstore_config(dict)?
+            parse_full_superstore_config(dict)?
         } else if let Ok(dict) = cfg.downcast::<PyDict>() {
-            parse_superstore_config(dict)?
+            parse_full_superstore_config(dict)?
         } else {
             return Err(pyo3::exceptions::PyTypeError::new_err(
                 "config must be a SuperstoreConfig, dict, int, or None",
             ));
         }
     } else {
-        (1000, "pandas".to_string(), None, None)
+        (SuperstoreConfig::default(), "pandas".to_string())
     };
 
     // Override with explicit parameters if provided
-    let final_count = count.unwrap_or(cfg_count);
-    let final_output = output.unwrap_or(&cfg_output);
-    let final_seed = seed.or(cfg_seed);
+    if let Some(c) = count {
+        store_config.count = c;
+    }
+    if let Some(s) = seed {
+        store_config.seed = Some(s);
+    }
 
-    let rows = superstore(final_count, final_seed, cfg_pool_size);
+    let final_output = output.unwrap_or(&cfg_output);
+
+    // Use enhanced config-based generation
+    let rows = superstore_with_config(&store_config);
 
     match final_output {
         "pandas" => create_superstore_pandas(py, &rows),
@@ -342,6 +357,170 @@ fn parse_superstore_config(
     let pool_size: Option<usize> = dict.get_item("pool_size")?.and_then(|v| v.extract().ok());
 
     Ok((count, output, seed, pool_size))
+}
+
+/// Parse full SuperstoreConfig dict into Rust struct
+fn parse_full_superstore_config(dict: &Bound<'_, PyDict>) -> PyResult<(SuperstoreConfig, String)> {
+    let count: usize = dict
+        .get_item("count")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(1000);
+
+    let output: String = dict
+        .get_item("output")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or_else(|| "pandas".to_string());
+
+    let seed: Option<u64> = dict.get_item("seed")?.and_then(|v| v.extract().ok());
+
+    let pool_size: usize = dict
+        .get_item("pool_size")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(1000);
+
+    // Parse nested SeasonalityConfig
+    let seasonality = if let Some(seasonality_val) = dict.get_item("seasonality")? {
+        if let Ok(seasonality_dict) = seasonality_val.downcast::<PyDict>() {
+            let enable: bool = seasonality_dict
+                .get_item("enable")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(true);
+            let q4_multiplier: f64 = seasonality_dict
+                .get_item("q4_multiplier")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(1.5);
+            let summer_multiplier: f64 = seasonality_dict
+                .get_item("summer_multiplier")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(0.9);
+            let back_to_school_multiplier: f64 = seasonality_dict
+                .get_item("back_to_school_multiplier")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(1.2);
+            SeasonalityConfig {
+                enable,
+                q4_multiplier,
+                summer_multiplier,
+                back_to_school_multiplier,
+            }
+        } else {
+            SeasonalityConfig::default()
+        }
+    } else {
+        SeasonalityConfig::default()
+    };
+
+    // Parse nested PromotionalConfig
+    let promotions = if let Some(promo_val) = dict.get_item("promotions")? {
+        if let Ok(promo_dict) = promo_val.downcast::<PyDict>() {
+            let enable: bool = promo_dict
+                .get_item("enable")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(true);
+            // Support both field names for compatibility
+            let discount_quantity_correlation: f64 = promo_dict
+                .get_item("discount_boost_correlation")?
+                .or(promo_dict.get_item("discount_quantity_correlation")?)
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(0.5);
+            let price_elasticity: f64 = promo_dict
+                .get_item("price_elasticity")?
+                .or(promo_dict.get_item("base_discount_rate")?)
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(-0.8);
+            PromotionalConfig {
+                enable,
+                discount_quantity_correlation,
+                price_elasticity,
+            }
+        } else {
+            PromotionalConfig::default()
+        }
+    } else {
+        PromotionalConfig::default()
+    };
+
+    // Parse nested CustomerConfig
+    let customers = if let Some(cust_val) = dict.get_item("customers")? {
+        if let Ok(cust_dict) = cust_val.downcast::<PyDict>() {
+            let enable_cohorts: bool = cust_dict
+                .get_item("enable_cohorts")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(true);
+            let repeat_customer_rate: f64 = cust_dict
+                .get_item("repeat_customer_rate")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(0.7);
+            // Support both field names for compatibility
+            let vip_segment_rate: f64 = cust_dict
+                .get_item("vip_rate")?
+                .or(cust_dict.get_item("vip_segment_rate")?)
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(0.1);
+            let vip_order_multiplier: f64 = cust_dict
+                .get_item("vip_order_multiplier")?
+                .map(|v| v.extract())
+                .transpose()?
+                .unwrap_or(2.0);
+            CustomerConfig {
+                enable_cohorts,
+                repeat_customer_rate,
+                vip_segment_rate,
+                vip_order_multiplier,
+            }
+        } else {
+            CustomerConfig::default()
+        }
+    } else {
+        CustomerConfig::default()
+    };
+
+    // Parse correlation values
+    let sales_quantity_correlation: f64 = dict
+        .get_item("sales_quantity_correlation")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(0.8);
+
+    let sales_profit_correlation: f64 = dict
+        .get_item("sales_profit_correlation")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(0.9);
+
+    let discount_profit_correlation: f64 = dict
+        .get_item("discount_profit_correlation")?
+        .map(|v| v.extract())
+        .transpose()?
+        .unwrap_or(-0.6);
+
+    let config = SuperstoreConfig {
+        count,
+        seed,
+        pool_size,
+        seasonality,
+        promotions,
+        customers,
+        sales_quantity_correlation,
+        sales_profit_correlation,
+        discount_profit_correlation,
+        ..Default::default()
+    };
+
+    Ok((config, output))
 }
 
 #[pyfunction]
