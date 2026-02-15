@@ -187,6 +187,13 @@ impl Iterator for SuperstoreIterator {
                 quantity: self.rng.gen_range(1..=100) * 10,
                 discount: (self.rng.gen::<f64>() * 100.0 * 100.0).round() / 100.0,
                 profit: (self.rng.gen::<f64>() * 1000.0 * 100.0).round() / 100.0,
+                // Priority 4 fields (not enabled in streaming simple mode)
+                bundle_id: None,
+                payment_method: None,
+                is_fraud: None,
+                processing_fee: None,
+                backorder_days: None,
+                stock_status: None,
             };
             chunk.push(row);
         }

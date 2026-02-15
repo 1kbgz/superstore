@@ -53,6 +53,116 @@ impl Default for JumpConfig {
     }
 }
 
+// =============================================================================
+// Priority 5: Enhanced Timeseries Features
+// =============================================================================
+
+/// Configuration for GARCH-like volatility clustering
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GarchConfig {
+    pub enable: bool,
+    pub alpha: f64,  // Weight on past squared returns
+    pub beta: f64,   // Weight on past variance (persistence)
+    pub omega: f64,  // Long-run variance constant
+}
+
+impl Default for GarchConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            alpha: 0.1,
+            beta: 0.85,
+            omega: 0.05,
+        }
+    }
+}
+
+/// Configuration for mean reversion (Ornstein-Uhlenbeck process)
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct MeanReversionConfig {
+    pub enable: bool,
+    pub theta: f64,  // Speed of mean reversion (higher = faster)
+    pub mu: f64,     // Long-run mean
+    pub sigma: f64,  // Volatility
+}
+
+impl Default for MeanReversionConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            theta: 0.15,
+            mu: 0.0,
+            sigma: 0.2,
+        }
+    }
+}
+
+/// Configuration for intraday patterns (U-shaped volatility)
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct IntradayConfig {
+    pub enable: bool,
+    pub opening_volatility_mult: f64,  // Multiplier at market open
+    pub midday_volatility_mult: f64,   // Multiplier at midday (lowest)
+    pub closing_volatility_mult: f64,  // Multiplier at market close
+}
+
+impl Default for IntradayConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            opening_volatility_mult: 1.5,
+            midday_volatility_mult: 0.7,
+            closing_volatility_mult: 1.3,
+        }
+    }
+}
+
+/// Configuration for event windows (abnormal returns around dates)
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct EventWindowConfig {
+    pub enable: bool,
+    pub event_indices: Vec<usize>,       // Indices where events occur
+    pub pre_event_window: usize,          // Days before event
+    pub post_event_window: usize,         // Days after event
+    pub abnormal_return_mean: f64,        // Mean of abnormal return
+    pub abnormal_return_stddev: f64,      // Stddev of abnormal return
+}
+
+impl Default for EventWindowConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            event_indices: vec![],
+            pre_event_window: 5,
+            post_event_window: 5,
+            abnormal_return_mean: 0.02,
+            abnormal_return_stddev: 0.03,
+        }
+    }
+}
+
+/// Financial metrics output
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct FinancialMetrics {
+    pub alpha: f64,        // Jensen's alpha (excess return)
+    pub beta: f64,         // Market sensitivity
+    pub sharpe_ratio: f64, // Risk-adjusted return
+    pub volatility: f64,   // Annualized volatility
+    pub max_drawdown: f64, // Maximum peak-to-trough decline
+}
+
+impl Default for FinancialMetrics {
+    fn default() -> Self {
+        Self {
+            alpha: 0.0,
+            beta: 1.0,
+            sharpe_ratio: 0.0,
+            volatility: 0.0,
+            max_drawdown: 0.0,
+        }
+    }
+}
+
 /// Full timeseries configuration
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TimeseriesConfig {
@@ -69,6 +179,12 @@ pub struct TimeseriesConfig {
     pub cross_correlation: f64,
     pub regimes: RegimeConfig,
     pub jumps: JumpConfig,
+    // Priority 5 enhancements
+    pub garch: GarchConfig,
+    pub mean_reversion: MeanReversionConfig,
+    pub intraday: IntradayConfig,
+    pub event_windows: EventWindowConfig,
+    pub compute_metrics: bool,
 }
 
 impl Default for TimeseriesConfig {
@@ -87,6 +203,11 @@ impl Default for TimeseriesConfig {
             cross_correlation: 0.0,
             regimes: RegimeConfig::default(),
             jumps: JumpConfig::default(),
+            garch: GarchConfig::default(),
+            mean_reversion: MeanReversionConfig::default(),
+            intraday: IntradayConfig::default(),
+            event_windows: EventWindowConfig::default(),
+            compute_metrics: false,
         }
     }
 }
@@ -164,6 +285,215 @@ fn create_regime_chain(config: &RegimeConfig) -> Option<MarkovChain> {
     MarkovChain::new(matrix, states).ok()
 }
 
+// =============================================================================
+// Priority 5: Helper Functions
+// =============================================================================
+
+/// GARCH(1,1) volatility model
+/// sigma_t^2 = omega + alpha * r_{t-1}^2 + beta * sigma_{t-1}^2
+fn apply_garch_volatility<R: Rng>(
+    _rng: &mut R,
+    innovations: &mut [f64],
+    config: &GarchConfig,
+) {
+    if !config.enable || innovations.is_empty() {
+        return;
+    }
+
+    let mut variance = config.omega / (1.0 - config.alpha - config.beta); // Long-run variance
+    
+    for i in 0..innovations.len() {
+        let prev_return_sq = if i > 0 {
+            innovations[i - 1].powi(2)
+        } else {
+            variance
+        };
+        
+        // Update variance: GARCH(1,1) equation
+        variance = config.omega + config.alpha * prev_return_sq + config.beta * variance;
+        
+        // Scale the innovation by the time-varying volatility
+        innovations[i] *= variance.sqrt();
+    }
+}
+
+/// Ornstein-Uhlenbeck (mean-reverting) process
+/// dX_t = theta * (mu - X_t) * dt + sigma * dW_t
+fn generate_ornstein_uhlenbeck<R: Rng>(
+    rng: &mut R,
+    n: usize,
+    config: &MeanReversionConfig,
+) -> Vec<f64> {
+    let normal = Normal::new(0.0, 1.0).expect("Invalid normal params");
+    let mut values = Vec::with_capacity(n);
+    let mut x = config.mu; // Start at long-run mean
+    
+    let dt = 1.0; // Daily timestep
+    
+    for _ in 0..n {
+        let dw: f64 = normal.sample(rng);
+        // Euler-Maruyama discretization
+        x += config.theta * (config.mu - x) * dt + config.sigma * dt.sqrt() * dw;
+        values.push(x);
+    }
+    
+    values
+}
+
+/// Get intraday volatility multiplier based on position in trading day
+/// Creates a U-shaped pattern: high at open, low at midday, high at close
+fn get_intraday_volatility_mult(index: usize, total: usize, config: &IntradayConfig) -> f64 {
+    if !config.enable || total == 0 {
+        return 1.0;
+    }
+    
+    // Normalize position to [0, 1]
+    let t = (index as f64) / (total as f64);
+    
+    // U-shaped curve: higher at endpoints, lower in middle
+    // Using a quadratic: volatility = a + b*(t - 0.5)^2
+    // At t=0 and t=1: volatility is high
+    // At t=0.5: volatility is low
+    
+    let deviation = (t - 0.5).abs() * 2.0; // 0 at midday, 1 at open/close
+    
+    // Interpolate between midday (min) and open/close (max)
+    let opening_blend = if t < 0.5 {
+        1.0 - t * 2.0 // 1.0 at open, 0.0 at midday
+    } else {
+        0.0
+    };
+    let closing_blend = if t >= 0.5 {
+        (t - 0.5) * 2.0 // 0.0 at midday, 1.0 at close
+    } else {
+        0.0
+    };
+    
+    let base = config.midday_volatility_mult;
+    let opening_contrib = opening_blend * (config.opening_volatility_mult - base);
+    let closing_contrib = closing_blend * (config.closing_volatility_mult - base);
+    
+    base + opening_contrib + closing_contrib + deviation * 0.1
+}
+
+/// Apply abnormal returns around event dates
+fn apply_event_windows<R: Rng>(
+    rng: &mut R,
+    values: &mut [f64],
+    config: &EventWindowConfig,
+) {
+    if !config.enable || config.event_indices.is_empty() {
+        return;
+    }
+    
+    let normal = Normal::new(config.abnormal_return_mean, config.abnormal_return_stddev)
+        .expect("Invalid normal params");
+    
+    for &event_idx in &config.event_indices {
+        // Calculate window boundaries
+        let start_idx = event_idx.saturating_sub(config.pre_event_window);
+        let end_idx = (event_idx + config.post_event_window + 1).min(values.len());
+        
+        // Apply abnormal returns in the window
+        for (i, value) in values.iter_mut().enumerate().take(end_idx).skip(start_idx) {
+            let abnormal_return: f64 = normal.sample(rng);
+            
+            // Strongest effect at the event, decaying away from it
+            let distance = (i as i32 - event_idx as i32).abs() as f64;
+            let decay = 1.0 / (1.0 + distance * 0.3);
+            
+            *value += abnormal_return * decay;
+        }
+    }
+}
+
+/// Calculate financial metrics from a return series
+fn calculate_financial_metrics(returns: &[f64], market_returns: Option<&[f64]>, risk_free_rate: f64) -> FinancialMetrics {
+    if returns.is_empty() {
+        return FinancialMetrics::default();
+    }
+    
+    let n = returns.len() as f64;
+    
+    // Calculate mean return
+    let mean_return: f64 = returns.iter().sum::<f64>() / n;
+    
+    // Calculate volatility (annualized, assuming daily returns)
+    let variance: f64 = returns.iter()
+        .map(|r| (r - mean_return).powi(2))
+        .sum::<f64>() / (n - 1.0).max(1.0);
+    let volatility = variance.sqrt() * (252.0_f64).sqrt(); // Annualize
+    
+    // Calculate Sharpe ratio
+    let excess_return = mean_return - risk_free_rate / 252.0; // Daily risk-free rate
+    let sharpe_ratio = if variance > 0.0 {
+        excess_return / variance.sqrt() * (252.0_f64).sqrt()
+    } else {
+        0.0
+    };
+    
+    // Calculate max drawdown
+    let mut cumulative = Vec::with_capacity(returns.len());
+    let mut cum = 0.0;
+    for r in returns {
+        cum += r;
+        cumulative.push(cum);
+    }
+    
+    let mut max_drawdown = 0.0;
+    let mut peak = f64::NEG_INFINITY;
+    for &val in &cumulative {
+        if val > peak {
+            peak = val;
+        }
+        let drawdown = peak - val;
+        if drawdown > max_drawdown {
+            max_drawdown = drawdown;
+        }
+    }
+    
+    // Calculate beta and alpha if market returns provided
+    let (alpha, beta) = if let Some(market) = market_returns {
+        if market.len() == returns.len() && market.len() > 1 {
+            // Calculate market mean
+            let market_mean: f64 = market.iter().sum::<f64>() / market.len() as f64;
+            
+            // Calculate covariance and market variance
+            let covariance: f64 = returns.iter()
+                .zip(market.iter())
+                .map(|(r, m)| (r - mean_return) * (m - market_mean))
+                .sum::<f64>() / (n - 1.0);
+            
+            let market_variance: f64 = market.iter()
+                .map(|m| (m - market_mean).powi(2))
+                .sum::<f64>() / (n - 1.0).max(1.0);
+            
+            let b = if market_variance > 0.0 {
+                covariance / market_variance
+            } else {
+                1.0
+            };
+            
+            // Alpha = mean_return - risk_free - beta * (market_mean - risk_free)
+            let a = mean_return - risk_free_rate / 252.0 - b * (market_mean - risk_free_rate / 252.0);
+            
+            (a * 252.0, b) // Annualize alpha
+        } else {
+            (0.0, 1.0)
+        }
+    } else {
+        (0.0, 1.0)
+    };
+    
+    FinancialMetrics {
+        alpha,
+        beta,
+        sharpe_ratio,
+        volatility,
+        max_drawdown,
+    }
+}
+
 fn make_date_index(k: usize, freq: &str) -> Vec<NaiveDateTime> {
     let start = NaiveDate::from_ymd_opt(2000, 1, 1)
         .unwrap()
@@ -237,6 +567,12 @@ fn make_time_series_with_config_inner<R: Rng>(
 ) -> (Vec<NaiveDateTime>, Vec<f64>) {
     let dates = make_date_index(config.nper, &config.freq);
 
+    // If mean reversion is enabled, use Ornstein-Uhlenbeck process instead
+    if config.mean_reversion.enable {
+        let values = generate_ornstein_uhlenbeck(rng, config.nper, &config.mean_reversion);
+        return (dates, values);
+    }
+
     // Set up regime chain if enabled
     let mut regime_chain = create_regime_chain(&config.regimes);
     let mut current_regime = 0usize;
@@ -244,7 +580,7 @@ fn make_time_series_with_config_inner<R: Rng>(
     // Generate innovations
     let mut innovations = Vec::with_capacity(config.nper);
 
-    for _ in 0..config.nper {
+    for i in 0..config.nper {
         // Update regime if we have regime switching
         if let Some(ref mut chain) = regime_chain {
             let state = chain.next(rng);
@@ -266,8 +602,11 @@ fn make_time_series_with_config_inner<R: Rng>(
             1.0
         };
 
+        // Apply intraday volatility pattern
+        let intraday_mult = get_intraday_volatility_mult(i, config.nper, &config.intraday);
+
         // Sample innovation (normal or Student-t for fat tails)
-        let effective_sigma = config.sigma * vol_mult;
+        let effective_sigma = config.sigma * vol_mult * intraday_mult;
         let mut innovation = sample_innovation(
             rng,
             effective_sigma,
@@ -288,16 +627,22 @@ fn make_time_series_with_config_inner<R: Rng>(
         innovations.push(innovation);
     }
 
+    // Apply GARCH volatility clustering
+    apply_garch_volatility(rng, &mut innovations, &config.garch);
+
     // Apply AR(1) dynamics
     let mut ar1 = AR1::new(config.ar_phi, 1.0, 0.0).expect("Invalid AR1 parameters");
     let ar_weights = ar1.sample_n(rng, config.nper);
 
     // Blend AR weights with innovations
-    let values: Vec<f64> = innovations
+    let mut values: Vec<f64> = innovations
         .iter()
         .zip(ar_weights.iter())
         .map(|(&inn, &ar)| inn * (1.0 - config.ar_phi.abs()) + ar * config.ar_phi.abs())
         .collect();
+
+    // Apply event window effects
+    apply_event_windows(rng, &mut values, &config.event_windows);
 
     // Optionally compute cumulative sum for trending time series
     if config.cumulative {
@@ -315,11 +660,12 @@ fn make_time_series_with_config_inner<R: Rng>(
 }
 
 /// Generate time series data with full configuration support
-pub fn get_time_series_with_config(config: &TimeseriesConfig) -> TimeSeriesData {
+pub fn get_time_series_with_config(config: &TimeseriesConfig) -> TimeSeriesDataWithMetrics {
     let mut rng = create_rng(config.seed);
     let cols = get_cols(config.ncol);
     let index = make_date_index(config.nper, &config.freq);
     let mut columns = Vec::with_capacity(config.ncol);
+    let mut metrics_map = HashMap::new();
 
     // For cross-correlated series, generate a common factor
     let common_factor: Vec<f64> = if config.cross_correlation > 0.0 {
@@ -329,7 +675,10 @@ pub fn get_time_series_with_config(config: &TimeseriesConfig) -> TimeSeriesData 
         vec![]
     };
 
-    for c in cols {
+    // Generate market returns for beta calculation (first column acts as market)
+    let mut market_returns: Option<Vec<f64>> = None;
+
+    for (col_idx, c) in cols.iter().enumerate() {
         let (_, mut values) = make_time_series_with_config_inner(&mut rng, config);
 
         // Blend with common factor for cross-correlation
@@ -342,10 +691,36 @@ pub fn get_time_series_with_config(config: &TimeseriesConfig) -> TimeSeriesData 
                 .collect();
         }
 
-        columns.push(TimeSeriesColumn { name: c, values });
+        // Calculate returns for metrics
+        if config.compute_metrics {
+            let returns: Vec<f64> = if config.cumulative && values.len() > 1 {
+                // For cumulative series, compute returns from differences
+                values.windows(2).map(|w| w[1] - w[0]).collect()
+            } else {
+                values.clone()
+            };
+
+            // First column acts as market proxy
+            if col_idx == 0 {
+                market_returns = Some(returns.clone());
+            }
+
+            let metrics = calculate_financial_metrics(
+                &returns,
+                if col_idx > 0 { market_returns.as_deref() } else { None },
+                0.02, // 2% annual risk-free rate
+            );
+            metrics_map.insert(*c, metrics);
+        }
+
+        columns.push(TimeSeriesColumn { name: *c, values });
     }
 
-    TimeSeriesData { index, columns }
+    TimeSeriesDataWithMetrics {
+        index,
+        columns,
+        metrics: if config.compute_metrics { Some(metrics_map) } else { None },
+    }
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -358,6 +733,23 @@ pub struct TimeSeriesColumn {
 pub struct TimeSeriesData {
     pub index: Vec<NaiveDateTime>,
     pub columns: Vec<TimeSeriesColumn>,
+}
+
+/// Extended time series data with optional financial metrics
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct TimeSeriesDataWithMetrics {
+    pub index: Vec<NaiveDateTime>,
+    pub columns: Vec<TimeSeriesColumn>,
+    pub metrics: Option<HashMap<char, FinancialMetrics>>,
+}
+
+impl From<TimeSeriesDataWithMetrics> for TimeSeriesData {
+    fn from(data: TimeSeriesDataWithMetrics) -> Self {
+        TimeSeriesData {
+            index: data.index,
+            columns: data.columns,
+        }
+    }
 }
 
 pub fn get_time_series_data(

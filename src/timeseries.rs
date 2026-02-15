@@ -4,8 +4,8 @@ use pyo3::types::{IntoPyDict, PyDict, PyList};
 use std::collections::HashMap;
 
 use superstore::timeseries::{
-    get_time_series_data, get_time_series_with_config, JumpConfig, RegimeConfig, TimeSeriesData,
-    TimeseriesConfig,
+    get_time_series_data, get_time_series_with_config, GarchConfig, IntradayConfig, JumpConfig,
+    MeanReversionConfig, RegimeConfig, TimeSeriesData, TimeseriesConfig,
 };
 
 /// Create pandas DataFrame from TimeSeriesData struct
@@ -334,6 +334,12 @@ fn parse_full_timeseries_config(dict: &Bound<'_, PyDict>) -> PyResult<(Timeserie
         cross_correlation,
         regimes,
         jumps,
+        // Priority 5 fields - use defaults
+        garch: GarchConfig::default(),
+        mean_reversion: MeanReversionConfig::default(),
+        intraday: IntradayConfig::default(),
+        event_windows: superstore::timeseries::EventWindowConfig::default(),
+        compute_metrics: false,
     };
 
     Ok((config, output))
@@ -410,7 +416,9 @@ pub fn py_get_time_series(
     let final_output = output.unwrap_or(&cfg_output);
 
     // Use enhanced config-based generation
-    let data = get_time_series_with_config(&ts_config);
+    let data_with_metrics = get_time_series_with_config(&ts_config);
+    // Convert to basic TimeSeriesData for output functions
+    let data: TimeSeriesData = data_with_metrics.into();
 
     match final_output {
         "pandas" => create_timeseries_pandas(py, &data),

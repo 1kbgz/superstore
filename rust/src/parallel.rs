@@ -180,6 +180,13 @@ pub fn superstore_parallel(count: usize, seed: Option<u64>) -> Vec<SuperstoreRow
                     quantity: rng.gen_range(1..=100) * 10,
                     discount: (rng.gen::<f64>() * 100.0 * 100.0).round() / 100.0,
                     profit: (rng.gen::<f64>() * 1000.0 * 100.0).round() / 100.0,
+                    // Priority 4 fields (not enabled in parallel simple mode)
+                    bundle_id: None,
+                    payment_method: None,
+                    is_fraud: None,
+                    processing_fee: None,
+                    backorder_days: None,
+                    stock_status: None,
                 };
                 chunk.push(row);
             }

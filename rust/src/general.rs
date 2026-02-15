@@ -137,6 +137,195 @@ impl Default for CustomerConfig {
     }
 }
 
+// =============================================================================
+// Priority 4: Enhanced Superstore Features
+// =============================================================================
+
+/// Product bundle definition
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct ProductBundle {
+    pub name: String,
+    pub categories: Vec<String>,
+    pub discount_multiplier: f64,
+}
+
+/// Configuration for product bundling behavior
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct BundlingConfig {
+    pub enable: bool,
+    pub bundle_probability: f64,
+    pub bundles: Vec<ProductBundle>,
+}
+
+impl Default for BundlingConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            bundle_probability: 0.15,
+            bundles: vec![
+                ProductBundle {
+                    name: "Home Office".to_string(),
+                    categories: vec!["Technology".to_string(), "Office Supplies".to_string()],
+                    discount_multiplier: 0.85,
+                },
+                ProductBundle {
+                    name: "Entertainment Center".to_string(),
+                    categories: vec!["Technology".to_string(), "Furniture".to_string()],
+                    discount_multiplier: 0.88,
+                },
+                ProductBundle {
+                    name: "Back to School".to_string(),
+                    categories: vec!["Office Supplies".to_string(), "Technology".to_string()],
+                    discount_multiplier: 0.80,
+                },
+            ],
+        }
+    }
+}
+
+/// Regional product preference weights
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct RegionalPreference {
+    pub region: String,
+    pub category_weights: Vec<(String, f64)>,
+}
+
+/// Configuration for regional variations
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct RegionalConfig {
+    pub enable: bool,
+    pub preferences: Vec<RegionalPreference>,
+}
+
+impl Default for RegionalConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            preferences: vec![
+                RegionalPreference {
+                    region: "West".to_string(),
+                    category_weights: vec![
+                        ("Technology".to_string(), 1.4),
+                        ("Furniture".to_string(), 1.0),
+                        ("Office Supplies".to_string(), 0.8),
+                    ],
+                },
+                RegionalPreference {
+                    region: "East".to_string(),
+                    category_weights: vec![
+                        ("Technology".to_string(), 1.0),
+                        ("Furniture".to_string(), 1.2),
+                        ("Office Supplies".to_string(), 1.1),
+                    ],
+                },
+                RegionalPreference {
+                    region: "Central".to_string(),
+                    category_weights: vec![
+                        ("Technology".to_string(), 0.9),
+                        ("Furniture".to_string(), 1.3),
+                        ("Office Supplies".to_string(), 1.0),
+                    ],
+                },
+                RegionalPreference {
+                    region: "South".to_string(),
+                    category_weights: vec![
+                        ("Technology".to_string(), 1.1),
+                        ("Furniture".to_string(), 1.1),
+                        ("Office Supplies".to_string(), 1.0),
+                    ],
+                },
+            ],
+        }
+    }
+}
+
+/// Configuration for inventory effects
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct InventoryConfig {
+    pub enable: bool,
+    pub stock_out_probability: f64,
+    pub backorder_delay_days: i32,
+    pub low_stock_threshold: f64,
+    pub low_stock_price_premium: f64,
+}
+
+impl Default for InventoryConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            stock_out_probability: 0.05,
+            backorder_delay_days: 7,
+            low_stock_threshold: 0.2,
+            low_stock_price_premium: 1.05,
+        }
+    }
+}
+
+/// Payment method types with associated fraud rates
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub enum PaymentMethod {
+    CreditCard,
+    DebitCard,
+    PayPal,
+    GiftCard,
+    BankTransfer,
+    CashOnDelivery,
+}
+
+impl PaymentMethod {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            PaymentMethod::CreditCard => "Credit Card",
+            PaymentMethod::DebitCard => "Debit Card",
+            PaymentMethod::PayPal => "PayPal",
+            PaymentMethod::GiftCard => "Gift Card",
+            PaymentMethod::BankTransfer => "Bank Transfer",
+            PaymentMethod::CashOnDelivery => "Cash on Delivery",
+        }
+    }
+
+    pub fn fraud_rate(&self) -> f64 {
+        match self {
+            PaymentMethod::CreditCard => 0.02,
+            PaymentMethod::DebitCard => 0.015,
+            PaymentMethod::PayPal => 0.01,
+            PaymentMethod::GiftCard => 0.03,
+            PaymentMethod::BankTransfer => 0.005,
+            PaymentMethod::CashOnDelivery => 0.001,
+        }
+    }
+
+    pub fn processing_fee_rate(&self) -> f64 {
+        match self {
+            PaymentMethod::CreditCard => 0.029,
+            PaymentMethod::DebitCard => 0.021,
+            PaymentMethod::PayPal => 0.034,
+            PaymentMethod::GiftCard => 0.0,
+            PaymentMethod::BankTransfer => 0.005,
+            PaymentMethod::CashOnDelivery => 0.0,
+        }
+    }
+}
+
+// Payment method distribution weights
+const PAYMENT_METHOD_WEIGHTS: [f64; 6] = [0.40, 0.25, 0.15, 0.08, 0.07, 0.05];
+
+/// Configuration for payment methods
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct PaymentConfig {
+    pub enable: bool,
+    pub fraud_simulation: bool,
+}
+
+impl Default for PaymentConfig {
+    fn default() -> Self {
+        Self {
+            enable: false,
+            fraud_simulation: true,
+        }
+    }
+}
+
 /// Full superstore configuration
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SuperstoreConfig {
@@ -155,6 +344,11 @@ pub struct SuperstoreConfig {
     pub promotions: PromotionalConfig,
     pub customers: CustomerConfig,
     pub regions: Vec<String>,
+    // Priority 4 enhancements
+    pub bundling: BundlingConfig,
+    pub regional: RegionalConfig,
+    pub inventory: InventoryConfig,
+    pub payment: PaymentConfig,
 }
 
 impl Default for SuperstoreConfig {
@@ -175,12 +369,15 @@ impl Default for SuperstoreConfig {
             promotions: PromotionalConfig::default(),
             customers: CustomerConfig::default(),
             regions: vec![
-                "Region 1".to_string(),
-                "Region 2".to_string(),
-                "Region 3".to_string(),
-                "Region 4".to_string(),
-                "Region 5".to_string(),
+                "West".to_string(),
+                "East".to_string(),
+                "Central".to_string(),
+                "South".to_string(),
             ],
+            bundling: BundlingConfig::default(),
+            regional: RegionalConfig::default(),
+            inventory: InventoryConfig::default(),
+            payment: PaymentConfig::default(),
         }
     }
 }
@@ -222,6 +419,126 @@ fn apply_promotional_effects<R: Rng>(
     let elasticity_factor = 1.0 + rng.gen_range(-0.1..0.1) * config.price_elasticity.abs();
 
     ((base_quantity as f64) * discount_boost * elasticity_factor).round() as i32
+}
+
+// =============================================================================
+// Priority 4: Helper Functions
+// =============================================================================
+
+/// Generate a payment method based on weighted distribution
+fn generate_payment_method<R: Rng>(rng: &mut R) -> PaymentMethod {
+    let total: f64 = PAYMENT_METHOD_WEIGHTS.iter().sum();
+    let roll = rng.gen::<f64>() * total;
+    let mut cumulative = 0.0;
+
+    for (i, &weight) in PAYMENT_METHOD_WEIGHTS.iter().enumerate() {
+        cumulative += weight;
+        if roll < cumulative {
+            return match i {
+                0 => PaymentMethod::CreditCard,
+                1 => PaymentMethod::DebitCard,
+                2 => PaymentMethod::PayPal,
+                3 => PaymentMethod::GiftCard,
+                4 => PaymentMethod::BankTransfer,
+                _ => PaymentMethod::CashOnDelivery,
+            };
+        }
+    }
+    PaymentMethod::CreditCard
+}
+
+/// Check if this transaction is fraudulent based on payment method fraud rate
+fn check_fraud<R: Rng>(rng: &mut R, payment_method: &PaymentMethod) -> bool {
+    rng.gen::<f64>() < payment_method.fraud_rate()
+}
+
+/// Determine stock status and backorder days
+fn determine_stock_status<R: Rng>(
+    rng: &mut R,
+    config: &InventoryConfig,
+) -> (String, Option<i32>) {
+    if !config.enable {
+        return ("In Stock".to_string(), None);
+    }
+
+    let roll = rng.gen::<f64>();
+    
+    if roll < config.stock_out_probability {
+        // Item is out of stock, will be backordered
+        let delay = rng.gen_range(1..=config.backorder_delay_days);
+        ("Backorder".to_string(), Some(delay))
+    } else if roll < config.stock_out_probability + config.low_stock_threshold {
+        // Low stock but available
+        ("Low Stock".to_string(), None)
+    } else {
+        // Normal stock
+        ("In Stock".to_string(), None)
+    }
+}
+
+/// Apply regional preference to category selection - returns index of selected category
+fn apply_regional_preference<R: Rng>(
+    rng: &mut R,
+    region: &str,
+    categories: &[&str],
+    config: &RegionalConfig,
+) -> usize {
+    if !config.enable || categories.is_empty() {
+        return rng.gen_range(0..categories.len().max(1));
+    }
+
+    // Find preference for this region
+    let preference = config.preferences.iter().find(|p| p.region == region);
+
+    if let Some(pref) = preference {
+        // Build weighted list
+        let mut weights: Vec<f64> = Vec::with_capacity(categories.len());
+        
+        for &cat in categories {
+            let weight = pref
+                .category_weights
+                .iter()
+                .find(|(c, _)| c == cat)
+                .map(|(_, w)| *w)
+                .unwrap_or(1.0);
+            weights.push(weight);
+        }
+
+        // Select based on weights
+        let total_weight: f64 = weights.iter().sum();
+        let roll = rng.gen::<f64>() * total_weight;
+        let mut cumulative = 0.0;
+
+        for (idx, weight) in weights.iter().enumerate() {
+            cumulative += weight;
+            if roll < cumulative {
+                return idx;
+            }
+        }
+    }
+
+    rng.gen_range(0..categories.len().max(1))
+}
+
+/// Check if current order should be part of a bundle
+fn check_bundle<R: Rng>(
+    rng: &mut R,
+    config: &BundlingConfig,
+    order_id: &str,
+) -> Option<(String, f64)> {
+    if !config.enable {
+        return None;
+    }
+
+    if rng.gen::<f64>() < config.bundle_probability {
+        // Select a random bundle
+        if let Some(bundle) = config.bundles.choose(rng) {
+            // Create a unique bundle ID based on order
+            let bundle_id = format!("BDL-{}-{}", &order_id[..6], bundle.name.chars().take(3).collect::<String>().to_uppercase());
+            return Some((bundle_id, bundle.discount_multiplier));
+        }
+    }
+    None
 }
 
 /// Generate a customer ID with cohort behavior
@@ -525,6 +842,13 @@ pub struct SuperstoreRow {
     pub quantity: i32,
     pub discount: f64,
     pub profit: f64,
+    // Priority 4 enhancements
+    pub bundle_id: Option<String>,
+    pub payment_method: Option<String>,
+    pub is_fraud: Option<bool>,
+    pub processing_fee: Option<f64>,
+    pub backorder_days: Option<i32>,
+    pub stock_status: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -614,9 +938,18 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
 
     for (id, uniforms) in correlated_values.into_iter().enumerate() {
         let order_date = random_date_this_year(&mut rng);
-        let ship_date = random_date_between(&mut rng, order_date);
+        let mut ship_date = random_date_between(&mut rng, order_date);
 
-        let sector = *sectors.choose(&mut rng).unwrap();
+        // Choose region from config first (needed for regional preferences)
+        let region = config
+            .regions
+            .choose(&mut rng)
+            .unwrap_or(&config.regions[0])
+            .clone();
+
+        // Apply regional preference to sector selection
+        let sector_idx = apply_regional_preference(&mut rng, &region, &sectors, &config.regional);
+        let sector = sectors[sector_idx];
         let industries = US_SECTORS_MAP.get(sector).unwrap();
         let industry = *industries.choose(&mut rng).unwrap();
 
@@ -634,7 +967,36 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
         let item_status = generate_item_status(&mut rng, discount_factor);
 
         // Round to Costco-style price point based on item status
-        let item_price = round_to_price_point_with_status(sales_with_season, &item_status);
+        let mut item_price = round_to_price_point_with_status(sales_with_season, &item_status);
+
+        // Generate order ID early (needed for bundle ID)
+        let order_id = generate_ein(&mut rng);
+
+        // Check for product bundle
+        let (bundle_id, bundle_discount) = if config.bundling.enable {
+            if let Some((bid, disc)) = check_bundle(&mut rng, &config.bundling, &order_id) {
+                // Apply bundle discount to price
+                item_price *= disc;
+                (Some(bid), disc)
+            } else {
+                (None, 1.0)
+            }
+        } else {
+            (None, 1.0)
+        };
+
+        // Check inventory status
+        let (stock_status, backorder_days) = determine_stock_status(&mut rng, &config.inventory);
+        
+        // If backordered, adjust ship date
+        if let Some(delay) = backorder_days {
+            ship_date = ship_date + chrono::Duration::days(delay as i64);
+        }
+
+        // Apply inventory low stock premium
+        if config.inventory.enable && stock_status == "Low Stock" {
+            item_price *= config.inventory.low_stock_price_premium;
+        }
 
         // Quantity with promotional boost and item status effects
         let base_quantity = config.min_quantity as f64 + uniforms[1] * quantity_range;
@@ -662,6 +1024,20 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
         let final_sales = (item_price * vip_mult).round() as i32;
         let final_quantity = ((quantity as f64) * vip_mult.sqrt()).round() as i32;
 
+        // Payment method generation
+        let (payment_method, is_fraud, processing_fee) = if config.payment.enable {
+            let pm = generate_payment_method(&mut rng);
+            let fraud = if config.payment.fraud_simulation {
+                check_fraud(&mut rng, &pm)
+            } else {
+                false
+            };
+            let fee = (final_sales as f64) * pm.processing_fee_rate();
+            (Some(pm.as_str().to_string()), Some(fraud), Some((fee * 100.0).round() / 100.0))
+        } else {
+            (None, None, None)
+        };
+
         // Profit calculation with item status correlation
         // Sale/clearance items have reduced profit margins
         let base_profit = -500.0 + uniforms[3] * 3500.0;
@@ -670,18 +1046,15 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
         // Apply item status profit multiplier (regular=1.0, sale=0.4, clearance=0.1, returned=0.05)
         let status_adjusted_profit =
             (base_profit - discount_penalty) * item_status.profit_multiplier();
-        let profit = (status_adjusted_profit * seasonality_mult * 100.0).round() / 100.0;
-
-        // Choose region from config
-        let region = config
-            .regions
-            .choose(&mut rng)
-            .unwrap_or(&config.regions[0])
-            .clone();
+        // Apply bundle discount effect on profit
+        let bundle_adjusted_profit = status_adjusted_profit * bundle_discount;
+        // Deduct processing fee if applicable
+        let fee_adjusted_profit = bundle_adjusted_profit - processing_fee.unwrap_or(0.0);
+        let profit = (fee_adjusted_profit * seasonality_mult * 100.0).round() / 100.0;
 
         let row = SuperstoreRow {
             row_id: id as i32,
-            order_id: generate_ein(&mut rng),
+            order_id,
             order_date: order_date.format("%Y-%m-%d").to_string(),
             ship_date: ship_date.format("%Y-%m-%d").to_string(),
             ship_mode: SHIP_MODES.choose(&mut rng).unwrap().to_string(),
@@ -696,11 +1069,18 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
             category: sector.to_string(),
             sub_category: industry.to_string(),
             item_status: item_status.as_str().to_string(),
-            item_price,
+            item_price: (item_price * 100.0).round() / 100.0,
             sales: final_sales,
             quantity: final_quantity,
             discount,
             profit,
+            // Priority 4 fields
+            bundle_id,
+            payment_method,
+            is_fraud,
+            processing_fee,
+            backorder_days,
+            stock_status: if config.inventory.enable { Some(stock_status) } else { None },
         };
         data.push(row);
     }
