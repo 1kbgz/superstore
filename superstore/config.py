@@ -100,7 +100,7 @@ class WeatherConfig(BaseModel):
 
     # Basic parameters
     count: int = Field(default=1000, ge=1, description="Number of readings to generate")
-    output: OutputFormat = Field(default=OutputFormat.PANDAS, description="Output format")
+    output: OutputFormat = Field(default=OutputFormat.DICT, description="Output format")
     seed: int | None = Field(default=None, description="Random seed for reproducibility")
 
     # Temporal settings
@@ -236,7 +236,7 @@ class SuperstoreConfig(BaseModel):
 
     # Basic parameters
     count: int = Field(default=1000, ge=1, description="Number of rows to generate")
-    output: OutputFormat = Field(default=OutputFormat.PANDAS, description="Output format")
+    output: OutputFormat = Field(default=OutputFormat.DICT, description="Output format")
     seed: int | None = Field(default=None, description="Random seed for reproducibility")
     pool_size: int = Field(default=1000, ge=1, le=100000, description="Size of pre-generated data pools for performance")
 
@@ -298,7 +298,7 @@ class TimeseriesConfig(BaseModel):
     nper: int = Field(default=30, ge=1, description="Number of periods")
     ncol: int = Field(default=4, ge=1, le=26, description="Number of columns (max 26)")
     freq: Literal["B", "D", "W", "M"] = Field(default="B", description="Frequency: B=business, D=daily, W=weekly, M=monthly")
-    output: OutputFormat = Field(default=OutputFormat.PANDAS, description="Output format")
+    output: OutputFormat = Field(default=OutputFormat.DICT, description="Output format")
     seed: int | None = Field(default=None, description="Random seed for reproducibility")
 
     # Process parameters
@@ -365,7 +365,7 @@ class CrossfilterConfig(BaseModel):
     # Basic parameters
     n_machines: int = Field(default=10, ge=1, description="Number of machines")
     n_readings: int = Field(default=1000, ge=1, description="Number of usage readings per machine")
-    output: OutputFormat = Field(default=OutputFormat.PANDAS, description="Output format")
+    output: OutputFormat = Field(default=OutputFormat.DICT, description="Output format")
     seed: int | None = Field(default=None, description="Random seed for reproducibility")
 
     # Machine configuration
@@ -469,7 +469,7 @@ class LogsConfig(BaseModel):
     # Basic settings
     count: int = Field(default=1000, ge=1, description="Number of log entries to generate")
     output: OutputFormat = Field(
-        default=OutputFormat.PANDAS,
+        default=OutputFormat.DICT,
         description="Output format (pandas, polars, or dict)",
     )
     seed: int | None = Field(
@@ -647,7 +647,7 @@ class FinanceConfig(BaseModel):
         description="Number of assets (1 = single stock, >1 = correlated multi-asset)",
     )
     output: OutputFormat = Field(
-        default=OutputFormat.PANDAS,
+        default=OutputFormat.DICT,
         description="Output format (pandas, polars, or dict)",
     )
     seed: int | None = Field(

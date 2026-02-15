@@ -453,16 +453,13 @@ fn check_fraud<R: Rng>(rng: &mut R, payment_method: &PaymentMethod) -> bool {
 }
 
 /// Determine stock status and backorder days
-fn determine_stock_status<R: Rng>(
-    rng: &mut R,
-    config: &InventoryConfig,
-) -> (String, Option<i32>) {
+fn determine_stock_status<R: Rng>(rng: &mut R, config: &InventoryConfig) -> (String, Option<i32>) {
     if !config.enable {
         return ("In Stock".to_string(), None);
     }
 
     let roll = rng.gen::<f64>();
-    
+
     if roll < config.stock_out_probability {
         // Item is out of stock, will be backordered
         let delay = rng.gen_range(1..=config.backorder_delay_days);
@@ -493,7 +490,7 @@ fn apply_regional_preference<R: Rng>(
     if let Some(pref) = preference {
         // Build weighted list
         let mut weights: Vec<f64> = Vec::with_capacity(categories.len());
-        
+
         for &cat in categories {
             let weight = pref
                 .category_weights
@@ -534,7 +531,16 @@ fn check_bundle<R: Rng>(
         // Select a random bundle
         if let Some(bundle) = config.bundles.choose(rng) {
             // Create a unique bundle ID based on order
-            let bundle_id = format!("BDL-{}-{}", &order_id[..6], bundle.name.chars().take(3).collect::<String>().to_uppercase());
+            let bundle_id = format!(
+                "BDL-{}-{}",
+                &order_id[..6],
+                bundle
+                    .name
+                    .chars()
+                    .take(3)
+                    .collect::<String>()
+                    .to_uppercase()
+            );
             return Some((bundle_id, bundle.discount_multiplier));
         }
     }
@@ -987,7 +993,7 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
 
         // Check inventory status
         let (stock_status, backorder_days) = determine_stock_status(&mut rng, &config.inventory);
-        
+
         // If backordered, adjust ship date
         if let Some(delay) = backorder_days {
             ship_date = ship_date + chrono::Duration::days(delay as i64);
@@ -1033,7 +1039,11 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
                 false
             };
             let fee = (final_sales as f64) * pm.processing_fee_rate();
-            (Some(pm.as_str().to_string()), Some(fraud), Some((fee * 100.0).round() / 100.0))
+            (
+                Some(pm.as_str().to_string()),
+                Some(fraud),
+                Some((fee * 100.0).round() / 100.0),
+            )
         } else {
             (None, None, None)
         };
@@ -1080,7 +1090,11 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
             is_fraud,
             processing_fee,
             backorder_days,
-            stock_status: if config.inventory.enable { Some(stock_status) } else { None },
+            stock_status: if config.inventory.enable {
+                Some(stock_status)
+            } else {
+                None
+            },
         };
         data.push(row);
     }

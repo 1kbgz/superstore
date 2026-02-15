@@ -197,7 +197,7 @@ class TestSuperstoreConfig:
         from superstore import superstore
         from superstore.config import SuperstoreConfig
 
-        config = SuperstoreConfig(count=100, seed=42)
+        config = SuperstoreConfig(count=100, seed=42, output="pandas")
         df = superstore(config)
         assert isinstance(df, pd.DataFrame)
         assert len(df) == 100
@@ -229,7 +229,7 @@ class TestSuperstoreConfig:
         from superstore import superstore
         from superstore.config import SuperstoreConfig
 
-        config = SuperstoreConfig(count=100, seed=42)
+        config = SuperstoreConfig(count=100, seed=42, output="pandas")
         df1 = superstore(config)
         df2 = superstore(config)
         assert df1.equals(df2)
@@ -251,26 +251,26 @@ class TestSuperstoreConfig:
         from superstore.config import SuperstoreConfig
 
         # Test with default pool_size
-        config_default = SuperstoreConfig(count=100, seed=42)
+        config_default = SuperstoreConfig(count=100, seed=42, output="pandas")
         assert config_default.pool_size == 1000
 
         # Test with custom pool_size - smaller
-        config_small = SuperstoreConfig(count=100, seed=42, pool_size=50)
+        config_small = SuperstoreConfig(count=100, seed=42, pool_size=50, output="pandas")
         df_small = superstore(config_small)
         assert len(df_small) == 100
 
         # Test with custom pool_size - larger
-        config_large = SuperstoreConfig(count=500, seed=42, pool_size=5000)
+        config_large = SuperstoreConfig(count=500, seed=42, pool_size=5000, output="pandas")
         df_large = superstore(config_large)
         assert len(df_large) == 500
 
         # Verify pool_size affects variety of generated data
         # With small pool (50), there should be more duplicate cities
-        config_tiny = SuperstoreConfig(count=200, seed=42, pool_size=10)
+        config_tiny = SuperstoreConfig(count=200, seed=42, pool_size=10, output="pandas")
         df_tiny = superstore(config_tiny)
         unique_cities_tiny = df_tiny["City"].nunique()
 
-        config_big = SuperstoreConfig(count=200, seed=42, pool_size=1000)
+        config_big = SuperstoreConfig(count=200, seed=42, pool_size=1000, output="pandas")
         df_big = superstore(config_big)
         unique_cities_big = df_big["City"].nunique()
 
