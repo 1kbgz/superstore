@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="API" href="docs/src/api.html">
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Retail Data Generation" href="docs/src/retail.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
         <title>superstore v0.3.0</title>
@@ -197,7 +197,16 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
-<li class="toctree-l1"><a class="reference internal" href="docs/src/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/retail.html">Retail Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/timeseries.html">Time Series Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/weather.html">Weather Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/logs.html">Log Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/finance.html">Financial Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/telemetry.html">Telemetry &amp; IoT Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/distributions.html">Statistical Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/copulas.html">Correlation &amp; Copulas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/temporal.html">Temporal Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/api.html">API Reference</a></li>
 </ul>
 
 </div>
@@ -248,18 +257,82 @@
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>superstore is a Rust-powered Python library for generating realistic synthetic datasets. It provides:</p>
+<section id="data-generators">
+<h3>Data Generators<a class="headerlink" href="#data-generators" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Generator</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Use Cases</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong><a class="reference internal" href="docs/src/retail.html"><span class="std std-doc">Retail</span></a></strong></p></td>
+<td><p>Sales transactions, employees</p></td>
+<td><p>BI dashboards, forecasting</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong><a class="reference internal" href="docs/src/timeseries.html"><span class="std std-doc">Time Series</span></a></strong></p></td>
+<td><p>Financial-style series with regimes, jumps</p></td>
+<td><p>Quant research, backtesting</p></td>
+</tr>
+<tr class="row-even"><td><p><strong><a class="reference internal" href="docs/src/weather.html"><span class="std std-doc">Weather</span></a></strong></p></td>
+<td><p>Sensor data with seasonal/diurnal patterns</p></td>
+<td><p>IoT analytics, anomaly detection</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong><a class="reference internal" href="docs/src/logs.html"><span class="std std-doc">Logs</span></a></strong></p></td>
+<td><p>Web server &amp; application logs</p></td>
+<td><p>Observability, alerting</p></td>
+</tr>
+<tr class="row-even"><td><p><strong><a class="reference internal" href="docs/src/finance.html"><span class="std std-doc">Finance</span></a></strong></p></td>
+<td><p>Stock prices, OHLCV, options chains</p></td>
+<td><p>Trading systems, risk analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong><a class="reference internal" href="docs/src/telemetry.html"><span class="std std-doc">Telemetry</span></a></strong></p></td>
+<td><p>Machine metrics, anomalies, failures</p></td>
+<td><p>DevOps dashboards, ML training</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="statistical-tools">
+<h3>Statistical Tools<a class="headerlink" href="#statistical-tools" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tool</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Use Cases</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong><a class="reference internal" href="docs/src/distributions.html"><span class="std std-doc">Distributions</span></a></strong></p></td>
+<td><p>Sample from statistical distributions</p></td>
+<td><p>Simulation, Monte Carlo</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong><a class="reference internal" href="docs/src/copulas.html"><span class="std std-doc">Copulas</span></a></strong></p></td>
+<td><p>Correlated multivariate data</p></td>
+<td><p>Risk modeling, portfolio analysis</p></td>
+</tr>
+<tr class="row-even"><td><p><strong><a class="reference internal" href="docs/src/temporal.html"><span class="std std-doc">Temporal Models</span></a></strong></p></td>
+<td><p>AR, Markov chains, random walks</p></td>
+<td><p>Time series simulation</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p><strong>Retail Data</strong>: Generate superstore-style sales data with orders, products, and customers</p></li>
-<li><p><strong>Employee Data</strong>: Generate employee records with personal information</p></li>
-<li><p><strong>Time Series Data</strong>: Generate random walk time series for financial/metric simulation</p></li>
-<li><p><strong>Machine Metrics</strong>: Generate server/machine monitoring data with usage, status, and job information</p></li>
+<li><p><strong>Rust-powered</strong>: High-performance generation, 10-100x faster than pure Python</p></li>
+<li><p><strong>Flexible output</strong>: pandas DataFrame, polars DataFrame, or Python dicts</p></li>
+<li><p><strong>Configurable</strong>: Pydantic config classes for validated, structured configuration</p></li>
+<li><p><strong>Reproducible</strong>: Seed support for deterministic generation</p></li>
+<li><p><strong>Scalable</strong>: Streaming and parallel generation for large datasets</p></li>
 </ul>
-<p>All data generators are implemented in Rust for maximum performance and can output data as:</p>
-<ul class="simple">
-<li><p><strong>pandas DataFrame</strong> (default)</p></li>
-<li><p><strong>polars DataFrame</strong></p></li>
-<li><p><strong>Python dict/list</strong></p></li>
-</ul>
+</section>
 </section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
@@ -283,9 +356,6 @@
 
 <span class="c1"># Generate as list of dicts</span>
 <span class="n">records</span> <span class="o">=</span> <span class="n">superstore</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;dict&quot;</span><span class="p">)</span>
-
-<span class="c1"># Generate reproducible data with a seed</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">superstore</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -310,322 +380,6 @@
 </pre></div>
 </div>
 </section>
-<section id="api-reference">
-<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h2>
-<section id="retail-data-generation">
-<h3>Retail Data Generation<a class="headerlink" href="#retail-data-generation" title="Link to this heading">¶</a></h3>
-<section id="superstore-count-1000-output-pandas-seed-none">
-<h4><code class="docutils literal notranslate"><span class="pre">superstore(count=1000,</span> <span class="pre">output=&quot;pandas&quot;,</span> <span class="pre">seed=None)</span></code><a class="headerlink" href="#superstore-count-1000-output-pandas-seed-none" title="Link to this heading">¶</a></h4>
-<p>Generate synthetic superstore sales records.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (int, default=1000): Number of records to generate</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output</span></code> (str, default=”pandas”): Output format - “pandas”, “polars”, or “dict”</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (int, optional): Random seed for reproducible generation</p></li>
-</ul>
-<p><strong>Returns:</strong> DataFrame or list of dicts with columns:</p>
-<ul class="simple">
-<li><p>Row ID, Order ID, Order Date, Ship Date, Ship Mode</p></li>
-<li><p>Customer ID, Segment, Country, City, State, Postal Code, Region</p></li>
-<li><p>Product ID, Category, Sub-Category</p></li>
-<li><p>Sales, Quantity, Discount, Profit</p></li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">superstore</span>
-
-<span class="c1"># Pandas DataFrame</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">superstore</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
-
-<span class="c1"># Polars DataFrame</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">superstore</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;polars&quot;</span><span class="p">)</span>
-
-<span class="c1"># List of dicts</span>
-<span class="n">records</span> <span class="o">=</span> <span class="n">superstore</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;dict&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="employees-count-1000-output-pandas-seed-none">
-<h4><code class="docutils literal notranslate"><span class="pre">employees(count=1000,</span> <span class="pre">output=&quot;pandas&quot;,</span> <span class="pre">seed=None)</span></code><a class="headerlink" href="#employees-count-1000-output-pandas-seed-none" title="Link to this heading">¶</a></h4>
-<p>Generate synthetic employee records.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (int, default=1000): Number of employees to generate</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output</span></code> (str, default=”pandas”): Output format - “pandas”, “polars”, or “dict”</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (int, optional): Random seed for reproducible generation</p></li>
-</ul>
-<p><strong>Returns:</strong> DataFrame or list of dicts with columns:</p>
-<ul class="simple">
-<li><p>Row ID, Employee ID, First Name, Surname, Prefix, Suffix</p></li>
-<li><p>Phone Number, Email, SSN</p></li>
-<li><p>Street, City, Postal Code, Region, State, Country</p></li>
-<li><p>Start Date, Date of Birth</p></li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">employees</span>
-
-<span class="c1"># Generate 100 employees</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">employees</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="time-series-data-generation">
-<h3>Time Series Data Generation<a class="headerlink" href="#time-series-data-generation" title="Link to this heading">¶</a></h3>
-<section id="timeseries-nper-30-freq-b-ncol-4-output-pandas-seed-none">
-<h4><code class="docutils literal notranslate"><span class="pre">timeseries(nper=30,</span> <span class="pre">freq=&quot;B&quot;,</span> <span class="pre">ncol=4,</span> <span class="pre">output=&quot;pandas&quot;,</span> <span class="pre">seed=None)</span></code><a class="headerlink" href="#timeseries-nper-30-freq-b-ncol-4-output-pandas-seed-none" title="Link to this heading">¶</a></h4>
-<p>Generate a random walk time series with multiple columns.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">nper</span></code> (int, default=30): Number of periods</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">freq</span></code> (str, default=”B”): Frequency - “B” (business days), “D” (daily), “W” (weekly), “M” (monthly)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ncol</span></code> (int, default=4): Number of columns (named A, B, C, D, …)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output</span></code> (str, default=”pandas”): Output format - “pandas”, “polars”, or “dict”</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (int, optional): Random seed for reproducible generation</p></li>
-</ul>
-<p><strong>Returns:</strong> DataFrame with DatetimeIndex and random walk columns</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">timeseries</span>
-
-<span class="c1"># 30 business days, 4 columns</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">timeseries</span><span class="p">()</span>
-
-<span class="c1"># 100 daily periods, 6 columns</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">timeseries</span><span class="p">(</span><span class="n">nper</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-
-<span class="c1"># As polars DataFrame</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">timeseries</span><span class="p">(</span><span class="n">nper</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;polars&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="timeseriesdata-nper-30-freq-b-ncol-4-output-pandas-seed-none">
-<h4><code class="docutils literal notranslate"><span class="pre">timeseriesData(nper=30,</span> <span class="pre">freq=&quot;B&quot;,</span> <span class="pre">ncol=4,</span> <span class="pre">output=&quot;pandas&quot;,</span> <span class="pre">seed=None)</span></code><a class="headerlink" href="#timeseriesdata-nper-30-freq-b-ncol-4-output-pandas-seed-none" title="Link to this heading">¶</a></h4>
-<p>Generate multiple independent time series as a dict of Series/DataFrames.</p>
-<p><strong>Parameters:</strong> Same as <code class="docutils literal notranslate"><span class="pre">timeseries</span></code></p>
-<p><strong>Returns:</strong> Dict mapping column names (A, B, C, …) to pandas Series or polars DataFrames</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">timeseriesData</span>
-
-<span class="c1"># Dict of pandas Series</span>
-<span class="n">series_dict</span> <span class="o">=</span> <span class="n">timeseriesData</span><span class="p">()</span>
-
-<span class="c1"># Dict of polars DataFrames</span>
-<span class="n">series_dict</span> <span class="o">=</span> <span class="n">timeseriesData</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="s2">&quot;polars&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="weather-data-generation">
-<h3>Weather Data Generation<a class="headerlink" href="#weather-data-generation" title="Link to this heading">¶</a></h3>
-<section id="weather-count-1000-output-pandas-seed-none-kwargs-or-weather-config-weatherconfig">
-<h4><code class="docutils literal notranslate"><span class="pre">weather(count=1000,</span> <span class="pre">output=&quot;pandas&quot;,</span> <span class="pre">seed=None,</span> <span class="pre">**kwargs)</span></code> or <code class="docutils literal notranslate"><span class="pre">weather(config:</span> <span class="pre">WeatherConfig)</span></code><a class="headerlink" href="#weather-count-1000-output-pandas-seed-none-kwargs-or-weather-config-weatherconfig" title="Link to this heading">¶</a></h4>
-<p>Generate realistic weather sensor readings with day/night cycles, seasonal patterns, and weather events.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (int, default=1000): Number of readings to generate</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">output</span></code> (str, default=”pandas”): Output format - “pandas”, “polars”, or “dict”</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (int, optional): Random seed for reproducible generation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">climate_zone</span></code> (str, default=”temperate”): Climate zone - “tropical”, “subtropical”, “temperate”, “continental”, “polar”, “arid”, “mediterranean”</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">latitude</span></code> (float, default=40.0): Latitude for day/night calculations (-90 to 90)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (str, optional): Start date (YYYY-MM-DD)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">frequency_minutes</span></code> (int, default=15): Reading frequency in minutes</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">base_temp_celsius</span></code> (float, default=15.0): Annual average temperature</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">enable_weather_events</span></code> (bool, default=True): Enable weather event simulation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">outlier_probability</span></code> (float, default=0.01): Probability of sensor errors</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sensor_drift</span></code> (bool, default=False): Enable gradual sensor calibration drift</p></li>
-</ul>
-<p><strong>Returns:</strong> DataFrame or list of dicts with columns:</p>
-<ul class="simple">
-<li><p>timestamp, temperature_celsius, humidity_percent, precipitation_mm</p></li>
-<li><p>pressure_hpa, wind_speed_kmh, weather_event, is_outlier</p></li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">weather</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">superstore.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeatherConfig</span><span class="p">,</span> <span class="n">ClimateZone</span>
-
-<span class="c1"># Basic usage</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-
-<span class="c1"># With climate zone</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">climate_zone</span><span class="o">=</span><span class="s2">&quot;tropical&quot;</span><span class="p">,</span> <span class="n">latitude</span><span class="o">=-</span><span class="mf">5.0</span><span class="p">)</span>
-
-<span class="c1"># Using Pydantic config for full control</span>
-<span class="n">config</span> <span class="o">=</span> <span class="n">WeatherConfig</span><span class="p">(</span>
-    <span class="n">count</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
-    <span class="n">climate_zone</span><span class="o">=</span><span class="n">ClimateZone</span><span class="o">.</span><span class="n">MEDITERRANEAN</span><span class="p">,</span>
-    <span class="n">latitude</span><span class="o">=</span><span class="mf">35.0</span><span class="p">,</span>
-    <span class="n">base_temp_celsius</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span>
-    <span class="n">enable_weather_events</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">outlier_probability</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
-    <span class="n">sensor_drift</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="machine-metrics-generation">
-<h3>Machine Metrics Generation<a class="headerlink" href="#machine-metrics-generation" title="Link to this heading">¶</a></h3>
-<p>These functions simulate server/machine monitoring data for testing dashboards and alerting systems.</p>
-<section id="machines-count-100-json-false-seed-none">
-<h4><code class="docutils literal notranslate"><span class="pre">machines(count=100,</span> <span class="pre">json=False,</span> <span class="pre">seed=None)</span></code><a class="headerlink" href="#machines-count-100-json-false-seed-none" title="Link to this heading">¶</a></h4>
-<p>Generate a list of machine definitions.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">count</span></code> (int, default=100): Number of machines to generate</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> (bool, default=False): JSON format flag (reserved for future use)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (int, optional): Random seed for reproducible generation</p></li>
-</ul>
-<p><strong>Returns:</strong> List of machine dicts with: machine_id, kind (edge/core/worker), cores, region, zone</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">machines</span>
-
-<span class="c1"># Generate 50 machines</span>
-<span class="n">machine_list</span> <span class="o">=</span> <span class="n">machines</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="usage-machine-json-false-seed-none">
-<h4><code class="docutils literal notranslate"><span class="pre">usage(machine,</span> <span class="pre">json=False,</span> <span class="pre">seed=None)</span></code><a class="headerlink" href="#usage-machine-json-false-seed-none" title="Link to this heading">¶</a></h4>
-<p>Generate usage metrics for a machine.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">machine</span></code> (dict): Machine dict from <code class="docutils literal notranslate"><span class="pre">machines()</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> (bool, default=False): JSON format flag</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (int, optional): Random seed for reproducible generation</p></li>
-</ul>
-<p><strong>Returns:</strong> Dict with machine info plus: cpu, mem, free, network, disk (all 0-100 percentages)</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">machines</span><span class="p">,</span> <span class="n">usage</span>
-
-<span class="n">machine</span> <span class="o">=</span> <span class="n">machines</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">metrics</span> <span class="o">=</span> <span class="n">usage</span><span class="p">(</span><span class="n">machine</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="status-machine-json-false">
-<h4><code class="docutils literal notranslate"><span class="pre">status(machine,</span> <span class="pre">json=False)</span></code><a class="headerlink" href="#status-machine-json-false" title="Link to this heading">¶</a></h4>
-<p>Get status classification for a machine based on usage.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">machine</span></code> (dict): Usage dict from <code class="docutils literal notranslate"><span class="pre">usage()</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> (bool, default=False): JSON format flag</p></li>
-</ul>
-<p><strong>Returns:</strong> Dict with machine info plus: status (“idle”/”active”/”capacity”), last_update</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">machines</span><span class="p">,</span> <span class="n">usage</span><span class="p">,</span> <span class="n">status</span>
-
-<span class="n">machine</span> <span class="o">=</span> <span class="n">machines</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">metrics</span> <span class="o">=</span> <span class="n">usage</span><span class="p">(</span><span class="n">machine</span><span class="p">)</span>
-<span class="n">s</span> <span class="o">=</span> <span class="n">status</span><span class="p">(</span><span class="n">metrics</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">])</span>  <span class="c1"># &quot;idle&quot;, &quot;active&quot;, or &quot;capacity&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="jobs-machine-json-false-seed-none">
-<h4><code class="docutils literal notranslate"><span class="pre">jobs(machine,</span> <span class="pre">json=False,</span> <span class="pre">seed=None)</span></code><a class="headerlink" href="#jobs-machine-json-false-seed-none" title="Link to this heading">¶</a></h4>
-<p>Generate active jobs for a machine.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">machine</span></code> (dict): Machine dict</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">json</span></code> (bool, default=False): JSON format flag</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (int, optional): Random seed for reproducible generation</p></li>
-</ul>
-<p><strong>Returns:</strong> List of job dicts with: machine_id, job_id, name, units, start_time, end_time</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">machines</span><span class="p">,</span> <span class="n">jobs</span>
-
-<span class="n">machine</span> <span class="o">=</span> <span class="n">machines</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">active_jobs</span> <span class="o">=</span> <span class="n">jobs</span><span class="p">(</span><span class="n">machine</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="schema-constants">
-<h3>Schema Constants<a class="headerlink" href="#schema-constants" title="Link to this heading">¶</a></h3>
-<p>For type validation and schema definitions:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">MACHINE_SCHEMA</span><span class="p">,</span> <span class="n">USAGE_SCHEMA</span><span class="p">,</span> <span class="n">STATUS_SCHEMA</span><span class="p">,</span> <span class="n">JOBS_SCHEMA</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">MACHINE_SCHEMA</span><span class="p">)</span>
-<span class="c1"># {&#39;machine_id&#39;: &#39;string&#39;, &#39;kind&#39;: &#39;string&#39;, &#39;cores&#39;: &#39;integer&#39;, &#39;region&#39;: &#39;string&#39;, &#39;zone&#39;: &#39;string&#39;}</span>
-</pre></div>
-</div>
-</section>
-<section id="pydantic-configuration-classes">
-<h3>Pydantic Configuration Classes<a class="headerlink" href="#pydantic-configuration-classes" title="Link to this heading">¶</a></h3>
-<p>For complex configurations with validation, use Pydantic config classes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">weather</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">superstore.config</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">WeatherConfig</span><span class="p">,</span> <span class="n">ClimateZone</span><span class="p">,</span> <span class="n">OutputFormat</span><span class="p">,</span>
-    <span class="c1"># Future: SuperstoreConfig, TimeseriesConfig, CrossfilterConfig</span>
-<span class="p">)</span>
-
-<span class="c1"># WeatherConfig provides full control with validation</span>
-<span class="n">config</span> <span class="o">=</span> <span class="n">WeatherConfig</span><span class="p">(</span>
-    <span class="n">count</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
-    <span class="n">climate_zone</span><span class="o">=</span><span class="n">ClimateZone</span><span class="o">.</span><span class="n">TROPICAL</span><span class="p">,</span>
-    <span class="n">latitude</span><span class="o">=-</span><span class="mf">5.0</span><span class="p">,</span>
-    <span class="n">base_temp_celsius</span><span class="o">=</span><span class="mf">28.0</span><span class="p">,</span>
-    <span class="n">temp_daily_amplitude</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span>
-    <span class="n">temp_seasonal_amplitude</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-    <span class="n">humidity_temp_correlation</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">precipitation_probability</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
-    <span class="n">enable_weather_events</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">event_probability</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-    <span class="n">outlier_probability</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
-    <span class="n">sensor_drift</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">sensor_drift_rate</span><span class="o">=</span><span class="mf">0.002</span><span class="p">,</span>
-    <span class="n">output</span><span class="o">=</span><span class="n">OutputFormat</span><span class="o">.</span><span class="n">POLARS</span><span class="p">,</span>
-    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="c1"># Pass config directly to generator</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-
-<span class="c1"># Config classes validate parameters at construction time</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">bad_config</span> <span class="o">=</span> <span class="n">WeatherConfig</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="mf">200.0</span><span class="p">)</span>  <span class="c1"># Raises ValidationError</span>
-<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>  <span class="c1"># &quot;latitude must be between -90 and 90&quot;</span>
-</pre></div>
-</div>
-<p>Available enums:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">ClimateZone</span></code>: TROPICAL, SUBTROPICAL, TEMPERATE, CONTINENTAL, POLAR, ARID, MEDITERRANEAN</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Season</span></code>: SPRING, SUMMER, FALL, WINTER</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">WeatherEvent</span></code>: CLEAR, CLOUDY, RAIN, HEAVY_RAIN, SNOW, STORM, HEATWAVE, COLD_SNAP, FOG</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">OutputFormat</span></code>: PANDAS, POLARS, DICT</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">MachineType</span></code>: CORE, EDGE, WORKER</p></li>
-</ul>
-</section>
-</section>
-<section id="output-format-examples">
-<h2>Output Format Examples<a class="headerlink" href="#output-format-examples" title="Link to this heading">¶</a></h2>
-<section id="pandas-default">
-<h3>Pandas (default)<a class="headerlink" href="#pandas-default" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">superstore</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="go">   Row ID    Order ID  Order Date  ... Quantity Discount  Profit</span>
-<span class="go">0       0  83-4132135  2026-01-01  ...      400    98.81  607.21</span>
-<span class="go">1       1  91-2252552  2026-01-04  ...      780    50.27  696.44</span>
-<span class="go">2       2  12-5610121  2026-01-13  ...      810    20.56  291.17</span>
-</pre></div>
-</div>
-</section>
-<section id="polars">
-<h3>Polars<a class="headerlink" href="#polars" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">superstore</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;polars&quot;</span><span class="p">)</span>
-<span class="go">shape: (3, 19)</span>
-<span class="go">┌────────┬─────────────┬────────────┬───────────┬───┐</span>
-<span class="go">│ Row ID ┆ Order ID    ┆ Order Date ┆ Ship Date ┆ … │</span>
-<span class="go">│ ---    ┆ ---         ┆ ---        ┆ ---       ┆   │</span>
-<span class="go">│ i64    ┆ str         ┆ str        ┆ str       ┆   │</span>
-<span class="go">╞════════╪═════════════╪════════════╪═══════════╪═══╡</span>
-<span class="go">│ 0      ┆ 85-8228070  ┆ 2026-04-29 ┆ 2026-02-11┆ … │</span>
-<span class="go">│ 1      ┆ 58-5681064  ┆ 2026-04-11 ┆ 2026-02-11┆ … │</span>
-<span class="go">│ 2      ┆ 66-7505483  ┆ 2026-05-23 ┆ 2026-02-11┆ … │</span>
-<span class="go">└────────┴─────────────┴────────────┴───────────┴───┘</span>
-</pre></div>
-</div>
-</section>
-<section id="dict">
-<h3>Dict<a class="headerlink" href="#dict" title="Link to this heading">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">superstore</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;dict&quot;</span><span class="p">)</span>
-<span class="go">[{&#39;Row ID&#39;: 0, &#39;Order ID&#39;: &#39;52-3453664&#39;, &#39;Order Date&#39;: &#39;2026-10-04&#39;, ...},</span>
-<span class="go"> {&#39;Row ID&#39;: 1, &#39;Order ID&#39;: &#39;88-1851475&#39;, &#39;Order Date&#39;: &#39;2026-11-20&#39;, ...}]</span>
-</pre></div>
-</div>
-</section>
-</section>
 <section id="development">
 <h2>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h2>
 <section id="setup">
@@ -649,7 +403,7 @@ make<span class="w"> </span>build
 <section id="testing">
 <h3>Testing<a class="headerlink" href="#testing" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all tests</span>
-python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>superstore/tests<span class="w"> </span>-v
+make<span class="w"> </span><span class="nb">test</span>
 </pre></div>
 </div>
 </section>
@@ -689,12 +443,12 @@ make<span class="w"> </span>fix
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="docs/src/api.html">
+          <a class="next-page" href="docs/src/retail.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">API</div>
+                <div class="title">Retail Data Generation</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

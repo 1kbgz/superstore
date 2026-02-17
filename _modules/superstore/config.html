@@ -196,7 +196,16 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../docs/src/api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/retail.html">Retail Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/timeseries.html">Time Series Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/weather.html">Weather Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/logs.html">Log Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/finance.html">Financial Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/telemetry.html">Telemetry &amp; IoT Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/distributions.html">Statistical Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/copulas.html">Correlation &amp; Copulas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/temporal.html">Temporal Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/api.html">API Reference</a></li>
 </ul>
 
 </div>
@@ -257,6 +266,8 @@
     <span class="n">WINTER</span> <span class="o">=</span> <span class="s2">&quot;winter&quot;</span>
 
 
+<div class="viewcode-block" id="ClimateZone">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.ClimateZone">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ClimateZone</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Climate zone affecting weather patterns.&quot;&quot;&quot;</span>
 
@@ -266,7 +277,8 @@
     <span class="n">CONTINENTAL</span> <span class="o">=</span> <span class="s2">&quot;continental&quot;</span>
     <span class="n">POLAR</span> <span class="o">=</span> <span class="s2">&quot;polar&quot;</span>
     <span class="n">ARID</span> <span class="o">=</span> <span class="s2">&quot;arid&quot;</span>
-    <span class="n">MEDITERRANEAN</span> <span class="o">=</span> <span class="s2">&quot;mediterranean&quot;</span>
+    <span class="n">MEDITERRANEAN</span> <span class="o">=</span> <span class="s2">&quot;mediterranean&quot;</span></div>
+
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">WeatherEvent</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
@@ -291,23 +303,31 @@
     <span class="n">WORKER</span> <span class="o">=</span> <span class="s2">&quot;worker&quot;</span>
 
 
+<div class="viewcode-block" id="OutputFormat">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.OutputFormat">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OutputFormat</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Output format for generators.&quot;&quot;&quot;</span>
 
     <span class="n">PANDAS</span> <span class="o">=</span> <span class="s2">&quot;pandas&quot;</span>
     <span class="n">POLARS</span> <span class="o">=</span> <span class="s2">&quot;polars&quot;</span>
-    <span class="n">DICT</span> <span class="o">=</span> <span class="s2">&quot;dict&quot;</span>
+    <span class="n">DICT</span> <span class="o">=</span> <span class="s2">&quot;dict&quot;</span></div>
 
 
+
+<div class="viewcode-block" id="LogFormat">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.LogFormat">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LogFormat</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Log output format styles.&quot;&quot;&quot;</span>
 
     <span class="n">COMBINED</span> <span class="o">=</span> <span class="s2">&quot;combined&quot;</span>  <span class="c1"># Apache Combined Log Format</span>
     <span class="n">COMMON</span> <span class="o">=</span> <span class="s2">&quot;common&quot;</span>  <span class="c1"># Apache Common Log Format</span>
     <span class="n">JSON</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span>  <span class="c1"># JSON structured logs</span>
-    <span class="n">APPLICATION</span> <span class="o">=</span> <span class="s2">&quot;application&quot;</span>  <span class="c1"># Application event logs</span>
+    <span class="n">APPLICATION</span> <span class="o">=</span> <span class="s2">&quot;application&quot;</span>  <span class="c1"># Application event logs</span></div>
 
 
+
+<div class="viewcode-block" id="LogLevel">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.LogLevel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LogLevel</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Log severity levels.&quot;&quot;&quot;</span>
 
@@ -315,7 +335,8 @@
     <span class="n">DEBUG</span> <span class="o">=</span> <span class="s2">&quot;debug&quot;</span>
     <span class="n">INFO</span> <span class="o">=</span> <span class="s2">&quot;info&quot;</span>
     <span class="n">WARN</span> <span class="o">=</span> <span class="s2">&quot;warn&quot;</span>
-    <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span>
+    <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span></div>
+
 
 
 <span class="c1"># =============================================================================</span>
