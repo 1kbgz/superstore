@@ -958,6 +958,256 @@
 
 
 <span class="c1"># =============================================================================</span>
+<span class="c1"># E-commerce Generator Configuration</span>
+<span class="c1"># =============================================================================</span>
+
+
+<div class="viewcode-block" id="SessionConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.SessionConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SessionConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for session behavior in e-commerce.&quot;&quot;&quot;</span>
+
+    <span class="n">avg_pages_per_session</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average pages viewed per session&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">cart_add_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of adding item to cart given product view&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">checkout_start_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.40</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of starting checkout given cart view&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">purchase_completion_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.65</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of completing purchase given checkout start&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">avg_session_duration_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average session duration in seconds&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">enable_bounces</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable session bounces (single-page visits)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">bounce_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Bounce rate (probability of immediate exit)&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CartConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.CartConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CartConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for cart behavior.&quot;&quot;&quot;</span>
+
+    <span class="n">avg_items_per_cart</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average items per cart&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">remove_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of removing an item from cart&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">quantity_update_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of updating quantity&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">max_items</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum items per cart&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">enable_abandonment</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable cart abandonment simulation&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">abandonment_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.70</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cart abandonment rate&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CatalogConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.CatalogConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CatalogConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for product catalog.&quot;&quot;&quot;</span>
+
+    <span class="n">num_products</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of unique products&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">min_price</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Minimum product price&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">max_price</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum product price&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">lognormal_prices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Price follows log-normal distribution (realistic skew)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">categories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;Electronics&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Clothing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Home &amp; Garden&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Sports&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Beauty&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Books&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Toys&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Food&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Product categories&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RfmConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.RfmConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RfmConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for RFM (Recency, Frequency, Monetary) analysis.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable RFM metrics calculation&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">recency_window_days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">365</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Days to look back for recency&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">num_buckets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of RFM score buckets (typically 5)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">pareto_shape</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Pareto distribution shape for customer value (80/20 rule)&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FunnelConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.FunnelConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FunnelConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for conversion funnel.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable funnel stage tracking&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">stages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;visit&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;view_product&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;add_to_cart&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;checkout&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;purchase&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Funnel stages&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">time_of_day_effects</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time-of-day effects on conversions&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">day_of_week_effects</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Day-of-week effects on conversions&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="EcommerceConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.EcommerceConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EcommerceConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for e-commerce data generation.</span>
+
+<span class="sd">    Generates realistic e-commerce data including:</span>
+<span class="sd">    - User sessions via MarkovChain state machines</span>
+<span class="sd">    - Shopping cart events with abandonment patterns</span>
+<span class="sd">    - Customer RFM (Recency, Frequency, Monetary) metrics</span>
+<span class="sd">    - Product catalog with categories and pricing</span>
+<span class="sd">    - Conversion funnels with realistic drop-off rates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sessions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of sessions to generate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">customers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of unique customers&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Random seed for reproducibility&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start date for data generation (YYYY-MM-DD)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of days to generate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">SessionConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">SessionConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Session behavior configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">cart</span><span class="p">:</span> <span class="n">CartConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">CartConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cart behavior configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">catalog</span><span class="p">:</span> <span class="n">CatalogConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">CatalogConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Product catalog configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">rfm</span><span class="p">:</span> <span class="n">RfmConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">RfmConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RFM analysis configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">funnel</span><span class="p">:</span> <span class="n">FunnelConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">FunnelConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Conversion funnel configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;use_enum_values&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
 <span class="c1"># Convenience factory functions</span>
 <span class="c1"># =============================================================================</span>
 
@@ -990,6 +1240,11 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">finance_config</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FinanceConfig</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a finance configuration with the given parameters.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">FinanceConfig</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ecommerce_config</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EcommerceConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an e-commerce configuration with the given parameters.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EcommerceConfig</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>

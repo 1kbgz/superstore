@@ -17,6 +17,8 @@ docs/src/logs.md
 
 docs/src/finance.md
 
+docs/src/ecommerce.md
+
 docs/src/telemetry.md
 
 docs/src/distributions.md

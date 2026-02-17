@@ -9,6 +9,7 @@ For detailed guides with examples, see:
 - [Weather](weather.md) - `weather()`
 - [Logs](logs.md) - `logs()`, `app_logs()`
 - [Finance](finance.md) - `stock_prices()`, `options_chain()`, `finance()`
+- [E-commerce](ecommerce.md) - `ecommerce_data()`, `ecommerce_sessions()`, `ecommerce_products()`
 - [Telemetry](telemetry.md) - `telemetry()`, crossfilter functions
 - [Distributions](distributions.md) - `sample*()` functions
 - [Copulas](copulas.md) - copula classes
@@ -33,6 +34,9 @@ For detailed guides with examples, see:
 .. autofunction:: superstore.usage
 .. autofunction:: superstore.status
 .. autofunction:: superstore.jobs
+.. autofunction:: superstore.ecommerce_sessions
+.. autofunction:: superstore.ecommerce_products
+.. autofunction:: superstore.ecommerce_data
 ```
 
 ---
@@ -144,6 +148,24 @@ For detailed guides with examples, see:
    :members:
 
 .. autopydantic_model:: superstore.CrossfilterConfig
+   :members:
+
+.. autopydantic_model:: superstore.EcommerceConfig
+   :members:
+
+.. autopydantic_model:: superstore.SessionConfig
+   :members:
+
+.. autopydantic_model:: superstore.CartConfig
+   :members:
+
+.. autopydantic_model:: superstore.CatalogConfig
+   :members:
+
+.. autopydantic_model:: superstore.RfmConfig
+   :members:
+
+.. autopydantic_model:: superstore.FunnelConfig
    :members:
 ```
 

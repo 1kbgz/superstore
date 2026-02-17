@@ -1,0 +1,677 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="Telemetry &amp; IoT Data Generation" href="telemetry.html"><link rel="prev" title="Financial Data Generation" href="finance.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>&lt;no title&gt; - superstore v0.3.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=890fd012" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">superstore <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.3.0</code></div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text">superstore <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.3.0</code></span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="retail.html">Retail Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries.html">Time Series Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="weather.html">Weather Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logs.html">Log Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="finance.html">Financial Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="telemetry.html">Telemetry &amp; IoT Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distributions.html">Statistical Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="copulas.html">Correlation &amp; Copulas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="temporal.html">Temporal Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../_sources/docs/src/ecommerce.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gh"># E-commerce Data Generation</span>
+
+Generate synthetic e-commerce data with realistic user sessions, shopping carts, orders, and customer RFM metrics.
+
+<span class="gu">## Overview</span>
+
+The e-commerce generators create data suitable for:
+
+<span class="k">-</span><span class="w"> </span>Conversion funnel analysis
+<span class="k">-</span><span class="w"> </span>Customer segmentation (RFM)
+<span class="k">-</span><span class="w"> </span>Cart abandonment studies
+<span class="k">-</span><span class="w"> </span>Session behavior analytics
+<span class="k">-</span><span class="w"> </span>A/B testing simulations
+
+<span class="gu">## Quick Start</span>
+
+<span class="sb">```python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">ecommerce_data</span><span class="p">,</span> <span class="n">EcommerceConfig</span>
+
+<span class="c1"># Generate complete e-commerce dataset</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ecommerce_data</span><span class="p">()</span>
+
+<span class="c1"># Access individual tables</span>
+<span class="n">sessions_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sessions&quot;</span><span class="p">]</span>
+<span class="n">products_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;products&quot;</span><span class="p">]</span>
+<span class="n">cart_events_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;cart_events&quot;</span><span class="p">]</span>
+<span class="n">orders_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;orders&quot;</span><span class="p">]</span>
+<span class="n">customers_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;customers&quot;</span><span class="p">]</span>
+<span class="sb">```</span>
+
+---
+
+<span class="gu">## Session Data</span>
+
+The <span class="sb">`ecommerce_sessions()`</span> function generates user session records with MarkovChain-based page navigation.
+
+<span class="gu">### Basic Usage</span>
+
+<span class="sb">```python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">ecommerce_sessions</span>
+
+<span class="c1"># Generate 1000 sessions</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">ecommerce_sessions</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="sb">```</span>
+
+<span class="gu">### Output Schema</span>
+
+| Column | Type | Description |
+|--------|------|-------------|
+| <span class="sb">`session_id`</span> | str | Unique session identifier |
+| <span class="sb">`user_id`</span> | str | User identifier |
+| <span class="sb">`start_time`</span> | datetime | Session start timestamp |
+| <span class="sb">`end_time`</span> | datetime | Session end timestamp |
+| <span class="sb">`duration_seconds`</span> | int | Total session duration |
+| <span class="sb">`device_type`</span> | str | Device type (desktop, mobile, tablet) |
+| <span class="sb">`browser`</span> | str | Browser name |
+| <span class="sb">`traffic_source`</span> | str | Traffic source (organic, paid_search, direct, social, email, referral, affiliate) |
+| <span class="sb">`landing_page`</span> | str | First page viewed |
+| <span class="sb">`pages_viewed`</span> | int | Number of pages viewed |
+| <span class="sb">`bounced`</span> | bool | Whether session was a bounce (single page) |
+| <span class="sb">`converted`</span> | bool | Whether session resulted in purchase |
+| <span class="sb">`total_value`</span> | float | Total purchase value (0 if not converted) |
+
+<span class="gu">### MarkovChain Session States</span>
+
+Sessions navigate through states using a configurable transition matrix:
+
+<span class="sb">```</span>
+<span class="sb">landing → browse → view_product → add_to_cart → view_cart → checkout_start → checkout_payment → purchase</span>
+<span class="sb">                 ↘              ↘              ↘           ↘                ↘</span>
+<span class="sb">                  exit           exit           exit         exit             exit</span>
+<span class="sb">```</span>
+
+---
+
+<span class="gu">## Product Catalog</span>
+
+The <span class="sb">`ecommerce_products()`</span> function generates a product catalog with realistic pricing.
+
+<span class="gu">### Basic Usage</span>
+
+<span class="sb">```python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">ecommerce_products</span>
+
+<span class="c1"># Generate 500 products</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">ecommerce_products</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="sb">```</span>
+
+<span class="gu">### Output Schema</span>
+
+| Column | Type | Description |
+|--------|------|-------------|
+| <span class="sb">`product_id`</span> | str | Unique product identifier |
+| <span class="sb">`name`</span> | str | Product name |
+| <span class="sb">`category`</span> | str | Product category |
+| <span class="sb">`subcategory`</span> | str | Product subcategory |
+| <span class="sb">`price`</span> | float | Product price (log-normal distribution) |
+| <span class="sb">`rating`</span> | float | Average rating (1.0-5.0) |
+| <span class="sb">`review_count`</span> | int | Number of reviews |
+| <span class="sb">`in_stock`</span> | bool | Stock availability |
+
+---
+
+<span class="gu">## Cart Events</span>
+
+Cart events track user interactions with shopping carts.
+
+<span class="gu">### Output Schema</span>
+
+| Column | Type | Description |
+|--------|------|-------------|
+| <span class="sb">`event_id`</span> | str | Unique event identifier |
+| <span class="sb">`session_id`</span> | str | Associated session |
+| <span class="sb">`user_id`</span> | str | User identifier |
+| <span class="sb">`timestamp`</span> | datetime | Event timestamp |
+| <span class="sb">`event_type`</span> | str | Event type (add, remove, update_quantity) |
+| <span class="sb">`product_id`</span> | str | Product identifier |
+| <span class="sb">`quantity`</span> | int | Item quantity |
+| <span class="sb">`unit_price`</span> | float | Price per unit |
+| <span class="sb">`total_price`</span> | float | Total line price |
+
+---
+
+<span class="gu">## Orders</span>
+
+Completed purchase orders.
+
+<span class="gu">### Output Schema</span>
+
+| Column | Type | Description |
+|--------|------|-------------|
+| <span class="sb">`order_id`</span> | str | Unique order identifier |
+| <span class="sb">`user_id`</span> | str | Customer identifier |
+| <span class="sb">`session_id`</span> | str | Originating session |
+| <span class="sb">`order_time`</span> | datetime | Order timestamp |
+| <span class="sb">`total_items`</span> | int | Number of items |
+| <span class="sb">`subtotal`</span> | float | Subtotal before tax/shipping |
+| <span class="sb">`discount`</span> | float | Discount amount |
+| <span class="sb">`tax`</span> | float | Tax amount |
+| <span class="sb">`shipping`</span> | float | Shipping cost |
+| <span class="sb">`total`</span> | float | Final order total |
+| <span class="sb">`payment_method`</span> | str | Payment method (credit_card, paypal, apple_pay, etc.) |
+| <span class="sb">`status`</span> | str | Order status (completed, processing, shipped) |
+
+---
+
+<span class="gu">## Customers with RFM Metrics</span>
+
+Customer records include RFM (Recency, Frequency, Monetary) segmentation.
+
+<span class="gu">### Output Schema</span>
+
+| Column | Type | Description |
+|--------|------|-------------|
+| <span class="sb">`customer_id`</span> | str | Unique customer identifier |
+| <span class="sb">`email`</span> | str | Customer email |
+| <span class="sb">`first_order_date`</span> | date | First purchase date |
+| <span class="sb">`last_order_date`</span> | date | Most recent purchase date |
+| <span class="sb">`total_orders`</span> | int | Lifetime order count |
+| <span class="sb">`total_spent`</span> | float | Lifetime spend |
+| <span class="sb">`avg_order_value`</span> | float | Average order value |
+| <span class="sb">`rfm_recency`</span> | int | Recency score (1-5) |
+| <span class="sb">`rfm_frequency`</span> | int | Frequency score (1-5) |
+| <span class="sb">`rfm_monetary`</span> | float | Monetary value |
+| <span class="sb">`rfm_score`</span> | str | Combined RFM score (e.g., &quot;544&quot;) |
+| <span class="sb">`rfm_segment`</span> | str | Customer segment label |
+
+<span class="gu">### RFM Segments</span>
+
+| Segment | Description |
+|---------|-------------|
+| Champions | High recency, frequency, and monetary |
+| Loyal Customers | High frequency and monetary |
+| Potential Loyalists | Recent customers with medium frequency |
+| New Customers | Very recent, low frequency |
+| At Risk | Previously good customers, declining |
+| Need Attention | Below average across metrics |
+| Hibernating | Low activity, long time since purchase |
+| Lost | No recent activity, low value |
+
+---
+
+<span class="gu">## Configuration</span>
+
+Use <span class="sb">`EcommerceConfig`</span> for detailed control:
+
+<span class="sb">```python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">ecommerce_data</span><span class="p">,</span> <span class="n">EcommerceConfig</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
+    <span class="n">sessions</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>    <span class="c1"># Number of sessions</span>
+    <span class="n">customers</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>    <span class="c1"># Number of unique customers</span>
+    <span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>           <span class="c1"># Time span in days</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>           <span class="c1"># Reproducibility</span>
+<span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ecommerce_data</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+<span class="sb">```</span>
+
+<span class="gu">### Session Configuration</span>
+
+Control user session behavior:
+
+<span class="sb">```python</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
+    <span class="n">sessions</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+    <span class="n">session</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;avg_pages_per_session&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+        <span class="s2">&quot;cart_add_probability&quot;</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span>
+        <span class="s2">&quot;checkout_start_probability&quot;</span><span class="p">:</span> <span class="mf">0.40</span><span class="p">,</span>
+        <span class="s2">&quot;purchase_completion_probability&quot;</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">,</span>
+        <span class="s2">&quot;avg_session_duration_seconds&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="s2">&quot;enable_bounces&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;bounce_rate&quot;</span><span class="p">:</span> <span class="mf">0.35</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="sb">```</span>
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| <span class="sb">`avg_pages_per_session`</span> | <span class="sb">`5.0`</span> | Average pages viewed |
+| <span class="sb">`cart_add_probability`</span> | <span class="sb">`0.15`</span> | P(add to cart \| view product) |
+| <span class="sb">`checkout_start_probability`</span> | <span class="sb">`0.40`</span> | P(start checkout \| view cart) |
+| <span class="sb">`purchase_completion_probability`</span> | <span class="sb">`0.65`</span> | P(purchase \| checkout start) |
+| <span class="sb">`avg_session_duration_seconds`</span> | <span class="sb">`300`</span> | Average session length |
+| <span class="sb">`enable_bounces`</span> | <span class="sb">`True`</span> | Enable single-page bounces |
+| <span class="sb">`bounce_rate`</span> | <span class="sb">`0.35`</span> | Bounce probability |
+
+<span class="gu">### Cart Configuration</span>
+
+Configure cart behavior and abandonment:
+
+<span class="sb">```python</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
+    <span class="n">cart</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;avg_items_per_cart&quot;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
+        <span class="s2">&quot;remove_probability&quot;</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span>
+        <span class="s2">&quot;quantity_update_probability&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+        <span class="s2">&quot;max_items&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s2">&quot;enable_abandonment&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;abandonment_rate&quot;</span><span class="p">:</span> <span class="mf">0.70</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="sb">```</span>
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| <span class="sb">`avg_items_per_cart`</span> | <span class="sb">`2.5`</span> | Average items added |
+| <span class="sb">`remove_probability`</span> | <span class="sb">`0.10`</span> | P(remove item) |
+| <span class="sb">`quantity_update_probability`</span> | <span class="sb">`0.05`</span> | P(update quantity) |
+| <span class="sb">`max_items`</span> | <span class="sb">`20`</span> | Maximum cart size |
+| <span class="sb">`enable_abandonment`</span> | <span class="sb">`True`</span> | Enable cart abandonment |
+| <span class="sb">`abandonment_rate`</span> | <span class="sb">`0.70`</span> | Cart abandonment rate |
+
+<span class="gu">### Catalog Configuration</span>
+
+Configure the product catalog:
+
+<span class="sb">```python</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
+    <span class="n">catalog</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;num_products&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+        <span class="s2">&quot;min_price&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+        <span class="s2">&quot;max_price&quot;</span><span class="p">:</span> <span class="mf">1000.0</span><span class="p">,</span>
+        <span class="s2">&quot;lognormal_prices&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;categories&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Electronics&quot;</span><span class="p">,</span> <span class="s2">&quot;Clothing&quot;</span><span class="p">,</span> <span class="s2">&quot;Home&quot;</span><span class="p">,</span> <span class="s2">&quot;Sports&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="sb">```</span>
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| <span class="sb">`num_products`</span> | <span class="sb">`500`</span> | Number of products |
+| <span class="sb">`min_price`</span> | <span class="sb">`5.0`</span> | Minimum product price |
+| <span class="sb">`max_price`</span> | <span class="sb">`1000.0`</span> | Maximum product price |
+| <span class="sb">`lognormal_prices`</span> | <span class="sb">`True`</span> | Use log-normal price distribution |
+| <span class="sb">`categories`</span> | <span class="sb">`[...]`</span> | Product categories |
+
+<span class="gu">### RFM Configuration</span>
+
+Configure RFM analysis parameters:
+
+<span class="sb">```python</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
+    <span class="n">rfm</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;enable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;recency_window_days&quot;</span><span class="p">:</span> <span class="mi">365</span><span class="p">,</span>
+        <span class="s2">&quot;num_buckets&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;pareto_shape&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="sb">```</span>
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| <span class="sb">`enable`</span> | <span class="sb">`True`</span> | Calculate RFM metrics |
+| <span class="sb">`recency_window_days`</span> | <span class="sb">`365`</span> | Recency lookback period |
+| <span class="sb">`num_buckets`</span> | <span class="sb">`5`</span> | Number of RFM score buckets |
+| <span class="sb">`pareto_shape`</span> | <span class="sb">`1.5`</span> | Shape parameter for 80/20 distribution |
+
+<span class="gu">### Funnel Configuration</span>
+
+Configure conversion funnel tracking:
+
+<span class="sb">```python</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
+    <span class="n">funnel</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;enable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;stages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;visit&quot;</span><span class="p">,</span> <span class="s2">&quot;view_product&quot;</span><span class="p">,</span> <span class="s2">&quot;add_to_cart&quot;</span><span class="p">,</span> <span class="s2">&quot;checkout&quot;</span><span class="p">,</span> <span class="s2">&quot;purchase&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;time_of_day_effects&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;day_of_week_effects&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="sb">```</span>
+
+---
+
+<span class="gu">## Complete Example</span>
+
+<span class="sb">```python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">ecommerce_data</span><span class="p">,</span> <span class="n">EcommerceConfig</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
+    <span class="n">sessions</span><span class="o">=</span><span class="mi">20000</span><span class="p">,</span>
+    <span class="n">customers</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
+    <span class="n">days</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">session</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;avg_pages_per_session&quot;</span><span class="p">:</span> <span class="mf">6.0</span><span class="p">,</span>
+        <span class="s2">&quot;bounce_rate&quot;</span><span class="p">:</span> <span class="mf">0.30</span><span class="p">,</span>
+        <span class="s2">&quot;purchase_completion_probability&quot;</span><span class="p">:</span> <span class="mf">0.70</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">cart</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;abandonment_rate&quot;</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">,</span>
+        <span class="s2">&quot;avg_items_per_cart&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">catalog</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;num_products&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="s2">&quot;categories&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Electronics&quot;</span><span class="p">,</span> <span class="s2">&quot;Fashion&quot;</span><span class="p">,</span> <span class="s2">&quot;Home&quot;</span><span class="p">,</span> <span class="s2">&quot;Beauty&quot;</span><span class="p">,</span> <span class="s2">&quot;Sports&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="n">rfm</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;num_buckets&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">&quot;pareto_shape&quot;</span><span class="p">:</span> <span class="mf">1.8</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">ecommerce_data</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
+
+<span class="c1"># Analyze conversion rates</span>
+<span class="n">sessions</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sessions&quot;</span><span class="p">]</span>
+<span class="n">conversion_rate</span> <span class="o">=</span> <span class="n">sessions</span><span class="p">[</span><span class="s2">&quot;converted&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Conversion rate: </span><span class="si">{</span><span class="n">conversion_rate</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Segment customers by RFM</span>
+<span class="n">customers</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;customers&quot;</span><span class="p">]</span>
+<span class="n">segment_counts</span> <span class="o">=</span> <span class="n">customers</span><span class="p">[</span><span class="s2">&quot;rfm_segment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">segment_counts</span><span class="p">)</span>
+<span class="sb">```</span>
+
+---
+
+<span class="gu">## API Reference</span>
+
+See the full API documentation:
+
+<span class="k">-</span><span class="w"> </span>[<span class="nt">ecommerce_sessions()</span>](<span class="na">api.md</span>)
+<span class="k">-</span><span class="w"> </span>[<span class="nt">ecommerce_products()</span>](<span class="na">api.md</span>)
+<span class="k">-</span><span class="w"> </span>[<span class="nt">ecommerce_data()</span>](<span class="na">api.md</span>)
+<span class="k">-</span><span class="w"> </span>[<span class="nt">EcommerceConfig</span>](<span class="na">api.md</span>)
+</pre></div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="telemetry.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Telemetry &amp; IoT Data Generation</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="finance.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Financial Data Generation</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; the superstore authors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=e259d695"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/custom.js?v=956e5d78"></script>
+    </body>
+</html>
