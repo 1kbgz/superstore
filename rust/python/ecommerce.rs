@@ -743,7 +743,7 @@ pub fn ecommerce_data(
     py: Python<'_>,
     config: Option<&Bound<'_, PyDict>>,
     output: &str,
-) -> PyResult<PyObject> {
+) -> PyResult<Py<PyAny>> {
     let cfg = match config {
         Some(d) => parse_ecommerce_config(d),
         None => EcommerceConfig::default(),
