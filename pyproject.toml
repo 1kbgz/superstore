@@ -3,7 +3,7 @@ requires = [
     "hatchling",
     "hatch-rs>=0.1.4",
 ]
-build-backend="hatchling.build"
+build-backend = "hatchling.build"
 
 [project]
 name = "superstore"
@@ -40,12 +40,12 @@ develop = [
     "asv>=0.6",
     "build",
     "bump-my-version",
-    "check-manifest",
+    "check-dist",
     "cibuildwheel",
-    "codespell>=2.4,<2.5",
+    "codespell",
     "hatch-rs",
     "hatchling",
-    "mdformat>=0.7.22,<1.1",
+    "mdformat",
     "mdformat-tables>=1",
     "mypy>=1.0",
     "pytest",
@@ -93,19 +93,6 @@ replace = 'version = "{new_version}"'
 filename = "rust/Cargo.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
-
-[tool.check-manifest]
-ignore = [
-    ".copier-answers.yaml",
-    "asv.conf.json",
-    "Cargo.toml",
-    "Cargo.lock",
-    "Makefile",
-    "docs/**/*",
-    "rust/**/*",
-    "src/**/*",
-    "target/**/*",
-]
 
 [tool.cibuildwheel]
 build = "cp310-*"
@@ -163,14 +150,12 @@ abi3 = true
 [tool.hatch.build.targets.sdist]
 packages = [
     "superstore",
-]
-include = [
-    "Cargo.lock",
-    "Cargo.toml",
     "rust",
-    "src",
+    "Cargo.toml",
+    "Cargo.lock",
 ]
 exclude = [
+    "rust/Makefile",
     "target",
 ]
 
@@ -179,7 +164,6 @@ packages = [
     "superstore",
 ]
 exclude = [
-    "src",
     "rust",
 ]
 

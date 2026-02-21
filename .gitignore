@@ -144,14 +144,12 @@ js/node_modules
 js/test-results
 js/playwright-report
 js/*.tgz
-superstore/extension
 
 # Jupyter
 .ipynb_checkpoints
 .autoversion
 Untitled*.ipynb
-!superstore/extension/superstore.json
-!superstore/extension/install.json
+superstore/extension
 superstore/nbextension
 superstore/labextension
 
@@ -160,3 +158,7 @@ superstore/labextension
 
 # Rust
 target
+
+# Hydra
+outputs/
+multirun/

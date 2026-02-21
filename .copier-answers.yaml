@@ -1,5 +1,5 @@
 # Changes here will be overwritten by Copier
-_commit: 5f83201
+_commit: 44fcd4f
 _src_path: https://github.com/python-project-templates/base.git
 add_docs: true
 add_extension: rust
