@@ -1,4 +1,4 @@
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 # Import directly from the native Rust module
 # Import configuration classes from pydantic models
