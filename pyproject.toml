@@ -3,7 +3,7 @@ requires = [
     "hatchling",
     "hatch-rs>=0.1.4",
 ]
-build-backend="hatchling.build"
+build-backend = "hatchling.build"
 
 [project]
 name = "superstore"
@@ -40,12 +40,12 @@ develop = [
     "asv>=0.6",
     "build",
     "bump-my-version",
-    "check-manifest",
+    "check-dist",
     "cibuildwheel",
-    "codespell>=2.4,<2.5",
+    "codespell",
     "hatch-rs",
     "hatchling",
-    "mdformat>=0.7.22,<1.1",
+    "mdformat",
     "mdformat-tables>=1",
     "mypy>=1.0",
     "pytest",
@@ -94,6 +94,7 @@ filename = "rust/Cargo.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
 
+<<<<<<< before updating
 [tool.check-manifest]
 ignore = [
     ".copier-answers.yaml",
@@ -107,6 +108,8 @@ ignore = [
     "target/**/*",
 ]
 
+=======
+>>>>>>> after updating
 [tool.cibuildwheel]
 build = "cp310-*"
 test-command = "pytest -vvv {project}/superstore/tests"
@@ -163,6 +166,7 @@ abi3 = true
 [tool.hatch.build.targets.sdist]
 packages = [
     "superstore",
+<<<<<<< before updating
 ]
 include = [
     "Cargo.lock",
@@ -171,6 +175,15 @@ include = [
     "src",
 ]
 exclude = [
+=======
+    "rust",
+    "src",
+    "Cargo.toml",
+    "Cargo.lock",
+]
+exclude = [
+    "rust/Makefile",
+>>>>>>> after updating
     "target",
 ]
 
@@ -179,8 +192,13 @@ packages = [
     "superstore",
 ]
 exclude = [
+<<<<<<< before updating
     "src",
     "rust",
+=======
+    "rust",
+    "src",
+>>>>>>> after updating
 ]
 
 [tool.pytest.ini_options]
