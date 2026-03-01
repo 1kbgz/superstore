@@ -27,7 +27,7 @@ rayon = "1.10"
 arrow = { version = "53", default-features = false, features = ["ipc"] }
 parquet = { version = "53", default-features = false, features = ["arrow", "snap", "zstd"] }
 csv = "1.3"
-nalgebra = "0.33"
+nalgebra = "0.34"
 
 [profile.test.junit]
 path = "junit.xml"
