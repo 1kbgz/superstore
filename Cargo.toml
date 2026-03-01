@@ -18,7 +18,7 @@ rand_distr = "0.4"
 chrono = "0.4"
 rayon = "1.10"
 arrow = { version = "53", default-features = false, features = ["ipc"] }
-nalgebra = "0.33"
+nalgebra = "0.34"
 
 [profile.release]
 panic = 'abort'
