@@ -122,6 +122,7 @@ branch = true
 omit = [
     "superstore/tests/integration/",
 ]
+
 [tool.coverage.report]
 exclude_also = [
     "raise NotImplementedError",
@@ -143,6 +144,7 @@ src = "/"
 
 [tool.hatch.build.hooks.hatch-rs]
 verbose = true
+abi3 = true
 module = "superstore"
 path = "."
 abi3 = true
