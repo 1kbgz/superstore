@@ -89,7 +89,7 @@ impl PyAR1 {
     fn sample(&mut self, py: Python<'_>, n: usize, seed: Option<u64>) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n(&mut rng, n);
         Ok(PyList::new(py, &samples)?.into())
@@ -144,7 +144,7 @@ impl PyARp {
     fn sample(&mut self, py: Python<'_>, n: usize, seed: Option<u64>) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n(&mut rng, n);
         Ok(PyList::new(py, &samples)?.into())
@@ -226,7 +226,7 @@ impl PyMarkovChain {
     fn sample(&mut self, py: Python<'_>, n: usize, seed: Option<u64>) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n(&mut rng, n);
         Ok(PyList::new(py, &samples)?.into())
@@ -242,7 +242,7 @@ impl PyMarkovChain {
     ) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n_indices(&mut rng, n);
         Ok(PyList::new(py, &samples)?.into())
@@ -288,7 +288,7 @@ impl PyRandomWalk {
     fn sample(&mut self, py: Python<'_>, n: usize, seed: Option<u64>) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n(&mut rng, n);
         Ok(PyList::new(py, &samples)?.into())
@@ -328,7 +328,7 @@ impl PyExponentialSmoothing {
     fn sample(&mut self, py: Python<'_>, n: usize, seed: Option<u64>) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n(&mut rng, n);
         Ok(PyList::new(py, &samples)?.into())

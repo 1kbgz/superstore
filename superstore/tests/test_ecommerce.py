@@ -109,7 +109,6 @@ class TestEcommerceSessions:
         assert df1["session_id"].tolist() == df2["session_id"].tolist()
 
     def test_sessions_content(self):
-
         from superstore import ecommerce_sessions
 
         df = ecommerce_sessions(200, seed=42)
@@ -160,7 +159,6 @@ class TestEcommerceProducts:
         assert len(data["product_id"]) == 50
 
     def test_products_content(self):
-
         from superstore import ecommerce_products
 
         df = ecommerce_products(100, seed=42)
@@ -210,7 +208,6 @@ class TestEcommerceData:
         assert isinstance(data["sessions"], dict)
 
     def test_ecommerce_data_with_config(self):
-
         from superstore import EcommerceConfig, ecommerce_data
 
         config = EcommerceConfig(
