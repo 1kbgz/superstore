@@ -5,7 +5,7 @@
 //! into memory at once.
 
 use rand::rngs::StdRng;
-use rand::seq::SliceRandom;
+use rand::seq::IndexedRandom;
 use rand::{Rng, SeedableRng};
 
 use crate::general::{EmployeeRow, SuperstoreRow};
@@ -132,7 +132,7 @@ impl SuperstoreIterator {
     pub fn new(total_count: usize, chunk_size: usize, seed: Option<u64>) -> Self {
         let rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         Self {
             rng,
@@ -221,7 +221,7 @@ impl EmployeeIterator {
     pub fn new(total_count: usize, chunk_size: usize, seed: Option<u64>) -> Self {
         let rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         Self {
             rng,

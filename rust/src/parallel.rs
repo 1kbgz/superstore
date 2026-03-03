@@ -6,7 +6,7 @@
 use rayon::prelude::*;
 
 use rand::rngs::StdRng;
-use rand::seq::SliceRandom;
+use rand::seq::IndexedRandom;
 use rand::{Rng, SeedableRng};
 
 use crate::general::{EmployeeRow, SuperstoreRow};
@@ -144,7 +144,7 @@ pub fn superstore_parallel(count: usize, seed: Option<u64>) -> Vec<SuperstoreRow
             // Create per-thread RNG with deterministic seed based on thread index
             let mut rng = match seed {
                 Some(s) => StdRng::seed_from_u64(s.wrapping_add(thread_idx as u64)),
-                None => StdRng::from_entropy(),
+                None => StdRng::from_os_rng(),
             };
 
             let sectors: Vec<&str> = US_SECTORS.clone();
@@ -230,7 +230,7 @@ pub fn employees_parallel(count: usize, seed: Option<u64>) -> Vec<EmployeeRow> {
             // Create per-thread RNG with deterministic seed based on thread index
             let mut rng = match seed {
                 Some(s) => StdRng::seed_from_u64(s.wrapping_add(thread_idx as u64)),
-                None => StdRng::from_entropy(),
+                None => StdRng::from_os_rng(),
             };
 
             let mut chunk = Vec::with_capacity(end_idx - start_idx);
