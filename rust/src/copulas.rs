@@ -180,7 +180,7 @@ impl ClaytonCopula {
 
     /// Generate n samples from the copula.
     pub fn sample_n<R: Rng>(&self, rng: &mut R, n: usize) -> Vec<Vec<f64>> {
-        let uniform = Uniform::new(0.0f64, 1.0f64);
+        let uniform = Uniform::new(0.0f64, 1.0f64).unwrap();
         let mut samples = Vec::with_capacity(n);
 
         for _ in 0..n {
@@ -242,7 +242,7 @@ impl FrankCopula {
 
     /// Generate n samples from the bivariate Frank copula.
     pub fn sample_n<R: Rng>(&self, rng: &mut R, n: usize) -> Vec<(f64, f64)> {
-        let uniform = Uniform::new(0.0f64, 1.0f64);
+        let uniform = Uniform::new(0.0f64, 1.0f64).unwrap();
         let mut samples = Vec::with_capacity(n);
 
         for _ in 0..n {
@@ -308,7 +308,7 @@ impl GumbelCopula {
 
     /// Generate n samples from the bivariate Gumbel copula.
     pub fn sample_n<R: Rng>(&self, rng: &mut R, n: usize) -> Vec<(f64, f64)> {
-        let uniform = Uniform::new(0.0f64, 1.0f64);
+        let uniform = Uniform::new(0.0f64, 1.0f64).unwrap();
         let mut samples = Vec::with_capacity(n);
 
         for _ in 0..n {
@@ -404,7 +404,7 @@ fn sample_gamma<R: Rng>(rng: &mut R, shape: f64, scale: f64) -> f64 {
 
 /// Sample from a stable distribution (for Gumbel copula).
 fn sample_stable<R: Rng>(rng: &mut R, alpha: f64) -> f64 {
-    let uniform = Uniform::new(-PI / 2.0, PI / 2.0);
+    let uniform = Uniform::new(-PI / 2.0, PI / 2.0).unwrap();
     let exp_dist = rand_distr::Exp::new(1.0).unwrap();
 
     let u = uniform.sample(rng);

@@ -129,7 +129,7 @@ impl DistributionType {
     pub fn sample<R: Rng>(&self, rng: &mut R) -> f64 {
         match self {
             DistributionType::Uniform { min, max } => {
-                let dist = Uniform::new(*min, *max);
+                let dist = Uniform::new(*min, *max).unwrap();
                 dist.sample(rng)
             }
             DistributionType::Normal { mean, std_dev } => {

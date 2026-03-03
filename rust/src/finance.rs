@@ -8,7 +8,7 @@
 
 use chrono::{Datelike, Duration as ChronoDuration, NaiveDate, NaiveDateTime, Weekday};
 use rand::rngs::StdRng;
-use rand::seq::SliceRandom;
+use rand::seq::IndexedRandom;
 use rand::{Rng, SeedableRng};
 use rand_distr::{Distribution, LogNormal, Normal};
 use serde::{Deserialize, Serialize};
@@ -192,7 +192,7 @@ pub struct OptionQuote {
 fn create_rng(seed: Option<u64>) -> StdRng {
     match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     }
 }
 

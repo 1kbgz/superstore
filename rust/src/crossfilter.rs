@@ -1,6 +1,6 @@
 use chrono::{Datelike, Duration as ChronoDuration, NaiveDateTime, Timelike, Utc};
 use rand::rngs::StdRng;
-use rand::seq::SliceRandom;
+use rand::seq::IndexedRandom;
 use rand::{Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use std::f64::consts::PI;
@@ -893,7 +893,7 @@ const NOUNS: [&str; 20] = [
 fn create_rng(seed: Option<u64>) -> StdRng {
     match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     }
 }
 

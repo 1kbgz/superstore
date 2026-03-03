@@ -51,7 +51,7 @@ impl PyGaussianCopula {
     fn sample(&self, py: Python<'_>, n: usize, seed: Option<u64>) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n(&mut rng, n);
         // Convert Vec<Vec<f64>> to PyList of PyLists
@@ -113,7 +113,7 @@ impl PyClaytonCopula {
     fn sample(&self, py: Python<'_>, n: usize, seed: Option<u64>) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n(&mut rng, n);
         let result = PyList::empty(py);
@@ -172,7 +172,7 @@ impl PyFrankCopula {
     fn sample(&self, py: Python<'_>, n: usize, seed: Option<u64>) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n(&mut rng, n);
         let result = PyList::empty(py);
@@ -236,7 +236,7 @@ impl PyGumbelCopula {
     fn sample(&self, py: Python<'_>, n: usize, seed: Option<u64>) -> PyResult<Py<PyList>> {
         let mut rng = match seed {
             Some(s) => StdRng::seed_from_u64(s),
-            None => StdRng::from_entropy(),
+            None => StdRng::from_os_rng(),
         };
         let samples = self.inner.sample_n(&mut rng, n);
         let result = PyList::empty(py);

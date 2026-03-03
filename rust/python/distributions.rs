@@ -29,7 +29,7 @@ pub fn py_sample_uniform(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::uniform(min, max);
 
@@ -62,7 +62,7 @@ pub fn py_sample_normal(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::normal(mean, std_dev);
 
@@ -95,7 +95,7 @@ pub fn py_sample_log_normal(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::log_normal(mu, sigma);
 
@@ -126,7 +126,7 @@ pub fn py_sample_exponential(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::exponential(lambda_);
 
@@ -157,7 +157,7 @@ pub fn py_sample_poisson(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::poisson(lambda_);
 
@@ -197,7 +197,7 @@ pub fn py_sample_pareto(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::pareto(scale, shape);
 
@@ -230,7 +230,7 @@ pub fn py_sample_beta(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::beta(alpha, beta);
 
@@ -263,7 +263,7 @@ pub fn py_sample_gamma(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::gamma(shape, scale);
 
@@ -296,7 +296,7 @@ pub fn py_sample_weibull(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::weibull(shape, scale);
 
@@ -327,7 +327,7 @@ pub fn py_sample_categorical(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let dist = DistributionType::categorical(weights);
 
@@ -373,7 +373,7 @@ pub fn py_sample_mixture(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
 
     let distributions: Vec<DistributionType> = means
@@ -411,7 +411,7 @@ pub fn py_add_gaussian_noise(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let noise = NoiseModel::Gaussian { std_dev };
 
@@ -442,7 +442,7 @@ pub fn py_apply_missing(
 ) -> PyResult<Py<PyAny>> {
     let mut rng = match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::from_os_rng(),
     };
     let noise = NoiseModel::MissingAtRandom { probability };
 
