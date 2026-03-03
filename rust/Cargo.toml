@@ -15,7 +15,7 @@ crate-type = ["rlib"]
 
 [dependencies]
 rand = "0.9"
-rand_distr = "0.5"
+rand_distr = "0.6"
 uuid = { version = "1.21", features = ["v4"] }
 chrono = { version = "0.4", features = ["serde"] }
 serde = { version = "1.0", features = ["derive"] }
