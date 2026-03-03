@@ -14,7 +14,7 @@ path = "src/lib.rs"
 crate-type = ["rlib"]
 
 [dependencies]
-rand = "0.9"
+rand = "0.10"
 rand_distr = "0.5"
 uuid = { version = "1.21", features = ["v4"] }
 chrono = { version = "0.4", features = ["serde"] }
