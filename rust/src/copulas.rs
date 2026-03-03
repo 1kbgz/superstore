@@ -404,7 +404,8 @@ fn sample_gamma<R: Rng>(rng: &mut R, shape: f64, scale: f64) -> f64 {
 
 /// Sample from a stable distribution (for Gumbel copula).
 fn sample_stable<R: Rng>(rng: &mut R, alpha: f64) -> f64 {
-    let uniform = Uniform::new(-PI / 2.0, PI / 2.0).expect("valid uniform distribution [-pi/2, pi/2]");
+    let uniform =
+        Uniform::new(-PI / 2.0, PI / 2.0).expect("valid uniform distribution [-pi/2, pi/2]");
     let exp_dist = rand_distr::Exp::new(1.0).unwrap();
 
     let u = uniform.sample(rng);
