@@ -456,7 +456,7 @@ pub fn py_clip(value: f64, min: f64, max: f64) -> f64 {
 pub fn py_randrange(low: f64, high: f64) -> f64 {
     use rand::Rng;
     let mut rng = rand::thread_rng();
-    rng.gen::<f64>() * (high - low) + low
+    rng.random::<f64>() * (high - low) + low
 }
 
 // =============================================================================

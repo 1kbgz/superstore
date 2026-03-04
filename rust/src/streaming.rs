@@ -26,36 +26,36 @@ const SUFFIXES: [&str; 4] = ["Jr.", "Sr.", "III", "IV"];
 fn generate_ein<R: Rng>(rng: &mut R) -> String {
     format!(
         "{:02}-{:07}",
-        rng.gen_range(10..99),
-        rng.gen_range(1000000..9999999)
+        rng.random_range(10..99),
+        rng.random_range(1000000..9999999)
     )
 }
 
 fn generate_license_plate<R: Rng>(rng: &mut R) -> String {
     let letters: String = (0..3)
-        .map(|_| (b'A' + rng.gen_range(0..26)) as char)
+        .map(|_| (b'A' + rng.random_range(0..26)) as char)
         .collect();
-    let numbers: u16 = rng.gen_range(100..1000);
+    let numbers: u16 = rng.random_range(100..1000);
     format!("{}{}", letters, numbers)
 }
 
 fn generate_bban<R: Rng>(rng: &mut R) -> String {
     (0..18)
-        .map(|_| (b'0' + rng.gen_range(0..10)) as char)
+        .map(|_| (b'0' + rng.random_range(0..10)) as char)
         .collect()
 }
 
 fn generate_ssn<R: Rng>(rng: &mut R) -> String {
     format!(
         "{:03}-{:02}-{:04}",
-        rng.gen_range(100..999),
-        rng.gen_range(10..99),
-        rng.gen_range(1000..9999)
+        rng.random_range(100..999),
+        rng.random_range(10..99),
+        rng.random_range(1000..9999)
     )
 }
 
 fn generate_street_address<R: Rng>(rng: &mut R) -> String {
-    let number: u32 = rng.gen_range(1..9999);
+    let number: u32 = rng.random_range(1..9999);
     let street_names = [
         "Main St",
         "Oak Ave",
@@ -73,7 +73,7 @@ fn generate_street_address<R: Rng>(rng: &mut R) -> String {
 
 fn random_date_this_year<R: Rng>(rng: &mut R) -> NaiveDate {
     let year = Utc::now().naive_utc().date().year();
-    let day_of_year = rng.gen_range(1..=365);
+    let day_of_year = rng.random_range(1..=365);
     NaiveDate::from_yo_opt(year, day_of_year)
         .unwrap_or_else(|| NaiveDate::from_ymd_opt(year, 1, 1).unwrap())
 }
@@ -87,7 +87,7 @@ fn random_date_between<R: Rng>(rng: &mut R, start: NaiveDate) -> NaiveDate {
     if days_between == 0 {
         return start;
     }
-    let random_days = rng.gen_range(0..=days_between);
+    let random_days = rng.random_range(0..=days_between);
     start + chrono::Duration::days(random_days as i64)
 }
 
@@ -95,7 +95,7 @@ fn random_date_30_years<R: Rng>(rng: &mut R) -> NaiveDate {
     let today = Utc::now().naive_utc().date();
     let thirty_years_ago = today - chrono::Duration::days(30 * 365);
     let days_range = (today - thirty_years_ago).num_days() as u32;
-    let random_days = rng.gen_range(0..=days_range);
+    let random_days = rng.random_range(0..=days_range);
     thirty_years_ago + chrono::Duration::days(random_days as i64)
 }
 
@@ -106,7 +106,7 @@ fn random_date_of_birth<R: Rng>(rng: &mut R) -> NaiveDate {
     let min_date = today - chrono::Duration::days(max_age * 365);
     let max_date = today - chrono::Duration::days(min_age * 365);
     let days_range = (max_date - min_date).num_days() as u32;
-    let random_days = rng.gen_range(0..=days_range);
+    let random_days = rng.random_range(0..=days_range);
     min_date + chrono::Duration::days(random_days as i64)
 }
 
@@ -177,16 +177,16 @@ impl Iterator for SuperstoreIterator {
                 city: CityName().fake_with_rng(&mut self.rng),
                 state: StateName().fake_with_rng(&mut self.rng),
                 postal_code: ZipCode().fake_with_rng(&mut self.rng),
-                region: format!("Region {}", self.rng.gen_range(0..5)),
+                region: format!("Region {}", self.rng.random_range(0..5)),
                 product_id: generate_bban(&mut self.rng),
                 category: sector.to_string(),
                 sub_category: industry.to_string(),
                 item_status: "Regular".to_string(),
-                item_price: (self.rng.gen_range(1..=100) as f64) * 10.0 + 0.99,
-                sales: self.rng.gen_range(1..=100) * 100,
-                quantity: self.rng.gen_range(1..=100) * 10,
-                discount: (self.rng.gen::<f64>() * 100.0 * 100.0).round() / 100.0,
-                profit: (self.rng.gen::<f64>() * 1000.0 * 100.0).round() / 100.0,
+                item_price: (self.rng.random_range(1..=100) as f64) * 10.0 + 0.99,
+                sales: self.rng.random_range(1..=100) * 100,
+                quantity: self.rng.random_range(1..=100) * 10,
+                discount: (self.rng.random::<f64>() * 100.0 * 100.0).round() / 100.0,
+                profit: (self.rng.random::<f64>() * 1000.0 * 100.0).round() / 100.0,
                 // Priority 4 fields (not enabled in streaming simple mode)
                 bundle_id: None,
                 payment_method: None,
@@ -259,7 +259,7 @@ impl Iterator for EmployeeIterator {
                 street: generate_street_address(&mut self.rng),
                 city: CityName().fake_with_rng(&mut self.rng),
                 postal_code: ZipCode().fake_with_rng(&mut self.rng),
-                region: format!("Region {}", self.rng.gen_range(0..5)),
+                region: format!("Region {}", self.rng.random_range(0..5)),
                 state: StateName().fake_with_rng(&mut self.rng),
                 country: "US".to_string(),
                 start_date: random_date_30_years(&mut self.rng),

@@ -618,7 +618,7 @@ fn make_time_series_with_config_inner<R: Rng>(
         );
 
         // Add jump component if enabled
-        if config.jumps.enable && rng.gen::<f64>() < config.jumps.jump_probability {
+        if config.jumps.enable && rng.random::<f64>() < config.jumps.jump_probability {
             let jump_dist = Normal::new(config.jumps.jump_mean, config.jumps.jump_stddev)
                 .expect("Invalid jump params");
             innovation += jump_dist.sample(rng);

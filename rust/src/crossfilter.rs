@@ -607,8 +607,8 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
 
             // Handle maintenance windows
             if in_maintenance_window && state.maintenance_remaining == 0 {
-                if rng.gen::<f64>() < config.maintenance.window_probability {
-                    state.maintenance_remaining = rng.gen_range(
+                if rng.random::<f64>() < config.maintenance.window_probability {
+                    state.maintenance_remaining = rng.random_range(
                         config.maintenance.window_duration_min
                             ..=config.maintenance.window_duration_max,
                     );
@@ -632,10 +632,10 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
                 && state.anomaly_remaining == 0
                 && state.state != MachineState::Maintenance
             {
-                let anomaly_roll: f64 = rng.gen();
+                let anomaly_roll: f64 = rng.random();
                 if anomaly_roll < config.anomalies.cpu_spike_probability {
                     state.anomaly = AnomalyType::CpuSpike;
-                    state.anomaly_remaining = rng.gen_range(
+                    state.anomaly_remaining = rng.random_range(
                         config.anomalies.anomaly_duration_min
                             ..=config.anomalies.anomaly_duration_max,
                     );
@@ -644,7 +644,7 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
                         + config.anomalies.memory_leak_probability
                 {
                     state.anomaly = AnomalyType::MemoryLeak;
-                    state.anomaly_remaining = rng.gen_range(
+                    state.anomaly_remaining = rng.random_range(
                         config.anomalies.anomaly_duration_min
                             ..=config.anomalies.anomaly_duration_max,
                     );
@@ -654,7 +654,7 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
                         + config.anomalies.network_saturation_probability
                 {
                     state.anomaly = AnomalyType::NetworkSaturation;
-                    state.anomaly_remaining = rng.gen_range(
+                    state.anomaly_remaining = rng.random_range(
                         config.anomalies.anomaly_duration_min
                             ..=config.anomalies.anomaly_duration_max,
                     );
@@ -665,7 +665,7 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
                         + config.anomalies.disk_fill_probability
                 {
                     state.anomaly = AnomalyType::DiskFull;
-                    state.anomaly_remaining = rng.gen_range(
+                    state.anomaly_remaining = rng.random_range(
                         config.anomalies.anomaly_duration_min
                             ..=config.anomalies.anomaly_duration_max,
                     );
@@ -677,7 +677,7 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
                         + config.anomalies.multi_resource_probability
                 {
                     state.anomaly = AnomalyType::MultiResource;
-                    state.anomaly_remaining = rng.gen_range(
+                    state.anomaly_remaining = rng.random_range(
                         config.anomalies.anomaly_duration_min
                             ..=config.anomalies.anomaly_duration_max,
                     );
@@ -687,9 +687,9 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
             // Check for cascade failures
             if config.failure_cascade.enable {
                 if let Some(&delay) = zone_failures.get(&machine.zone) {
-                    if delay == 0 && rng.gen::<f64>() < config.failure_cascade.zone_correlation {
+                    if delay == 0 && rng.random::<f64>() < config.failure_cascade.zone_correlation {
                         state.anomaly = AnomalyType::MultiResource;
-                        state.anomaly_remaining = rng.gen_range(5..20);
+                        state.anomaly_remaining = rng.random_range(5..20);
                     }
                 }
             }
@@ -705,12 +705,12 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
             // Apply sensor drift
             if config.sensor_drift.enable {
                 let drift_change = config.sensor_drift.drift_rate
-                    * (rng.gen::<f64>() - (1.0 - config.sensor_drift.drift_bias));
+                    * (rng.random::<f64>() - (1.0 - config.sensor_drift.drift_bias));
                 state.cpu_drift += drift_change;
                 state.mem_drift += drift_change * 0.8;
 
                 // Occasional recalibration
-                if rng.gen::<f64>() < config.sensor_drift.recalibration_probability {
+                if rng.random::<f64>() < config.sensor_drift.recalibration_probability {
                     state.cpu_drift *= 0.1;
                     state.mem_drift *= 0.1;
                 }
@@ -724,7 +724,7 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
                         state.state = MachineState::Failed;
                         // Trigger cascade
                         if config.failure_cascade.enable
-                            && rng.gen::<f64>() < config.failure_cascade.cascade_probability
+                            && rng.random::<f64>() < config.failure_cascade.cascade_probability
                         {
                             zone_failures.insert(
                                 machine.zone.clone(),
@@ -762,23 +762,23 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
             // Apply anomaly effects
             match state.anomaly {
                 AnomalyType::CpuSpike => {
-                    cpu += config.anomalies.cpu_spike_magnitude * rng.gen_range(0.7..1.3);
+                    cpu += config.anomalies.cpu_spike_magnitude * rng.random_range(0.7..1.3);
                 }
                 AnomalyType::MemoryLeak => {
                     state.cumulative_mem_leak += config.anomalies.memory_leak_rate;
                     mem += state.cumulative_mem_leak;
                 }
                 AnomalyType::NetworkSaturation => {
-                    network = 95.0 + rng.gen_range(0.0..5.0);
+                    network = 95.0 + rng.random_range(0.0..5.0);
                 }
                 AnomalyType::DiskFull => {
                     state.cumulative_disk_fill += 0.5;
                     disk = 90.0 + state.cumulative_disk_fill.min(10.0);
                 }
                 AnomalyType::MultiResource => {
-                    cpu += 30.0 * rng.gen_range(0.5..1.5);
-                    mem += 25.0 * rng.gen_range(0.5..1.5);
-                    network += 20.0 * rng.gen_range(0.5..1.5);
+                    cpu += 30.0 * rng.random_range(0.5..1.5);
+                    mem += 25.0 * rng.random_range(0.5..1.5);
+                    network += 20.0 * rng.random_range(0.5..1.5);
                 }
                 AnomalyType::None => {}
             }
@@ -792,27 +792,27 @@ pub fn generate_telemetry(config: &TelemetryConfig) -> Vec<TelemetryReading> {
             mem += state.mem_drift;
 
             // Add random noise
-            cpu += rng.gen_range(-5.0..5.0);
-            mem += rng.gen_range(-3.0..3.0);
-            network += rng.gen_range(-8.0..8.0);
-            disk += rng.gen_range(-1.0..1.0);
+            cpu += rng.random_range(-5.0..5.0);
+            mem += rng.random_range(-3.0..3.0);
+            network += rng.random_range(-8.0..8.0);
+            disk += rng.random_range(-1.0..1.0);
 
             // Maintenance state: low utilization
             if state.state == MachineState::Maintenance {
-                cpu = rng.gen_range(0.0..5.0);
-                mem = rng.gen_range(5.0..15.0);
-                network = rng.gen_range(0.0..3.0);
+                cpu = rng.random_range(0.0..5.0);
+                mem = rng.random_range(5.0..15.0);
+                network = rng.random_range(0.0..3.0);
             }
 
             // Failed state: either zero or erratic
             if state.state == MachineState::Failed {
-                if rng.gen::<f64>() < 0.7 {
+                if rng.random::<f64>() < 0.7 {
                     cpu = 0.0;
                     mem = 0.0;
                     network = 0.0;
                 } else {
-                    cpu = rng.gen_range(0.0..100.0);
-                    mem = rng.gen_range(0.0..100.0);
+                    cpu = rng.random_range(0.0..100.0);
+                    mem = rng.random_range(0.0..100.0);
                 }
             }
 
@@ -919,7 +919,7 @@ fn clip(value: f64, min: f64, max: f64) -> f64 {
 }
 
 fn randrange<R: Rng>(rng: &mut R, low: f64, high: f64) -> f64 {
-    rng.gen::<f64>() * (high - low) + low
+    rng.random::<f64>() * (high - low) + low
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -976,7 +976,7 @@ pub fn machines(count: usize, seed: Option<u64>) -> Vec<Machine> {
     let mut result = Vec::with_capacity(count);
 
     for _ in 0..count {
-        let rand_val: f64 = rng.gen();
+        let rand_val: f64 = rng.random();
         let (kind, cores) = if rand_val < 0.2 {
             let cores = *[8, 16, 32].choose(&mut rng).unwrap();
             ("core", cores)
@@ -1009,7 +1009,7 @@ pub fn usage(machine: &Machine, prev_usage: Option<&Usage>, seed: Option<u64>) -
     let mut rng = create_rng(seed);
 
     // 10% chance to reset to zero
-    let should_reset = prev_usage.is_none() || rng.gen::<f64>() < 0.1;
+    let should_reset = prev_usage.is_none() || rng.random::<f64>() < 0.1;
 
     if should_reset {
         return Usage {
@@ -1250,12 +1250,12 @@ pub fn job(machine: &Machine, _json: bool, seed: Option<u64>) -> Option<Job> {
     }
 
     let mut rng = create_rng(seed);
-    if rng.gen::<f64>() < 0.5 {
+    if rng.random::<f64>() < 0.5 {
         return None;
     }
 
     let now = Utc::now().naive_utc();
-    let end = now + ChronoDuration::seconds(rng.gen_range(0..400));
+    let end = now + ChronoDuration::seconds(rng.random_range(0..400));
 
     let start_time = now.format("%Y-%m-%dT%H:%M:%S%.6f").to_string();
     let end_time = end.format("%Y-%m-%dT%H:%M:%S%.6f").to_string();
