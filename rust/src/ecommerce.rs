@@ -393,7 +393,7 @@ fn create_rng(seed: Option<u64>) -> StdRng {
 }
 
 fn generate_id<R: Rng>(rng: &mut R, prefix: &str) -> String {
-    format!("{}-{:08x}", prefix, rng.gen::<u32>())
+    format!("{}-{:08x}", prefix, rng.random::<u32>())
 }
 
 fn generate_email<R: Rng>(rng: &mut R) -> String {
@@ -404,7 +404,7 @@ fn generate_email<R: Rng>(rng: &mut R) -> String {
     format!(
         "{}{}@{}",
         names.choose(rng).unwrap(),
-        rng.gen_range(1..9999),
+        rng.random_range(1..9999),
         domains.choose(rng).unwrap()
     )
 }
@@ -420,7 +420,7 @@ fn parse_start_date(date_str: &Option<String>) -> NaiveDateTime {
 
 fn weighted_choice<'a, R: Rng>(rng: &mut R, items: &[&'a str], weights: &[f64]) -> &'a str {
     let total: f64 = weights.iter().sum();
-    let roll = rng.gen::<f64>() * total;
+    let roll = rng.random::<f64>() * total;
     let mut cumulative = 0.0;
 
     for (i, &weight) in weights.iter().enumerate() {
@@ -616,7 +616,7 @@ pub fn generate_catalog(config: &EcommerceConfig) -> Vec<Product> {
     let price_dist = LogNormal::new(ln_mean - ln_std * ln_std / 2.0, ln_std).unwrap();
 
     for i in 0..config.catalog.num_products {
-        let cat_idx = rng.gen_range(0..categories.len());
+        let cat_idx = rng.random_range(0..categories.len());
         let category = categories[cat_idx].clone();
         let subcats = &subcategories[cat_idx % subcategories.len()];
         let subcategory = subcats.choose(&mut rng).unwrap().to_string();
@@ -626,7 +626,7 @@ pub fn generate_catalog(config: &EcommerceConfig) -> Vec<Product> {
                 .sample(&mut rng)
                 .clamp(config.catalog.min_price, config.catalog.max_price)
         } else {
-            rng.gen_range(config.catalog.min_price..config.catalog.max_price)
+            rng.random_range(config.catalog.min_price..config.catalog.max_price)
         };
 
         // Round to common price points
@@ -643,9 +643,9 @@ pub fn generate_catalog(config: &EcommerceConfig) -> Vec<Product> {
             category,
             subcategory,
             price,
-            rating: 3.0 + rng.gen::<f64>() * 2.0,
-            review_count: rng.gen_range(0..5000),
-            in_stock: rng.gen::<f64>() > 0.05,
+            rating: 3.0 + rng.random::<f64>() * 2.0,
+            review_count: rng.random_range(0..5000),
+            in_stock: rng.random::<f64>() > 0.05,
         });
     }
 
@@ -699,7 +699,7 @@ pub fn generate_sessions(config: &EcommerceConfig) -> Vec<Session> {
 
         // Check for immediate bounce
         let bounced =
-            config.session.enable_bounces && rng.gen::<f64>() < config.session.bounce_rate;
+            config.session.enable_bounces && rng.random::<f64>() < config.session.bounce_rate;
 
         if !bounced {
             // Simulate navigation
@@ -711,7 +711,7 @@ pub fn generate_sessions(config: &EcommerceConfig) -> Vec<Session> {
                 if state_name == "purchase" {
                     converted = true;
                     // Generate order value
-                    total_value = 20.0 + rng.gen::<f64>() * 200.0;
+                    total_value = 20.0 + rng.random::<f64>() * 200.0;
                     break;
                 }
                 if state_name == "exit" {
@@ -721,10 +721,10 @@ pub fn generate_sessions(config: &EcommerceConfig) -> Vec<Session> {
         }
 
         let duration = if bounced {
-            rng.gen_range(5..30)
+            rng.random_range(5..30)
         } else {
             let base = config.session.avg_session_duration_seconds as f64;
-            (base * (0.5 + rng.gen::<f64>())).round() as u32
+            (base * (0.5 + rng.random::<f64>())).round() as u32
         };
 
         let end_time = current_time + Duration::seconds(duration as i64);
@@ -769,11 +769,11 @@ pub fn generate_cart_events(
         }
 
         // Probability of cart activity
-        if rng.gen::<f64>() > config.session.cart_add_probability * 2.0 {
+        if rng.random::<f64>() > config.session.cart_add_probability * 2.0 {
             continue;
         }
 
-        let num_items = (config.cart.avg_items_per_cart * (0.5 + rng.gen::<f64>())).round() as u32;
+        let num_items = (config.cart.avg_items_per_cart * (0.5 + rng.random::<f64>())).round() as u32;
         let num_items = num_items.min(config.cart.max_items).max(1);
 
         let session_start =
@@ -782,9 +782,9 @@ pub fn generate_cart_events(
 
         for _ in 0..num_items {
             let product = products.choose(&mut rng).unwrap();
-            let quantity = rng.gen_range(1..=3);
+            let quantity = rng.random_range(1..=3);
 
-            current_time = current_time + Duration::seconds(rng.gen_range(10..120));
+            current_time = current_time + Duration::seconds(rng.random_range(10..120));
 
             events.push(CartEvent {
                 event_id: generate_id(&mut rng, "EVT"),
@@ -799,8 +799,8 @@ pub fn generate_cart_events(
             });
 
             // Possible remove
-            if rng.gen::<f64>() < config.cart.remove_probability {
-                current_time = current_time + Duration::seconds(rng.gen_range(30..180));
+            if rng.random::<f64>() < config.cart.remove_probability {
+                current_time = current_time + Duration::seconds(rng.random_range(30..180));
                 events.push(CartEvent {
                     event_id: generate_id(&mut rng, "EVT"),
                     session_id: session.session_id.clone(),
@@ -817,7 +817,7 @@ pub fn generate_cart_events(
 
         // Checkout events for converted sessions
         if session.converted {
-            current_time = current_time + Duration::seconds(rng.gen_range(30..120));
+            current_time = current_time + Duration::seconds(rng.random_range(30..120));
             events.push(CartEvent {
                 event_id: generate_id(&mut rng, "EVT"),
                 session_id: session.session_id.clone(),
@@ -830,7 +830,7 @@ pub fn generate_cart_events(
                 total_price: session.total_value,
             });
 
-            current_time = current_time + Duration::seconds(rng.gen_range(60..300));
+            current_time = current_time + Duration::seconds(rng.random_range(60..300));
             events.push(CartEvent {
                 event_id: generate_id(&mut rng, "EVT"),
                 session_id: session.session_id.clone(),
@@ -842,9 +842,9 @@ pub fn generate_cart_events(
                 unit_price: 0.0,
                 total_price: session.total_value,
             });
-        } else if !events.is_empty() && rng.gen::<f64>() < config.cart.abandonment_rate {
+        } else if !events.is_empty() && rng.random::<f64>() < config.cart.abandonment_rate {
             // Abandoned cart
-            current_time = current_time + Duration::seconds(rng.gen_range(300..1800));
+            current_time = current_time + Duration::seconds(rng.random_range(300..1800));
             events.push(CartEvent {
                 event_id: generate_id(&mut rng, "EVT"),
                 session_id: session.session_id.clone(),
@@ -882,18 +882,18 @@ pub fn generate_orders(sessions: &[Session], config: &EcommerceConfig) -> Vec<Or
     let payment_weights = &[0.40, 0.20, 0.15, 0.10, 0.10, 0.05];
 
     for session in sessions.iter().filter(|s| s.converted) {
-        let items = rng.gen_range(1..=5);
+        let items = rng.random_range(1..=5);
         let subtotal = session.total_value;
-        let discount = if rng.gen::<f64>() < 0.3 {
-            subtotal * rng.gen_range(0.05..0.20)
+        let discount = if rng.random::<f64>() < 0.3 {
+            subtotal * rng.random_range(0.05..0.20)
         } else {
             0.0
         };
         let tax = (subtotal - discount) * 0.08;
-        let shipping: f64 = if subtotal > 50.0 && rng.gen::<f64>() > 0.3 {
+        let shipping: f64 = if subtotal > 50.0 && rng.random::<f64>() > 0.3 {
             0.0
         } else {
-            rng.gen_range(5.0..15.0)
+            rng.random_range(5.0..15.0)
         };
 
         let payment = weighted_choice(&mut rng, payment_methods, payment_weights);
@@ -1071,7 +1071,7 @@ pub fn generate_funnel_events(sessions: &[Session], config: &EcommerceConfig) ->
                 break;
             }
 
-            let time_in_stage = rng.gen_range(10..120);
+            let time_in_stage = rng.random_range(10..120);
             events.push(FunnelEvent {
                 event_id: generate_id(&mut rng, "FNL"),
                 session_id: session.session_id.clone(),

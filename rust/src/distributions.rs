@@ -172,7 +172,7 @@ impl DistributionType {
             }
             DistributionType::Categorical { weights } => {
                 let total: f64 = weights.iter().sum();
-                let mut r = rng.gen::<f64>() * total;
+                let mut r = rng.random::<f64>() * total;
                 for (i, w) in weights.iter().enumerate() {
                     r -= w;
                     if r <= 0.0 {
@@ -187,7 +187,7 @@ impl DistributionType {
             } => {
                 // Select which distribution to sample from based on weights
                 let total: f64 = weights.iter().sum();
-                let mut r = rng.gen::<f64>() * total;
+                let mut r = rng.random::<f64>() * total;
                 for (i, w) in weights.iter().enumerate() {
                     r -= w;
                     if r <= 0.0 {
@@ -235,7 +235,7 @@ impl DistributionType {
 /// Sample from a categorical distribution and return the category index.
 pub fn sample_categorical<R: Rng>(rng: &mut R, weights: &[f64]) -> usize {
     let total: f64 = weights.iter().sum();
-    let mut r = rng.gen::<f64>() * total;
+    let mut r = rng.random::<f64>() * total;
     for (i, w) in weights.iter().enumerate() {
         r -= w;
         if r <= 0.0 {
@@ -292,7 +292,7 @@ impl NoiseModel {
             }
             NoiseModel::Quantization { step_size } => Some((value / step_size).round() * step_size),
             NoiseModel::MissingAtRandom { probability } => {
-                if rng.gen::<f64>() < *probability {
+                if rng.random::<f64>() < *probability {
                     None
                 } else {
                     Some(value)
