@@ -197,7 +197,7 @@ fn create_rng(seed: Option<u64>) -> StdRng {
 }
 
 fn generate_ticker<R: Rng>(rng: &mut R) -> String {
-    let len = rng.gen_range(2..=4);
+    let len = rng.random_range(2..=4);
     (0..len)
         .map(|_| *TICKER_PREFIXES.choose(rng).unwrap())
         .collect()
@@ -351,7 +351,7 @@ pub fn generate_stock_prices(config: &FinanceConfig) -> Vec<OhlcvBar> {
         let mut log_return = (daily_drift - 0.5 * daily_vol.powi(2)) + daily_vol * z;
 
         // Add jump if enabled
-        if config.stock.enable_jumps && rng.gen::<f64>() < config.stock.jump_probability {
+        if config.stock.enable_jumps && rng.random::<f64>() < config.stock.jump_probability {
             let jump_normal = Normal::new(config.stock.jump_mean, config.stock.jump_stddev)
                 .expect("Invalid jump params");
             log_return += jump_normal.sample(&mut rng);
@@ -363,18 +363,18 @@ pub fn generate_stock_prices(config: &FinanceConfig) -> Vec<OhlcvBar> {
 
         // Generate intraday high/low
         let intraday_vol = config.ohlcv.intraday_volatility;
-        let high_factor = 1.0 + rng.gen::<f64>() * intraday_vol;
-        let low_factor = 1.0 - rng.gen::<f64>() * intraday_vol;
+        let high_factor = 1.0 + rng.random::<f64>() * intraday_vol;
+        let low_factor = 1.0 - rng.random::<f64>() * intraday_vol;
 
         let (open, high, low) = if returns > 0.0 {
             // Up day: open near low, close near high
-            let open = prev_close * (1.0 + rng.gen::<f64>() * returns * 0.3);
+            let open = prev_close * (1.0 + rng.random::<f64>() * returns * 0.3);
             let high = close * high_factor;
             let low = open * low_factor;
             (open, high, low.min(open))
         } else {
             // Down day: open near high, close near low
-            let open = prev_close * (1.0 + rng.gen::<f64>() * returns.abs() * 0.3);
+            let open = prev_close * (1.0 + rng.random::<f64>() * returns.abs() * 0.3);
             let high = open * high_factor;
             let low = close * low_factor;
             (open, high.max(open), low)
@@ -466,7 +466,7 @@ pub fn generate_multi_asset_prices(config: &FinanceConfig) -> Vec<OhlcvBar> {
             let mut log_return = (daily_drift - 0.5 * daily_vol.powi(2)) + daily_vol * z;
 
             // Add jump if enabled
-            if config.stock.enable_jumps && rng.gen::<f64>() < config.stock.jump_probability {
+            if config.stock.enable_jumps && rng.random::<f64>() < config.stock.jump_probability {
                 let jump_normal = Normal::new(config.stock.jump_mean, config.stock.jump_stddev)
                     .expect("Invalid jump params");
                 log_return += jump_normal.sample(&mut rng);
@@ -477,16 +477,16 @@ pub fn generate_multi_asset_prices(config: &FinanceConfig) -> Vec<OhlcvBar> {
 
             // Intraday high/low
             let intraday_vol = config.ohlcv.intraday_volatility;
-            let high_factor = 1.0 + rng.gen::<f64>() * intraday_vol;
-            let low_factor = 1.0 - rng.gen::<f64>() * intraday_vol;
+            let high_factor = 1.0 + rng.random::<f64>() * intraday_vol;
+            let low_factor = 1.0 - rng.random::<f64>() * intraday_vol;
 
             let (open, high, low) = if returns > 0.0 {
-                let open = prev_closes[asset_idx] * (1.0 + rng.gen::<f64>() * returns * 0.3);
+                let open = prev_closes[asset_idx] * (1.0 + rng.random::<f64>() * returns * 0.3);
                 let high = close * high_factor;
                 let low = open * low_factor;
                 (open, high, low.min(open))
             } else {
-                let open = prev_closes[asset_idx] * (1.0 + rng.gen::<f64>() * returns.abs() * 0.3);
+                let open = prev_closes[asset_idx] * (1.0 + rng.random::<f64>() * returns.abs() * 0.3);
                 let high = open * high_factor;
                 let low = close * low_factor;
                 (open, high.max(open), low)

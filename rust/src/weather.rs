@@ -217,7 +217,7 @@ fn sample_weather_event<R: Rng>(
     temperature: f64,
     climate: &ClimateZone,
 ) -> WeatherEvent {
-    let r: f64 = rng.gen();
+    let r: f64 = rng.random();
 
     // Adjust probabilities based on temperature
     if temperature < -5.0 {
@@ -315,7 +315,7 @@ pub fn generate_weather(config: &WeatherConfig) -> Vec<WeatherReading> {
         let daily_temp = daily_adjustment(hour_frac, config.temp_daily_amplitude);
 
         // AR(1) noise for realistic persistence
-        let innovation: f64 = rng.gen::<f64>() * 2.0 - 1.0; // [-1, 1]
+        let innovation: f64 = rng.random::<f64>() * 2.0 - 1.0; // [-1, 1]
         state.ar1_state =
             ar_phi * state.ar1_state + (1.0 - ar_phi) * innovation * config.temp_noise_stddev;
 
@@ -329,11 +329,11 @@ pub fn generate_weather(config: &WeatherConfig) -> Vec<WeatherReading> {
         if config.enable_weather_events {
             if state.event_duration <= 0 {
                 // Check for new event
-                if rng.gen::<f64>() < config.event_probability {
+                if rng.random::<f64>() < config.event_probability {
                     state.current_event =
                         sample_weather_event(&mut rng, temperature, &config.climate_zone);
                     // Event duration: 4 to 24 readings (1-6 hours at 15 min intervals)
-                    state.event_duration = rng.gen_range(4..24);
+                    state.event_duration = rng.random_range(4..24);
                 } else {
                     state.current_event = WeatherEvent::Clear;
                 }
@@ -350,18 +350,18 @@ pub fn generate_weather(config: &WeatherConfig) -> Vec<WeatherReading> {
         let mut humidity = base_humidity
             + config.humidity_temp_correlation * temp_deviation * 2.0
             + event_humid_mod
-            + (rng.gen::<f64>() - 0.5) * 10.0;
+            + (rng.random::<f64>() - 0.5) * 10.0;
         humidity = humidity.clamp(5.0, 100.0);
 
         // Calculate precipitation
         let mut precipitation = if state.current_event == WeatherEvent::Clear {
-            if rng.gen::<f64>() < config.precipitation_probability * climate_precip / 0.15 {
-                rng.gen::<f64>() * 2.0 // Light random precipitation
+            if rng.random::<f64>() < config.precipitation_probability * climate_precip / 0.15 {
+                rng.random::<f64>() * 2.0 // Light random precipitation
             } else {
                 0.0
             }
         } else {
-            event_precip * (0.5 + rng.gen::<f64>())
+            event_precip * (0.5 + rng.random::<f64>())
         };
 
         // Check if it's too warm for snow
@@ -372,19 +372,19 @@ pub fn generate_weather(config: &WeatherConfig) -> Vec<WeatherReading> {
 
         // Sensor drift
         if config.sensor_drift {
-            state.cumulative_drift += config.sensor_drift_rate * (rng.gen::<f64>() - 0.3);
+            state.cumulative_drift += config.sensor_drift_rate * (rng.random::<f64>() - 0.3);
             temperature += state.cumulative_drift;
         }
 
         // Outliers (sensor errors)
-        let is_outlier = rng.gen::<f64>() < config.outlier_probability;
+        let is_outlier = rng.random::<f64>() < config.outlier_probability;
         if is_outlier {
             // Add significant random error
-            let error_type: u8 = rng.gen_range(0..4);
+            let error_type: u8 = rng.random_range(0..4);
             match error_type {
-                0 => temperature += rng.gen_range(20.0..40.0), // Spike high
-                1 => temperature -= rng.gen_range(20.0..40.0), // Spike low
-                2 => humidity = rng.gen_range(0.0..10.0),      // Humidity sensor fail
+                0 => temperature += rng.random_range(20.0..40.0), // Spike high
+                1 => temperature -= rng.random_range(20.0..40.0), // Spike low
+                2 => humidity = rng.random_range(0.0..10.0),      // Humidity sensor fail
                 _ => temperature = -99.9,                      // Sensor offline reading
             }
         }

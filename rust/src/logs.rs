@@ -217,10 +217,10 @@ fn generate_ip_pool(rng: &mut StdRng, count: usize) -> Vec<String> {
         .map(|_| {
             format!(
                 "{}.{}.{}.{}",
-                rng.gen_range(1..255),
-                rng.gen_range(0..256),
-                rng.gen_range(0..256),
-                rng.gen_range(1..255)
+                rng.random_range(1..255),
+                rng.random_range(0..256),
+                rng.random_range(0..256),
+                rng.random_range(1..255)
             )
         })
         .collect()
@@ -228,13 +228,13 @@ fn generate_ip_pool(rng: &mut StdRng, count: usize) -> Vec<String> {
 
 fn generate_user_pool(rng: &mut StdRng, count: usize) -> Vec<String> {
     (0..count)
-        .map(|_| format!("user_{:06}", rng.gen_range(100000..999999)))
+        .map(|_| format!("user_{:06}", rng.random_range(100000..999999)))
         .collect()
 }
 
 fn weighted_choice<R: Rng>(rng: &mut R, weights: &[f64]) -> usize {
     let total: f64 = weights.iter().sum();
-    let mut r = rng.gen::<f64>() * total;
+    let mut r = rng.random::<f64>() * total;
     for (i, w) in weights.iter().enumerate() {
         r -= w;
         if r <= 0.0 {
@@ -307,10 +307,10 @@ fn create_status_code_chain() -> MarkovChain {
 }
 
 fn generate_path<R: Rng>(rng: &mut R, api_ratio: f64) -> String {
-    if rng.gen::<f64>() < api_ratio {
+    if rng.random::<f64>() < api_ratio {
         let path = API_PATHS.choose(rng).unwrap_or(&"/api/v1/users");
         // Replace {id} placeholders with random IDs
-        path.replace("{id}", &format!("{}", rng.gen_range(1..10000)))
+        path.replace("{id}", &format!("{}", rng.random_range(1..10000)))
     } else {
         STATIC_PATHS
             .choose(rng)
@@ -327,7 +327,7 @@ fn generate_latency<R: Rng>(rng: &mut R, config: &LatencyConfig) -> f64 {
     let mut latency: f64 = dist.sample(rng);
 
     // Occasional slow requests
-    if rng.gen::<f64>() < config.slow_request_probability {
+    if rng.random::<f64>() < config.slow_request_probability {
         latency *= config.slow_request_multiplier;
     }
 
@@ -337,17 +337,17 @@ fn generate_latency<R: Rng>(rng: &mut R, config: &LatencyConfig) -> f64 {
 fn generate_response_bytes<R: Rng>(rng: &mut R, status: u16, path: &str) -> u32 {
     match status {
         204 => 0,
-        301 | 302 => rng.gen_range(0..200),
-        400..=499 => rng.gen_range(100..1000),
-        500..=599 => rng.gen_range(100..500),
+        301 | 302 => rng.random_range(0..200),
+        400..=499 => rng.random_range(100..1000),
+        500..=599 => rng.random_range(100..500),
         _ => {
             // Response size depends on path type
             if path.contains("/static/") || path.contains(".js") || path.contains(".css") {
-                rng.gen_range(1000..500000)
+                rng.random_range(1000..500000)
             } else if path.contains("/api/") {
-                rng.gen_range(100..50000)
+                rng.random_range(100..50000)
             } else {
-                rng.gen_range(500..10000)
+                rng.random_range(500..10000)
             }
         }
     }
@@ -389,7 +389,7 @@ pub fn generate_logs(config: &LogsConfig) -> Vec<LogEntry> {
 
         // Check for error burst
         if config.error_burst.enable {
-            if !in_burst && rng.gen::<f64>() < config.error_burst.burst_probability / 100.0 {
+            if !in_burst && rng.random::<f64>() < config.error_burst.burst_probability / 100.0 {
                 in_burst = true;
                 burst_end_time = current_time
                     + Duration::seconds(config.error_burst.burst_duration_seconds as i64);
@@ -400,10 +400,10 @@ pub fn generate_logs(config: &LogsConfig) -> Vec<LogEntry> {
         }
 
         // Generate status code
-        let status_str = if in_burst && rng.gen::<f64>() < config.error_burst.burst_error_rate {
+        let status_str = if in_burst && rng.random::<f64>() < config.error_burst.burst_error_rate {
             // During burst, mostly 5xx errors
             *["500", "502", "503"].choose(&mut rng).unwrap_or(&"500")
-        } else if rng.gen::<f64>() > config.success_rate {
+        } else if rng.random::<f64>() > config.success_rate {
             // Normal error rate
             status_chain.next(&mut rng)
         } else {
@@ -419,7 +419,7 @@ pub fn generate_logs(config: &LogsConfig) -> Vec<LogEntry> {
         let response_bytes = generate_response_bytes(&mut rng, status_code, &path);
 
         let ip = ip_pool.choose(&mut rng).cloned().unwrap_or_default();
-        let user_id = if rng.gen::<f64>() < 0.6 {
+        let user_id = if rng.random::<f64>() < 0.6 {
             user_pool.choose(&mut rng).cloned()
         } else {
             None
@@ -431,7 +431,7 @@ pub fn generate_logs(config: &LogsConfig) -> Vec<LogEntry> {
             None
         };
 
-        let referer = if config.include_referer && rng.gen::<f64>() < 0.3 {
+        let referer = if config.include_referer && rng.random::<f64>() < 0.3 {
             Some(format!(
                 "https://example.com{}",
                 API_PATHS.choose(&mut rng).unwrap_or(&"/")
@@ -520,7 +520,7 @@ pub fn generate_app_logs(config: &LogsConfig) -> Vec<AppLogEntry> {
         let level = LOG_LEVELS[level_idx].to_string();
 
         let exception = if level == "ERROR" || level == "FATAL" {
-            if rng.gen::<f64>() < 0.7 {
+            if rng.random::<f64>() < 0.7 {
                 exceptions.choose(&mut rng).map(|s| s.to_string())
             } else {
                 None
@@ -529,22 +529,22 @@ pub fn generate_app_logs(config: &LogsConfig) -> Vec<AppLogEntry> {
             None
         };
 
-        let trace_id = if rng.gen::<f64>() < 0.8 {
-            Some(format!("{:032x}", rng.gen::<u128>()))
+        let trace_id = if rng.random::<f64>() < 0.8 {
+            Some(format!("{:032x}", rng.random::<u128>()))
         } else {
             None
         };
 
         let span_id = trace_id
             .as_ref()
-            .map(|_| format!("{:016x}", rng.gen::<u64>()));
+            .map(|_| format!("{:016x}", rng.random::<u64>()));
 
         entries.push(AppLogEntry {
             timestamp: current_time.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
             level,
             logger: loggers.choose(&mut rng).unwrap_or(&"app").to_string(),
             message: messages.choose(&mut rng).unwrap_or(&"Event").to_string(),
-            thread_id: rng.gen_range(1..100),
+            thread_id: rng.random_range(1..100),
             trace_id,
             span_id,
             exception,
