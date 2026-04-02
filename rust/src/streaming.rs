@@ -12,11 +12,6 @@ use crate::general::{EmployeeRow, SuperstoreRow};
 use crate::utils::{US_SECTORS, US_SECTORS_MAP};
 
 use chrono::{Datelike, NaiveDate, Utc};
-use fake::faker::address::en::{CityName, StateName, ZipCode};
-use fake::faker::internet::en::SafeEmail;
-use fake::faker::name::en::{FirstName, LastName};
-use fake::faker::phone_number::en::PhoneNumber;
-use fake::Fake;
 
 const SHIP_MODES: [&str; 3] = ["First Class", "Standard Class", "Second Class"];
 const SEGMENTS: [&str; 4] = ["A", "B", "C", "D"];
@@ -69,6 +64,66 @@ fn generate_street_address<R: Rng>(rng: &mut R) -> String {
         "Hill St",
     ];
     format!("{} {}", number, street_names.choose(rng).unwrap())
+}
+
+fn generate_city<R: Rng>(rng: &mut R) -> String {
+    const CITIES: [&str; 12] = [
+        "Springfield",
+        "Franklin",
+        "Riverton",
+        "Madison",
+        "Clinton",
+        "Georgetown",
+        "Salem",
+        "Arlington",
+        "Fairview",
+        "Ashland",
+        "Burlington",
+        "Milton",
+    ];
+    CITIES[rng.gen_range(0..CITIES.len())].to_string()
+}
+
+fn generate_state<R: Rng>(rng: &mut R) -> String {
+    const STATES: [&str; 10] = ["CA", "NY", "TX", "WA", "FL", "IL", "GA", "AZ", "CO", "NC"];
+    STATES[rng.gen_range(0..STATES.len())].to_string()
+}
+
+fn generate_zip<R: Rng>(rng: &mut R) -> String {
+    format!("{:05}", rng.gen_range(10000..100000))
+}
+
+fn generate_first_name<R: Rng>(rng: &mut R) -> String {
+    const FIRST_NAMES: [&str; 16] = [
+        "Alex", "Jordan", "Taylor", "Casey", "Morgan", "Riley", "Avery", "Parker", "Quinn",
+        "Jamie", "Drew", "Reese", "Skyler", "Hayden", "Cameron", "Rowan",
+    ];
+    FIRST_NAMES[rng.gen_range(0..FIRST_NAMES.len())].to_string()
+}
+
+fn generate_last_name<R: Rng>(rng: &mut R) -> String {
+    const LAST_NAMES: [&str; 16] = [
+        "Smith", "Johnson", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas",
+        "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Clark",
+    ];
+    LAST_NAMES[rng.gen_range(0..LAST_NAMES.len())].to_string()
+}
+
+fn generate_email<R: Rng>(rng: &mut R) -> String {
+    const DOMAINS: [&str; 4] = ["example.com", "corp.test", "mail.test", "demo.local"];
+    let first = generate_first_name(rng).to_lowercase();
+    let last = generate_last_name(rng).to_lowercase();
+    let domain = DOMAINS[rng.gen_range(0..DOMAINS.len())];
+    format!("{}.{}@{}", first, last, domain)
+}
+
+fn generate_phone<R: Rng>(rng: &mut R) -> String {
+    format!(
+        "({:03}) {:03}-{:04}",
+        rng.gen_range(200..1000),
+        rng.gen_range(100..1000),
+        rng.gen_range(1000..10000)
+    )
 }
 
 fn random_date_this_year<R: Rng>(rng: &mut R) -> NaiveDate {
@@ -174,9 +229,9 @@ impl Iterator for SuperstoreIterator {
                 customer_id: generate_license_plate(&mut self.rng),
                 segment: SEGMENTS.choose(&mut self.rng).unwrap().to_string(),
                 country: "US".to_string(),
-                city: CityName().fake_with_rng(&mut self.rng),
-                state: StateName().fake_with_rng(&mut self.rng),
-                postal_code: ZipCode().fake_with_rng(&mut self.rng),
+                city: generate_city(&mut self.rng),
+                state: generate_state(&mut self.rng),
+                postal_code: generate_zip(&mut self.rng),
                 region: format!("Region {}", self.rng.gen_range(0..5)),
                 product_id: generate_bban(&mut self.rng),
                 category: sector.to_string(),
@@ -249,18 +304,18 @@ impl Iterator for EmployeeIterator {
             let row = EmployeeRow {
                 row_id,
                 employee_id: generate_ein(&mut self.rng),
-                first_name: FirstName().fake_with_rng(&mut self.rng),
-                surname: LastName().fake_with_rng(&mut self.rng),
+                first_name: generate_first_name(&mut self.rng),
+                surname: generate_last_name(&mut self.rng),
                 prefix: PREFIXES.choose(&mut self.rng).unwrap().to_string(),
                 suffix: SUFFIXES.choose(&mut self.rng).unwrap().to_string(),
-                phone_number: PhoneNumber().fake_with_rng(&mut self.rng),
-                email: SafeEmail().fake_with_rng(&mut self.rng),
+                phone_number: generate_phone(&mut self.rng),
+                email: generate_email(&mut self.rng),
                 ssn: generate_ssn(&mut self.rng),
                 street: generate_street_address(&mut self.rng),
-                city: CityName().fake_with_rng(&mut self.rng),
-                postal_code: ZipCode().fake_with_rng(&mut self.rng),
+                city: generate_city(&mut self.rng),
+                postal_code: generate_zip(&mut self.rng),
                 region: format!("Region {}", self.rng.gen_range(0..5)),
-                state: StateName().fake_with_rng(&mut self.rng),
+                state: generate_state(&mut self.rng),
                 country: "US".to_string(),
                 start_date: random_date_30_years(&mut self.rng),
                 date_of_birth: random_date_of_birth(&mut self.rng),
