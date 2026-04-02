@@ -96,16 +96,16 @@ fn generate_zip<R: Rng>(rng: &mut R) -> String {
 
 fn generate_first_name<R: Rng>(rng: &mut R) -> String {
     const FIRST_NAMES: [&str; 16] = [
-        "Alex", "Jordan", "Taylor", "Casey", "Morgan", "Riley", "Avery", "Parker",
-        "Quinn", "Jamie", "Drew", "Reese", "Skyler", "Hayden", "Cameron", "Rowan",
+        "Alex", "Jordan", "Taylor", "Casey", "Morgan", "Riley", "Avery", "Parker", "Quinn",
+        "Jamie", "Drew", "Reese", "Skyler", "Hayden", "Cameron", "Rowan",
     ];
     FIRST_NAMES[rng.gen_range(0..FIRST_NAMES.len())].to_string()
 }
 
 fn generate_last_name<R: Rng>(rng: &mut R) -> String {
     const LAST_NAMES: [&str; 16] = [
-        "Smith", "Johnson", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson",
-        "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Clark",
+        "Smith", "Johnson", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas",
+        "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Clark",
     ];
     LAST_NAMES[rng.gen_range(0..LAST_NAMES.len())].to_string()
 }
