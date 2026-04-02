@@ -7,12 +7,6 @@ use serde::{Deserialize, Serialize};
 use crate::copulas::GaussianCopula;
 use crate::utils::{US_SECTORS, US_SECTORS_MAP};
 
-use fake::faker::address::en::{CityName, StateName, ZipCode};
-use fake::faker::internet::en::SafeEmail;
-use fake::faker::name::en::{FirstName, LastName};
-use fake::faker::phone_number::en::PhoneNumber;
-use fake::Fake;
-
 const SHIP_MODES: [&str; 3] = ["First Class", "Standard Class", "Second Class"];
 const SEGMENTS: [&str; 4] = ["A", "B", "C", "D"];
 const PREFIXES: [&str; 6] = ["Mr.", "Mrs.", "Ms.", "Dr.", "Prof.", "Rev."];
@@ -671,14 +665,30 @@ struct LocationPool {
 
 impl LocationPool {
     fn generate<R: Rng>(rng: &mut R, pool_size: usize) -> Self {
+        const CITIES: [&str; 12] = [
+            "Springfield",
+            "Franklin",
+            "Riverton",
+            "Madison",
+            "Clinton",
+            "Georgetown",
+            "Salem",
+            "Arlington",
+            "Fairview",
+            "Ashland",
+            "Burlington",
+            "Milton",
+        ];
+        const STATES: [&str; 10] = ["CA", "NY", "TX", "WA", "FL", "IL", "GA", "AZ", "CO", "NC"];
+
         let cities: Vec<String> = (0..pool_size)
-            .map(|_| CityName().fake_with_rng(rng))
+            .map(|_| CITIES[rng.gen_range(0..CITIES.len())].to_string())
             .collect();
         let states: Vec<String> = (0..pool_size)
-            .map(|_| StateName().fake_with_rng(rng))
+            .map(|_| STATES[rng.gen_range(0..STATES.len())].to_string())
             .collect();
         let zip_codes: Vec<String> = (0..pool_size)
-            .map(|_| ZipCode().fake_with_rng(rng))
+            .map(|_| format!("{:05}", rng.gen_range(10000..100000)))
             .collect();
         Self {
             cities,
@@ -709,17 +719,39 @@ struct NamePool {
 
 impl NamePool {
     fn generate<R: Rng>(rng: &mut R, pool_size: usize) -> Self {
+        const FIRST_NAMES: [&str; 16] = [
+            "Alex", "Jordan", "Taylor", "Casey", "Morgan", "Riley", "Avery", "Parker", "Quinn",
+            "Jamie", "Drew", "Reese", "Skyler", "Hayden", "Cameron", "Rowan",
+        ];
+        const LAST_NAMES: [&str; 16] = [
+            "Smith", "Johnson", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson",
+            "Thomas", "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Clark",
+        ];
+        const DOMAINS: [&str; 4] = ["example.com", "corp.test", "mail.test", "demo.local"];
+
         let first_names: Vec<String> = (0..pool_size)
-            .map(|_| FirstName().fake_with_rng(rng))
+            .map(|_| FIRST_NAMES[rng.gen_range(0..FIRST_NAMES.len())].to_string())
             .collect();
         let last_names: Vec<String> = (0..pool_size)
-            .map(|_| LastName().fake_with_rng(rng))
+            .map(|_| LAST_NAMES[rng.gen_range(0..LAST_NAMES.len())].to_string())
             .collect();
         let emails: Vec<String> = (0..pool_size)
-            .map(|_| SafeEmail().fake_with_rng(rng))
+            .map(|_| {
+                let first = FIRST_NAMES[rng.gen_range(0..FIRST_NAMES.len())].to_lowercase();
+                let last = LAST_NAMES[rng.gen_range(0..LAST_NAMES.len())].to_lowercase();
+                let domain = DOMAINS[rng.gen_range(0..DOMAINS.len())];
+                format!("{}.{}@{}", first, last, domain)
+            })
             .collect();
         let phone_numbers: Vec<String> = (0..pool_size)
-            .map(|_| PhoneNumber().fake_with_rng(rng))
+            .map(|_| {
+                format!(
+                    "({:03}) {:03}-{:04}",
+                    rng.gen_range(200..1000),
+                    rng.gen_range(100..1000),
+                    rng.gen_range(1000..10000)
+                )
+            })
             .collect();
         Self {
             first_names,
