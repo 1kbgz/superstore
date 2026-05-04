@@ -1,0 +1,1733 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>superstore.config - superstore v0.3.2</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=890fd012" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">superstore <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.3.2</code></div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text">superstore <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.3.2</code></span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/retail.html">Retail Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/timeseries.html">Time Series Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/weather.html">Weather Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/logs.html">Log Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/finance.html">Financial Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/telemetry.html">Telemetry &amp; IoT Data Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/distributions.html">Statistical Distributions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/copulas.html">Correlation &amp; Copulas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/temporal.html">Temporal Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/api.html">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for superstore.config</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Configuration models for superstore generators using Pydantic.</span>
+
+<span class="sd">These config classes provide structured, validated configuration for data generators.</span>
+<span class="sd">They serialize to JSON/dict for passing to Rust via PyO3.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Enums for configuration options</span>
+<span class="c1"># =============================================================================</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Season</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Season for weather patterns.&quot;&quot;&quot;</span>
+
+    <span class="n">SPRING</span> <span class="o">=</span> <span class="s2">&quot;spring&quot;</span>
+    <span class="n">SUMMER</span> <span class="o">=</span> <span class="s2">&quot;summer&quot;</span>
+    <span class="n">FALL</span> <span class="o">=</span> <span class="s2">&quot;fall&quot;</span>
+    <span class="n">WINTER</span> <span class="o">=</span> <span class="s2">&quot;winter&quot;</span>
+
+
+<div class="viewcode-block" id="ClimateZone">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.ClimateZone">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ClimateZone</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Climate zone affecting weather patterns.&quot;&quot;&quot;</span>
+
+    <span class="n">TROPICAL</span> <span class="o">=</span> <span class="s2">&quot;tropical&quot;</span>
+    <span class="n">SUBTROPICAL</span> <span class="o">=</span> <span class="s2">&quot;subtropical&quot;</span>
+    <span class="n">TEMPERATE</span> <span class="o">=</span> <span class="s2">&quot;temperate&quot;</span>
+    <span class="n">CONTINENTAL</span> <span class="o">=</span> <span class="s2">&quot;continental&quot;</span>
+    <span class="n">POLAR</span> <span class="o">=</span> <span class="s2">&quot;polar&quot;</span>
+    <span class="n">ARID</span> <span class="o">=</span> <span class="s2">&quot;arid&quot;</span>
+    <span class="n">MEDITERRANEAN</span> <span class="o">=</span> <span class="s2">&quot;mediterranean&quot;</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">WeatherEvent</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of weather events.&quot;&quot;&quot;</span>
+
+    <span class="n">CLEAR</span> <span class="o">=</span> <span class="s2">&quot;clear&quot;</span>
+    <span class="n">CLOUDY</span> <span class="o">=</span> <span class="s2">&quot;cloudy&quot;</span>
+    <span class="n">RAIN</span> <span class="o">=</span> <span class="s2">&quot;rain&quot;</span>
+    <span class="n">HEAVY_RAIN</span> <span class="o">=</span> <span class="s2">&quot;heavy_rain&quot;</span>
+    <span class="n">SNOW</span> <span class="o">=</span> <span class="s2">&quot;snow&quot;</span>
+    <span class="n">STORM</span> <span class="o">=</span> <span class="s2">&quot;storm&quot;</span>
+    <span class="n">HEATWAVE</span> <span class="o">=</span> <span class="s2">&quot;heatwave&quot;</span>
+    <span class="n">COLD_SNAP</span> <span class="o">=</span> <span class="s2">&quot;cold_snap&quot;</span>
+    <span class="n">FOG</span> <span class="o">=</span> <span class="s2">&quot;fog&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MachineType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of machines for crossfilter.&quot;&quot;&quot;</span>
+
+    <span class="n">CORE</span> <span class="o">=</span> <span class="s2">&quot;core&quot;</span>
+    <span class="n">EDGE</span> <span class="o">=</span> <span class="s2">&quot;edge&quot;</span>
+    <span class="n">WORKER</span> <span class="o">=</span> <span class="s2">&quot;worker&quot;</span>
+
+
+<div class="viewcode-block" id="OutputFormat">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.OutputFormat">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OutputFormat</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Output format for generators.&quot;&quot;&quot;</span>
+
+    <span class="n">PANDAS</span> <span class="o">=</span> <span class="s2">&quot;pandas&quot;</span>
+    <span class="n">POLARS</span> <span class="o">=</span> <span class="s2">&quot;polars&quot;</span>
+    <span class="n">DICT</span> <span class="o">=</span> <span class="s2">&quot;dict&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="LogFormat">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.LogFormat">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogFormat</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Log output format styles.&quot;&quot;&quot;</span>
+
+    <span class="n">COMBINED</span> <span class="o">=</span> <span class="s2">&quot;combined&quot;</span>  <span class="c1"># Apache Combined Log Format</span>
+    <span class="n">COMMON</span> <span class="o">=</span> <span class="s2">&quot;common&quot;</span>  <span class="c1"># Apache Common Log Format</span>
+    <span class="n">JSON</span> <span class="o">=</span> <span class="s2">&quot;json&quot;</span>  <span class="c1"># JSON structured logs</span>
+    <span class="n">APPLICATION</span> <span class="o">=</span> <span class="s2">&quot;application&quot;</span>  <span class="c1"># Application event logs</span></div>
+
+
+
+<div class="viewcode-block" id="LogLevel">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.LogLevel">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogLevel</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Log severity levels.&quot;&quot;&quot;</span>
+
+    <span class="n">TRACE</span> <span class="o">=</span> <span class="s2">&quot;trace&quot;</span>
+    <span class="n">DEBUG</span> <span class="o">=</span> <span class="s2">&quot;debug&quot;</span>
+    <span class="n">INFO</span> <span class="o">=</span> <span class="s2">&quot;info&quot;</span>
+    <span class="n">WARN</span> <span class="o">=</span> <span class="s2">&quot;warn&quot;</span>
+    <span class="n">ERROR</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Weather Generator Configuration</span>
+<span class="c1"># =============================================================================</span>
+
+
+<div class="viewcode-block" id="WeatherConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.WeatherConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">WeatherConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the weather data generator.</span>
+
+<span class="sd">    Generates realistic outdoor sensor data with temporal patterns,</span>
+<span class="sd">    seasonal variations, and weather events.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Basic parameters</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of readings to generate&quot;</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">OutputFormat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">OutputFormat</span><span class="o">.</span><span class="n">DICT</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Output format&quot;</span><span class="p">)</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Random seed for reproducibility&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Temporal settings</span>
+    <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start date (YYYY-MM-DD). Defaults to 30 days ago.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">frequency_minutes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">1440</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Reading frequency in minutes&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Location settings</span>
+    <span class="n">climate_zone</span><span class="p">:</span> <span class="n">ClimateZone</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">ClimateZone</span><span class="o">.</span><span class="n">TEMPERATE</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Climate zone for realistic patterns&quot;</span><span class="p">)</span>
+    <span class="n">latitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mf">90.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">90.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Latitude for day/night calculations&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Temperature settings</span>
+    <span class="n">base_temp_celsius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=-</span><span class="mf">50.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Annual average temperature in Celsius&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">temp_daily_amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Day/night temperature swing in Celsius&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">temp_seasonal_amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Summer/winter temperature swing in Celsius&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">temp_noise_stddev</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Random noise standard deviation&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Humidity settings</span>
+    <span class="n">base_humidity_percent</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average humidity percentage&quot;</span><span class="p">)</span>
+    <span class="n">humidity_temp_correlation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=-</span><span class="mf">0.3</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Correlation between temp and humidity (-1 to 1)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Precipitation settings</span>
+    <span class="n">precipitation_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base probability of precipitation&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Weather events</span>
+    <span class="n">enable_weather_events</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable weather event simulation&quot;</span><span class="p">)</span>
+    <span class="n">event_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of weather event occurring&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Outliers</span>
+    <span class="n">outlier_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of outlier readings (sensor errors)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Sensor characteristics</span>
+    <span class="n">sensor_drift</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable gradual sensor calibration drift&quot;</span><span class="p">)</span>
+    <span class="n">sensor_drift_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Rate of sensor drift per reading&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;use_enum_values&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Superstore Generator Configuration</span>
+<span class="c1"># =============================================================================</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SeasonalityConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for seasonal patterns in sales data.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable seasonal effects&quot;</span><span class="p">)</span>
+    <span class="n">q4_multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">3.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Q4 (holiday) sales multiplier&quot;</span><span class="p">)</span>
+    <span class="n">summer_multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Summer sales multiplier&quot;</span><span class="p">)</span>
+    <span class="n">back_to_school_multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;August/September sales multiplier&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PromotionalConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for promotional effects.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable promotional patterns&quot;</span><span class="p">)</span>
+    <span class="n">discount_quantity_correlation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;How much discounts increase quantity (correlation factor)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">price_elasticity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Price elasticity of demand&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomerConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for customer behavior patterns.&quot;&quot;&quot;</span>
+
+    <span class="n">enable_cohorts</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable customer cohort modeling&quot;</span><span class="p">)</span>
+    <span class="n">repeat_customer_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Fraction of orders from repeat customers&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">vip_segment_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Fraction of customers in VIP segment&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">vip_order_multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;VIP customer order value multiplier&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SuperstoreConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.SuperstoreConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SuperstoreConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the superstore data generator.</span>
+
+<span class="sd">    Generates realistic retail transaction data with correlations</span>
+<span class="sd">    between sales, quantity, discount, and profit.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Basic parameters</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of rows to generate&quot;</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">OutputFormat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">OutputFormat</span><span class="o">.</span><span class="n">DICT</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Output format&quot;</span><span class="p">)</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Random seed for reproducibility&quot;</span><span class="p">)</span>
+    <span class="n">pool_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Size of pre-generated data pools for performance&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Correlation settings</span>
+    <span class="n">sales_quantity_correlation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sales-quantity correlation&quot;</span><span class="p">)</span>
+    <span class="n">sales_profit_correlation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sales-profit correlation&quot;</span><span class="p">)</span>
+    <span class="n">discount_profit_correlation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=-</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">ge</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Discount-profit correlation&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Pricing</span>
+    <span class="n">enable_price_points</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Round prices to realistic $X.99 values&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Advanced features</span>
+    <span class="n">seasonality</span><span class="p">:</span> <span class="n">SeasonalityConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">SeasonalityConfig</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Seasonal patterns&quot;</span><span class="p">)</span>
+    <span class="n">promotions</span><span class="p">:</span> <span class="n">PromotionalConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">PromotionalConfig</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Promotional effects&quot;</span><span class="p">)</span>
+    <span class="n">customers</span><span class="p">:</span> <span class="n">CustomerConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">CustomerConfig</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Customer behavior&quot;</span><span class="p">)</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;use_enum_values&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Time Series Generator Configuration</span>
+<span class="c1"># =============================================================================</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">RegimeConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for regime-switching behavior.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable regime switching&quot;</span><span class="p">)</span>
+    <span class="n">n_regimes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of regimes&quot;</span><span class="p">)</span>
+    <span class="n">regime_persistence</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of staying in current regime&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">volatility_multipliers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Volatility multiplier for each regime&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">JumpConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for jump diffusion.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable jump diffusion&quot;</span><span class="p">)</span>
+    <span class="n">jump_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of jump per period&quot;</span><span class="p">)</span>
+    <span class="n">jump_mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mean jump size&quot;</span><span class="p">)</span>
+    <span class="n">jump_stddev</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Standard deviation of jump size&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TimeseriesConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.TimeseriesConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TimeseriesConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the time series generator.</span>
+
+<span class="sd">    Generates financial-style time series with optional regime changes,</span>
+<span class="sd">    volatility clustering, and jump diffusion.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Basic parameters</span>
+    <span class="n">nper</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of periods&quot;</span><span class="p">)</span>
+    <span class="n">ncol</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of columns (max 26)&quot;</span><span class="p">)</span>
+    <span class="n">freq</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">,</span> <span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Frequency: B=business, D=daily, W=weekly, M=monthly&quot;</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">OutputFormat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">OutputFormat</span><span class="o">.</span><span class="n">DICT</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Output format&quot;</span><span class="p">)</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Random seed for reproducibility&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Process parameters</span>
+    <span class="n">ar_phi</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;AR(1) persistence parameter&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Innovation standard deviation&quot;</span><span class="p">)</span>
+    <span class="n">drift</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Drift/trend per period&quot;</span><span class="p">)</span>
+    <span class="n">cumulative</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Apply cumulative sum (price-like behavior)&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Distribution</span>
+    <span class="n">use_fat_tails</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Use Student-t instead of normal innovations&quot;</span><span class="p">)</span>
+    <span class="n">degrees_freedom</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">2.1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Degrees of freedom for Student-t&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Correlation</span>
+    <span class="n">cross_correlation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Correlation between columns (0 = independent)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Advanced features</span>
+    <span class="n">regimes</span><span class="p">:</span> <span class="n">RegimeConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">RegimeConfig</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Regime switching configuration&quot;</span><span class="p">)</span>
+    <span class="n">jumps</span><span class="p">:</span> <span class="n">JumpConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">JumpConfig</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Jump diffusion configuration&quot;</span><span class="p">)</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;use_enum_values&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Crossfilter Generator Configuration</span>
+<span class="c1"># =============================================================================</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AnomalyConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for anomaly injection.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable anomaly injection&quot;</span><span class="p">)</span>
+    <span class="n">cpu_spike_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of CPU spike&quot;</span><span class="p">)</span>
+    <span class="n">memory_leak_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of memory leak start&quot;</span><span class="p">)</span>
+    <span class="n">network_saturation_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of network saturation&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TemporalPatternConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for temporal patterns in IoT data.&quot;&quot;&quot;</span>
+
+    <span class="n">enable_diurnal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable day/night load patterns&quot;</span><span class="p">)</span>
+    <span class="n">enable_weekly</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable weekday/weekend patterns&quot;</span><span class="p">)</span>
+    <span class="n">peak_hour</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Hour of peak load (0-23)&quot;</span><span class="p">)</span>
+    <span class="n">night_load_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Load factor during night hours&quot;</span><span class="p">)</span>
+    <span class="n">weekend_load_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Load factor during weekends&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="CrossfilterConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.CrossfilterConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CrossfilterConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for crossfilter IoT data generator.</span>
+
+<span class="sd">    Generates machine telemetry data suitable for dashboard demos</span>
+<span class="sd">    with optional anomalies and temporal patterns.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Basic parameters</span>
+    <span class="n">n_machines</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of machines&quot;</span><span class="p">)</span>
+    <span class="n">n_readings</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of usage readings per machine&quot;</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">OutputFormat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="n">OutputFormat</span><span class="o">.</span><span class="n">DICT</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Output format&quot;</span><span class="p">)</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Random seed for reproducibility&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Machine configuration</span>
+    <span class="n">machine_types</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MachineType</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="n">MachineType</span><span class="o">.</span><span class="n">CORE</span><span class="p">,</span> <span class="n">MachineType</span><span class="o">.</span><span class="n">EDGE</span><span class="p">,</span> <span class="n">MachineType</span><span class="o">.</span><span class="n">WORKER</span><span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Types of machines to generate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">cores_range</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Range of CPU cores per machine&quot;</span><span class="p">)</span>
+    <span class="n">zones</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;zone-a&quot;</span><span class="p">,</span> <span class="s2">&quot;zone-b&quot;</span><span class="p">,</span> <span class="s2">&quot;zone-c&quot;</span><span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Available zones&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">regions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;us-east-1&quot;</span><span class="p">,</span> <span class="s2">&quot;us-west-2&quot;</span><span class="p">,</span> <span class="s2">&quot;eu-west-1&quot;</span><span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Available regions&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Usage profiles</span>
+    <span class="n">base_cpu_load</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base CPU utilization&quot;</span><span class="p">)</span>
+    <span class="n">base_memory_load</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base memory utilization&quot;</span><span class="p">)</span>
+    <span class="n">load_variance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Variance in load readings&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Advanced features</span>
+    <span class="n">anomalies</span><span class="p">:</span> <span class="n">AnomalyConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">AnomalyConfig</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Anomaly injection settings&quot;</span><span class="p">)</span>
+    <span class="n">temporal_patterns</span><span class="p">:</span> <span class="n">TemporalPatternConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="n">TemporalPatternConfig</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Temporal pattern settings&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Failure simulation</span>
+    <span class="n">enable_failures</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable machine failure simulation&quot;</span><span class="p">)</span>
+    <span class="n">failure_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of failure per reading&quot;</span><span class="p">)</span>
+    <span class="n">cascade_failure_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of cascade failure when dependent machine fails&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;use_enum_values&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Logs Generator Configuration</span>
+<span class="c1"># =============================================================================</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ErrorBurstConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for error burst behavior in logs.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable error burst simulation&quot;</span><span class="p">)</span>
+    <span class="n">burst_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of entering a burst state per second&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">burst_duration_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average duration of error bursts in seconds&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">burst_error_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Error rate during burst periods&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">LatencyConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for request latency distribution.&quot;&quot;&quot;</span>
+
+    <span class="n">base_latency_ms</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base latency in milliseconds (median)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">latency_stddev</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Standard deviation for log-normal distribution&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">slow_request_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of a slow request&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">slow_request_multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Multiplier for slow request latency&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="LogsConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.LogsConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogsConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the logs data generator.</span>
+
+<span class="sd">    Generates realistic web server access logs and application event logs</span>
+<span class="sd">    with configurable traffic patterns, error rates, and latency distributions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Basic settings</span>
+    <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of log entries to generate&quot;</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">OutputFormat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">OutputFormat</span><span class="o">.</span><span class="n">DICT</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Output format (pandas, polars, or dict)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Random seed for reproducibility&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">format</span><span class="p">:</span> <span class="n">LogFormat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">LogFormat</span><span class="o">.</span><span class="n">COMBINED</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Log format style&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Traffic patterns</span>
+    <span class="n">start_time</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start timestamp (ISO format). Defaults to current time.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">requests_per_second</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average requests per second (Poisson rate)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Status code distribution</span>
+    <span class="n">success_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base success rate (2xx responses)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Error bursts</span>
+    <span class="n">error_burst</span><span class="p">:</span> <span class="n">ErrorBurstConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">ErrorBurstConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Error burst configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Latency</span>
+    <span class="n">latency</span><span class="p">:</span> <span class="n">LatencyConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">LatencyConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Latency distribution configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Request details</span>
+    <span class="n">include_user_agent</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Include user agent strings&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">unique_ips</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of unique IP addresses to generate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">unique_users</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of unique user IDs&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">api_path_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Ratio of API paths vs static paths&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;use_enum_values&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Finance Config Classes</span>
+<span class="c1"># =============================================================================</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StockConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for stock price generation using Geometric Brownian Motion.&quot;&quot;&quot;</span>
+
+    <span class="n">annual_drift</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Annual expected return (mu). E.g., 0.08 = 8</span><span class="si">% a</span><span class="s2">nnual return&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">annual_volatility</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.20</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Annual volatility (sigma). E.g., 0.20 = 20</span><span class="si">% a</span><span class="s2">nnual volatility&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">initial_price</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span>
+        <span class="n">gt</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Initial stock price&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">enable_jumps</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable jump diffusion for more realistic price movements&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">jump_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Daily probability of a jump event&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">jump_mean</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mean of jump size (log-normal)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">jump_stddev</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Standard deviation of jump size&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">OhlcvConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for OHLCV (Open-High-Low-Close-Volume) bar generation.&quot;&quot;&quot;</span>
+
+    <span class="n">avg_volume</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1_000_000</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average daily trading volume&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">volume_volatility</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Volatility of volume (log-normal sigma)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">intraday_volatility</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Intraday price range volatility&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">volume_price_correlation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Correlation between volume and absolute returns&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">OptionsConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for options chain generation with Black-Scholes pricing.&quot;&quot;&quot;</span>
+
+    <span class="n">risk_free_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Annual risk-free interest rate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">dividend_yield</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Annual dividend yield&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">expirations</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Days to expiration for option contracts&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">strike_offsets</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.97</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.03</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.10</span><span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Strike prices as multipliers of spot price&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<div class="viewcode-block" id="FinanceConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.FinanceConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FinanceConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the finance data generator.</span>
+
+<span class="sd">    Generates realistic financial market data including OHLCV stock prices,</span>
+<span class="sd">    multi-asset correlated returns, and options chains with Black-Scholes pricing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Basic settings</span>
+    <span class="n">ndays</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">252</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of trading days to generate (252 = 1 year)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">n_assets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of assets (1 = single stock, &gt;1 = correlated multi-asset)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">output</span><span class="p">:</span> <span class="n">OutputFormat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">OutputFormat</span><span class="o">.</span><span class="n">DICT</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Output format (pandas, polars, or dict)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Random seed for reproducibility&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start date (ISO format YYYY-MM-DD). Defaults to 2024-01-02.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">tickers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;AAPL&quot;</span><span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Ticker symbols for the assets&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">asset_correlation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Correlation between assets (for multi-asset generation)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Nested configurations</span>
+    <span class="n">stock</span><span class="p">:</span> <span class="n">StockConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">StockConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stock price generation configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">ohlcv</span><span class="p">:</span> <span class="n">OhlcvConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">OhlcvConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;OHLCV bar configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">options</span><span class="p">:</span> <span class="n">OptionsConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">OptionsConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Options chain configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;use_enum_values&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># E-commerce Generator Configuration</span>
+<span class="c1"># =============================================================================</span>
+
+
+<div class="viewcode-block" id="SessionConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.SessionConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SessionConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for session behavior in e-commerce.&quot;&quot;&quot;</span>
+
+    <span class="n">avg_pages_per_session</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average pages viewed per session&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">cart_add_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of adding item to cart given product view&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">checkout_start_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.40</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of starting checkout given cart view&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">purchase_completion_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.65</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of completing purchase given checkout start&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">avg_session_duration_seconds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average session duration in seconds&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">enable_bounces</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable session bounces (single-page visits)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">bounce_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Bounce rate (probability of immediate exit)&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CartConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.CartConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CartConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for cart behavior.&quot;&quot;&quot;</span>
+
+    <span class="n">avg_items_per_cart</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Average items per cart&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">remove_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.10</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of removing an item from cart&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">quantity_update_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Probability of updating quantity&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">max_items</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum items per cart&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">enable_abandonment</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable cart abandonment simulation&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">abandonment_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">0.70</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cart abandonment rate&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="CatalogConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.CatalogConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CatalogConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for product catalog.&quot;&quot;&quot;</span>
+
+    <span class="n">num_products</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of unique products&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">min_price</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Minimum product price&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">max_price</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum product price&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">lognormal_prices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Price follows log-normal distribution (realistic skew)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">categories</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;Electronics&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Clothing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Home &amp; Garden&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Sports&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Beauty&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Books&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Toys&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Food&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Product categories&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="RfmConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.RfmConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RfmConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for RFM (Recency, Frequency, Monetary) analysis.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable RFM metrics calculation&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">recency_window_days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">365</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Days to look back for recency&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">num_buckets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">le</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of RFM score buckets (typically 5)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">pareto_shape</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Pareto distribution shape for customer value (80/20 rule)&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="FunnelConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.FunnelConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FunnelConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for conversion funnel.&quot;&quot;&quot;</span>
+
+    <span class="n">enable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Enable funnel stage tracking&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">stages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;visit&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;view_product&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;add_to_cart&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;checkout&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;purchase&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Funnel stages&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">time_of_day_effects</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time-of-day effects on conversions&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">day_of_week_effects</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Day-of-week effects on conversions&quot;</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="EcommerceConfig">
+<a class="viewcode-back" href="../../docs/src/api.html#superstore.EcommerceConfig">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EcommerceConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for e-commerce data generation.</span>
+
+<span class="sd">    Generates realistic e-commerce data including:</span>
+<span class="sd">    - User sessions via MarkovChain state machines</span>
+<span class="sd">    - Shopping cart events with abandonment patterns</span>
+<span class="sd">    - Customer RFM (Recency, Frequency, Monetary) metrics</span>
+<span class="sd">    - Product catalog with categories and pricing</span>
+<span class="sd">    - Conversion funnels with realistic drop-off rates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sessions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of sessions to generate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">customers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of unique customers&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Random seed for reproducibility&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">start_date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Start date for data generation (YYYY-MM-DD)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">days</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of days to generate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">SessionConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">SessionConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Session behavior configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">cart</span><span class="p">:</span> <span class="n">CartConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">CartConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cart behavior configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">catalog</span><span class="p">:</span> <span class="n">CatalogConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">CatalogConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Product catalog configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">rfm</span><span class="p">:</span> <span class="n">RfmConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">RfmConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RFM analysis configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">funnel</span><span class="p">:</span> <span class="n">FunnelConfig</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">FunnelConfig</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Conversion funnel configuration&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;use_enum_values&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Convenience factory functions</span>
+<span class="c1"># =============================================================================</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">weather_config</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WeatherConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a weather configuration with the given parameters.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">WeatherConfig</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">superstore_config</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SuperstoreConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a superstore configuration with the given parameters.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">SuperstoreConfig</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">timeseries_config</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeseriesConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a time series configuration with the given parameters.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">TimeseriesConfig</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">crossfilter_config</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CrossfilterConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a crossfilter configuration with the given parameters.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">CrossfilterConfig</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">logs_config</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LogsConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a logs configuration with the given parameters.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">LogsConfig</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">finance_config</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FinanceConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a finance configuration with the given parameters.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">FinanceConfig</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ecommerce_config</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EcommerceConfig</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an e-commerce configuration with the given parameters.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EcommerceConfig</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; the superstore authors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=71d9d8e6"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"
+
+
+
+import zenumlLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/mermaid-zenuml@0.2.2/dist/mermaid-zenuml.esm.min.mjs"
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}`;
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        all_mermaids.forEach((el) => {
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+        await mermaid.run();
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+const load = async () => {
+    initStyles();
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...JSON.parse(
+                    `{"startOnLoad": false}`
+                ),
+                ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+mermaid.registerLayoutLoaders(elkLayouts);
+
+
+
+mermaid.registerExternalDiagrams([zenumlLayouts]);
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...JSON.parse(
+        `{"startOnLoad": false}`
+    ),
+    ...{ darkMode: darkTheme, theme: darkTheme ? 'dark' : 'default' },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    <script src="../../_static/js/custom.js?v=956e5d78"></script>
+    </body>
+</html>
