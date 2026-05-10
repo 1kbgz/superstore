@@ -17,7 +17,7 @@ rand = "0.9"
 rand_distr = "0.5"
 chrono = "0.4"
 rayon = "1.10"
-arrow = { version = "54", default-features = false, features = ["ipc"] }
+arrow = { version = "58", default-features = false, features = ["ipc"] }
 nalgebra = "0.34"
 
 [profile.release]
