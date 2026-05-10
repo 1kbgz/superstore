@@ -377,7 +377,7 @@ fn sample_gamma<R: Rng>(rng: &mut R, shape: f64, scale: f64) -> f64 {
 
     if shape < 1.0 {
         // Use Ahrens-Dieter method for shape < 1
-        let u = rng.gen::<f64>();
+        let u = rng.random::<f64>();
         sample_gamma(rng, 1.0 + shape, scale) * u.powf(1.0 / shape)
     } else {
         // Marsaglia and Tsang's method
@@ -389,7 +389,7 @@ fn sample_gamma<R: Rng>(rng: &mut R, shape: f64, scale: f64) -> f64 {
             let v = 1.0 + c * x;
             if v > 0.0 {
                 let v = v * v * v;
-                let u = rng.gen::<f64>();
+                let u = rng.random::<f64>();
 
                 if u < 1.0 - 0.0331 * (x * x) * (x * x) {
                     return d * v * scale;

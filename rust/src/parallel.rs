@@ -7,7 +7,7 @@ use rayon::prelude::*;
 
 use rand::rngs::StdRng;
 use rand::seq::IndexedRandom;
-use rand::{Rng, SeedableRng};
+use rand::{Rng, RngExt, SeedableRng};
 
 use crate::general::{EmployeeRow, SuperstoreRow};
 use crate::utils::{US_SECTORS, US_SECTORS_MAP};
@@ -22,36 +22,36 @@ const SUFFIXES: [&str; 4] = ["Jr.", "Sr.", "III", "IV"];
 fn generate_ein<R: Rng>(rng: &mut R) -> String {
     format!(
         "{:02}-{:07}",
-        rng.gen_range(10..99),
-        rng.gen_range(1000000..9999999)
+        rng.random_range(10..99),
+        rng.random_range(1000000..9999999)
     )
 }
 
 fn generate_license_plate<R: Rng>(rng: &mut R) -> String {
     let letters: String = (0..3)
-        .map(|_| (b'A' + rng.gen_range(0..26)) as char)
+        .map(|_| (b'A' + rng.random_range(0..26)) as char)
         .collect();
-    let numbers: u16 = rng.gen_range(100..1000);
+    let numbers: u16 = rng.random_range(100..1000);
     format!("{}{}", letters, numbers)
 }
 
 fn generate_bban<R: Rng>(rng: &mut R) -> String {
     (0..18)
-        .map(|_| (b'0' + rng.gen_range(0..10)) as char)
+        .map(|_| (b'0' + rng.random_range(0..10)) as char)
         .collect()
 }
 
 fn generate_ssn<R: Rng>(rng: &mut R) -> String {
     format!(
         "{:03}-{:02}-{:04}",
-        rng.gen_range(100..999),
-        rng.gen_range(10..99),
-        rng.gen_range(1000..9999)
+        rng.random_range(100..999),
+        rng.random_range(10..99),
+        rng.random_range(1000..9999)
     )
 }
 
 fn generate_street_address<R: Rng>(rng: &mut R) -> String {
-    let number: u32 = rng.gen_range(1..9999);
+    let number: u32 = rng.random_range(1..9999);
     let street_names = [
         "Main St",
         "Oak Ave",
@@ -82,16 +82,16 @@ fn generate_city<R: Rng>(rng: &mut R) -> String {
         "Burlington",
         "Milton",
     ];
-    CITIES[rng.gen_range(0..CITIES.len())].to_string()
+    CITIES[rng.random_range(0..CITIES.len())].to_string()
 }
 
 fn generate_state<R: Rng>(rng: &mut R) -> String {
     const STATES: [&str; 10] = ["CA", "NY", "TX", "WA", "FL", "IL", "GA", "AZ", "CO", "NC"];
-    STATES[rng.gen_range(0..STATES.len())].to_string()
+    STATES[rng.random_range(0..STATES.len())].to_string()
 }
 
 fn generate_zip<R: Rng>(rng: &mut R) -> String {
-    format!("{:05}", rng.gen_range(10000..100000))
+    format!("{:05}", rng.random_range(10000..100000))
 }
 
 fn generate_first_name<R: Rng>(rng: &mut R) -> String {
@@ -99,7 +99,7 @@ fn generate_first_name<R: Rng>(rng: &mut R) -> String {
         "Alex", "Jordan", "Taylor", "Casey", "Morgan", "Riley", "Avery", "Parker", "Quinn",
         "Jamie", "Drew", "Reese", "Skyler", "Hayden", "Cameron", "Rowan",
     ];
-    FIRST_NAMES[rng.gen_range(0..FIRST_NAMES.len())].to_string()
+    FIRST_NAMES[rng.random_range(0..FIRST_NAMES.len())].to_string()
 }
 
 fn generate_last_name<R: Rng>(rng: &mut R) -> String {
@@ -107,29 +107,29 @@ fn generate_last_name<R: Rng>(rng: &mut R) -> String {
         "Smith", "Johnson", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas",
         "Jackson", "White", "Harris", "Martin", "Thompson", "Garcia", "Clark",
     ];
-    LAST_NAMES[rng.gen_range(0..LAST_NAMES.len())].to_string()
+    LAST_NAMES[rng.random_range(0..LAST_NAMES.len())].to_string()
 }
 
 fn generate_email<R: Rng>(rng: &mut R) -> String {
     const DOMAINS: [&str; 4] = ["example.com", "corp.test", "mail.test", "demo.local"];
     let first = generate_first_name(rng).to_lowercase();
     let last = generate_last_name(rng).to_lowercase();
-    let domain = DOMAINS[rng.gen_range(0..DOMAINS.len())];
+    let domain = DOMAINS[rng.random_range(0..DOMAINS.len())];
     format!("{}.{}@{}", first, last, domain)
 }
 
 fn generate_phone<R: Rng>(rng: &mut R) -> String {
     format!(
         "({:03}) {:03}-{:04}",
-        rng.gen_range(200..1000),
-        rng.gen_range(100..1000),
-        rng.gen_range(1000..10000)
+        rng.random_range(200..1000),
+        rng.random_range(100..1000),
+        rng.random_range(1000..10000)
     )
 }
 
 fn random_date_this_year<R: Rng>(rng: &mut R) -> NaiveDate {
     let year = Utc::now().naive_utc().date().year();
-    let day_of_year = rng.gen_range(1..=365);
+    let day_of_year = rng.random_range(1..=365);
     NaiveDate::from_yo_opt(year, day_of_year)
         .unwrap_or_else(|| NaiveDate::from_ymd_opt(year, 1, 1).unwrap())
 }
@@ -143,7 +143,7 @@ fn random_date_between<R: Rng>(rng: &mut R, start: NaiveDate) -> NaiveDate {
     if days_between == 0 {
         return start;
     }
-    let random_days = rng.gen_range(0..=days_between);
+    let random_days = rng.random_range(0..=days_between);
     start + chrono::Duration::days(random_days as i64)
 }
 
@@ -151,7 +151,7 @@ fn random_date_30_years<R: Rng>(rng: &mut R) -> NaiveDate {
     let today = Utc::now().naive_utc().date();
     let thirty_years_ago = today - chrono::Duration::days(30 * 365);
     let days_range = (today - thirty_years_ago).num_days() as u32;
-    let random_days = rng.gen_range(0..=days_range);
+    let random_days = rng.random_range(0..=days_range);
     thirty_years_ago + chrono::Duration::days(random_days as i64)
 }
 
@@ -162,7 +162,7 @@ fn random_date_of_birth<R: Rng>(rng: &mut R) -> NaiveDate {
     let min_date = today - chrono::Duration::days(max_age * 365);
     let max_date = today - chrono::Duration::days(min_age * 365);
     let days_range = (max_date - min_date).num_days() as u32;
-    let random_days = rng.gen_range(0..=days_range);
+    let random_days = rng.random_range(0..=days_range);
     min_date + chrono::Duration::days(random_days as i64)
 }
 
@@ -199,7 +199,7 @@ pub fn superstore_parallel(count: usize, seed: Option<u64>) -> Vec<SuperstoreRow
             // Create per-thread RNG with deterministic seed based on thread index
             let mut rng = match seed {
                 Some(s) => StdRng::seed_from_u64(s.wrapping_add(thread_idx as u64)),
-                None => StdRng::from_os_rng(),
+                None => StdRng::from_rng(&mut rand::rng()),
             };
 
             let sectors: Vec<&str> = US_SECTORS.clone();
@@ -225,16 +225,16 @@ pub fn superstore_parallel(count: usize, seed: Option<u64>) -> Vec<SuperstoreRow
                     city: generate_city(&mut rng),
                     state: generate_state(&mut rng),
                     postal_code: generate_zip(&mut rng),
-                    region: format!("Region {}", rng.gen_range(0..5)),
+                    region: format!("Region {}", rng.random_range(0..5)),
                     product_id: generate_bban(&mut rng),
                     category: sector.to_string(),
                     sub_category: industry.to_string(),
                     item_status: "Regular".to_string(),
-                    item_price: (rng.gen_range(1..=100) as f64) * 10.0 + 0.99,
-                    sales: rng.gen_range(1..=100) * 100,
-                    quantity: rng.gen_range(1..=100) * 10,
-                    discount: (rng.gen::<f64>() * 100.0 * 100.0).round() / 100.0,
-                    profit: (rng.gen::<f64>() * 1000.0 * 100.0).round() / 100.0,
+                    item_price: (rng.random_range(1..=100) as f64) * 10.0 + 0.99,
+                    sales: rng.random_range(1..=100) * 100,
+                    quantity: rng.random_range(1..=100) * 10,
+                    discount: (rng.random::<f64>() * 100.0 * 100.0).round() / 100.0,
+                    profit: (rng.random::<f64>() * 1000.0 * 100.0).round() / 100.0,
                     // Priority 4 fields (not enabled in parallel simple mode)
                     bundle_id: None,
                     payment_method: None,
@@ -285,7 +285,7 @@ pub fn employees_parallel(count: usize, seed: Option<u64>) -> Vec<EmployeeRow> {
             // Create per-thread RNG with deterministic seed based on thread index
             let mut rng = match seed {
                 Some(s) => StdRng::seed_from_u64(s.wrapping_add(thread_idx as u64)),
-                None => StdRng::from_os_rng(),
+                None => StdRng::from_rng(&mut rand::rng()),
             };
 
             let mut chunk = Vec::with_capacity(end_idx - start_idx);
@@ -304,7 +304,7 @@ pub fn employees_parallel(count: usize, seed: Option<u64>) -> Vec<EmployeeRow> {
                     street: generate_street_address(&mut rng),
                     city: generate_city(&mut rng),
                     postal_code: generate_zip(&mut rng),
-                    region: format!("Region {}", rng.gen_range(0..5)),
+                    region: format!("Region {}", rng.random_range(0..5)),
                     state: generate_state(&mut rng),
                     country: "US".to_string(),
                     start_date: random_date_30_years(&mut rng),

@@ -454,9 +454,9 @@ pub fn py_clip(value: f64, min: f64, max: f64) -> f64 {
 #[pyfunction]
 #[pyo3(name = "_randrange")]
 pub fn py_randrange(low: f64, high: f64) -> f64 {
-    use rand::Rng;
-    let mut rng = rand::thread_rng();
-    rng.gen::<f64>() * (high - low) + low
+    use rand::RngExt;
+    let mut rng = rand::rng();
+    rng.random::<f64>() * (high - low) + low
 }
 
 // =============================================================================

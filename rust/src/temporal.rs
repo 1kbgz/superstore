@@ -3,7 +3,7 @@
 //! This module provides models for generating data with temporal dependencies,
 //! including autoregressive (AR) processes and Markov chains.
 
-use rand::Rng;
+use rand::{Rng, RngExt};
 use rand_distr::{Distribution, Normal};
 
 /// Error type for temporal model operations.
@@ -347,7 +347,7 @@ impl MarkovChain {
     /// Generate the next state.
     pub fn next<R: Rng>(&mut self, rng: &mut R) -> &str {
         let probs = &self.transition_matrix[self.current_state];
-        let r: f64 = rng.gen();
+        let r: f64 = rng.random();
 
         let mut cumsum = 0.0;
         for (i, &prob) in probs.iter().enumerate() {

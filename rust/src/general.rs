@@ -1,7 +1,7 @@
 use chrono::{Datelike, NaiveDate, Utc};
 use rand::rngs::StdRng;
 use rand::seq::IndexedRandom;
-use rand::{Rng, SeedableRng};
+use rand::{Rng, RngExt, SeedableRng};
 use serde::{Deserialize, Serialize};
 
 use crate::copulas::GaussianCopula;
@@ -410,7 +410,7 @@ fn apply_promotional_effects<R: Rng>(
     let discount_boost = 1.0 + (discount / 100.0) * config.discount_quantity_correlation;
 
     // Price elasticity adds some random variation
-    let elasticity_factor = 1.0 + rng.gen_range(-0.1..0.1) * config.price_elasticity.abs();
+    let elasticity_factor = 1.0 + rng.random_range(-0.1..0.1) * config.price_elasticity.abs();
 
     ((base_quantity as f64) * discount_boost * elasticity_factor).round() as i32
 }
@@ -422,7 +422,7 @@ fn apply_promotional_effects<R: Rng>(
 /// Generate a payment method based on weighted distribution
 fn generate_payment_method<R: Rng>(rng: &mut R) -> PaymentMethod {
     let total: f64 = PAYMENT_METHOD_WEIGHTS.iter().sum();
-    let roll = rng.gen::<f64>() * total;
+    let roll = rng.random::<f64>() * total;
     let mut cumulative = 0.0;
 
     for (i, &weight) in PAYMENT_METHOD_WEIGHTS.iter().enumerate() {
@@ -443,7 +443,7 @@ fn generate_payment_method<R: Rng>(rng: &mut R) -> PaymentMethod {
 
 /// Check if this transaction is fraudulent based on payment method fraud rate
 fn check_fraud<R: Rng>(rng: &mut R, payment_method: &PaymentMethod) -> bool {
-    rng.gen::<f64>() < payment_method.fraud_rate()
+    rng.random::<f64>() < payment_method.fraud_rate()
 }
 
 /// Determine stock status and backorder days
@@ -452,11 +452,11 @@ fn determine_stock_status<R: Rng>(rng: &mut R, config: &InventoryConfig) -> (Str
         return ("In Stock".to_string(), None);
     }
 
-    let roll = rng.gen::<f64>();
+    let roll = rng.random::<f64>();
 
     if roll < config.stock_out_probability {
         // Item is out of stock, will be backordered
-        let delay = rng.gen_range(1..=config.backorder_delay_days);
+        let delay = rng.random_range(1..=config.backorder_delay_days);
         ("Backorder".to_string(), Some(delay))
     } else if roll < config.stock_out_probability + config.low_stock_threshold {
         // Low stock but available
@@ -475,7 +475,7 @@ fn apply_regional_preference<R: Rng>(
     config: &RegionalConfig,
 ) -> usize {
     if !config.enable || categories.is_empty() {
-        return rng.gen_range(0..categories.len().max(1));
+        return rng.random_range(0..categories.len().max(1));
     }
 
     // Find preference for this region
@@ -497,7 +497,7 @@ fn apply_regional_preference<R: Rng>(
 
         // Select based on weights
         let total_weight: f64 = weights.iter().sum();
-        let roll = rng.gen::<f64>() * total_weight;
+        let roll = rng.random::<f64>() * total_weight;
         let mut cumulative = 0.0;
 
         for (idx, weight) in weights.iter().enumerate() {
@@ -508,7 +508,7 @@ fn apply_regional_preference<R: Rng>(
         }
     }
 
-    rng.gen_range(0..categories.len().max(1))
+    rng.random_range(0..categories.len().max(1))
 }
 
 /// Check if current order should be part of a bundle
@@ -521,7 +521,7 @@ fn check_bundle<R: Rng>(
         return None;
     }
 
-    if rng.gen::<f64>() < config.bundle_probability {
+    if rng.random::<f64>() < config.bundle_probability {
         // Select a random bundle
         if let Some(bundle) = config.bundles.choose(rng) {
             // Create a unique bundle ID based on order
@@ -552,14 +552,14 @@ fn generate_customer_id<R: Rng>(
     }
 
     // Determine if this is a repeat customer
-    if rng.gen::<f64>() < config.repeat_customer_rate {
+    if rng.random::<f64>() < config.repeat_customer_rate {
         // Pick from existing customer pool
         let customer_id = customer_pool.choose(rng).unwrap().clone();
-        let is_vip = rng.gen::<f64>() < config.vip_segment_rate;
+        let is_vip = rng.random::<f64>() < config.vip_segment_rate;
         (customer_id, is_vip)
     } else {
         // New customer
-        let is_vip = rng.gen::<f64>() < config.vip_segment_rate;
+        let is_vip = rng.random::<f64>() < config.vip_segment_rate;
         (generate_license_plate(rng), is_vip)
     }
 }
@@ -577,7 +577,7 @@ fn generate_item_status<R: Rng>(rng: &mut R, discount_factor: f64) -> ItemStatus
     let returned_weight = ITEM_STATUS_WEIGHTS[3] * (1.0 + discount_bias * 0.5);
 
     let total = regular_weight + sale_weight + clearance_weight + returned_weight;
-    let roll = rng.gen::<f64>() * total;
+    let roll = rng.random::<f64>() * total;
 
     if roll < regular_weight {
         ItemStatus::Regular
@@ -627,31 +627,31 @@ fn apply_item_status_volume_effect<R: Rng>(
         ItemStatus::Regular => base_quantity,
         ItemStatus::ManufacturerSale => {
             // Bimodal: 70% chance of high volume (good deal), 30% low volume
-            if rng.gen::<f64>() < 0.7 {
+            if rng.random::<f64>() < 0.7 {
                 // Good deal - higher volume (1.3x to 2.0x)
-                ((base_quantity as f64) * rng.gen_range(1.3..2.0)).round() as i32
+                ((base_quantity as f64) * rng.random_range(1.3..2.0)).round() as i32
             } else {
                 // Not in demand - lower volume (0.5x to 0.8x)
-                ((base_quantity as f64) * rng.gen_range(0.5..0.8)).round() as i32
+                ((base_quantity as f64) * rng.random_range(0.5..0.8)).round() as i32
             }
         }
         ItemStatus::Clearance => {
             // Bimodal: 40% high volume (finally affordable), 60% low (nobody wants it)
-            if rng.gen::<f64>() < 0.4 {
+            if rng.random::<f64>() < 0.4 {
                 // Clearance deal hunters - moderate boost (1.2x to 1.5x)
-                ((base_quantity as f64) * rng.gen_range(1.2..1.5)).round() as i32
+                ((base_quantity as f64) * rng.random_range(1.2..1.5)).round() as i32
             } else {
                 // Unwanted items - low volume (0.3x to 0.6x)
-                ((base_quantity as f64) * rng.gen_range(0.3..0.6)).round() as i32
+                ((base_quantity as f64) * rng.random_range(0.3..0.6)).round() as i32
             }
         }
         ItemStatus::ReturnedFloorModel => {
             // Generally low volume - these are one-off items (0.4x to 0.7x)
             // Occasionally someone snags a deal (1.0x)
-            if rng.gen::<f64>() < 0.2 {
+            if rng.random::<f64>() < 0.2 {
                 base_quantity // Lucky find
             } else {
-                ((base_quantity as f64) * rng.gen_range(0.4..0.7)).round() as i32
+                ((base_quantity as f64) * rng.random_range(0.4..0.7)).round() as i32
             }
         }
     }
@@ -682,13 +682,13 @@ impl LocationPool {
         const STATES: [&str; 10] = ["CA", "NY", "TX", "WA", "FL", "IL", "GA", "AZ", "CO", "NC"];
 
         let cities: Vec<String> = (0..pool_size)
-            .map(|_| CITIES[rng.gen_range(0..CITIES.len())].to_string())
+            .map(|_| CITIES[rng.random_range(0..CITIES.len())].to_string())
             .collect();
         let states: Vec<String> = (0..pool_size)
-            .map(|_| STATES[rng.gen_range(0..STATES.len())].to_string())
+            .map(|_| STATES[rng.random_range(0..STATES.len())].to_string())
             .collect();
         let zip_codes: Vec<String> = (0..pool_size)
-            .map(|_| format!("{:05}", rng.gen_range(10000..100000)))
+            .map(|_| format!("{:05}", rng.random_range(10000..100000)))
             .collect();
         Self {
             cities,
@@ -730,16 +730,16 @@ impl NamePool {
         const DOMAINS: [&str; 4] = ["example.com", "corp.test", "mail.test", "demo.local"];
 
         let first_names: Vec<String> = (0..pool_size)
-            .map(|_| FIRST_NAMES[rng.gen_range(0..FIRST_NAMES.len())].to_string())
+            .map(|_| FIRST_NAMES[rng.random_range(0..FIRST_NAMES.len())].to_string())
             .collect();
         let last_names: Vec<String> = (0..pool_size)
-            .map(|_| LAST_NAMES[rng.gen_range(0..LAST_NAMES.len())].to_string())
+            .map(|_| LAST_NAMES[rng.random_range(0..LAST_NAMES.len())].to_string())
             .collect();
         let emails: Vec<String> = (0..pool_size)
             .map(|_| {
-                let first = FIRST_NAMES[rng.gen_range(0..FIRST_NAMES.len())].to_lowercase();
-                let last = LAST_NAMES[rng.gen_range(0..LAST_NAMES.len())].to_lowercase();
-                let domain = DOMAINS[rng.gen_range(0..DOMAINS.len())];
+                let first = FIRST_NAMES[rng.random_range(0..FIRST_NAMES.len())].to_lowercase();
+                let last = LAST_NAMES[rng.random_range(0..LAST_NAMES.len())].to_lowercase();
+                let domain = DOMAINS[rng.random_range(0..DOMAINS.len())];
                 format!("{}.{}@{}", first, last, domain)
             })
             .collect();
@@ -747,9 +747,9 @@ impl NamePool {
             .map(|_| {
                 format!(
                     "({:03}) {:03}-{:04}",
-                    rng.gen_range(200..1000),
-                    rng.gen_range(100..1000),
-                    rng.gen_range(1000..10000)
+                    rng.random_range(200..1000),
+                    rng.random_range(100..1000),
+                    rng.random_range(1000..10000)
                 )
             })
             .collect();
@@ -765,36 +765,36 @@ impl NamePool {
 fn generate_ein<R: Rng>(rng: &mut R) -> String {
     format!(
         "{:02}-{:07}",
-        rng.gen_range(10..99),
-        rng.gen_range(1000000..9999999)
+        rng.random_range(10..99),
+        rng.random_range(1000000..9999999)
     )
 }
 
 fn generate_license_plate<R: Rng>(rng: &mut R) -> String {
     let letters: String = (0..3)
-        .map(|_| (b'A' + rng.gen_range(0..26)) as char)
+        .map(|_| (b'A' + rng.random_range(0..26)) as char)
         .collect();
-    let numbers: u16 = rng.gen_range(100..1000);
+    let numbers: u16 = rng.random_range(100..1000);
     format!("{}{}", letters, numbers)
 }
 
 fn generate_bban<R: Rng>(rng: &mut R) -> String {
     (0..18)
-        .map(|_| (b'0' + rng.gen_range(0..10)) as char)
+        .map(|_| (b'0' + rng.random_range(0..10)) as char)
         .collect()
 }
 
 fn generate_ssn<R: Rng>(rng: &mut R) -> String {
     format!(
         "{:03}-{:02}-{:04}",
-        rng.gen_range(100..999),
-        rng.gen_range(10..99),
-        rng.gen_range(1000..9999)
+        rng.random_range(100..999),
+        rng.random_range(10..99),
+        rng.random_range(1000..9999)
     )
 }
 
 fn generate_street_address<R: Rng>(rng: &mut R) -> String {
-    let number: u32 = rng.gen_range(1..9999);
+    let number: u32 = rng.random_range(1..9999);
     let street_names = [
         "Main St",
         "Oak Ave",
@@ -812,7 +812,7 @@ fn generate_street_address<R: Rng>(rng: &mut R) -> String {
 
 fn random_date_this_year<R: Rng>(rng: &mut R) -> NaiveDate {
     let year = Utc::now().naive_utc().date().year();
-    let day_of_year = rng.gen_range(1..=365);
+    let day_of_year = rng.random_range(1..=365);
     NaiveDate::from_yo_opt(year, day_of_year)
         .unwrap_or_else(|| NaiveDate::from_ymd_opt(year, 1, 1).unwrap())
 }
@@ -826,7 +826,7 @@ fn random_date_between<R: Rng>(rng: &mut R, start: NaiveDate) -> NaiveDate {
     if days_between == 0 {
         return start;
     }
-    let random_days = rng.gen_range(0..=days_between);
+    let random_days = rng.random_range(0..=days_between);
     start + chrono::Duration::days(random_days as i64)
 }
 
@@ -834,7 +834,7 @@ fn random_date_30_years<R: Rng>(rng: &mut R) -> NaiveDate {
     let today = Utc::now().naive_utc().date();
     let thirty_years_ago = today - chrono::Duration::days(30 * 365);
     let days_range = (today - thirty_years_ago).num_days() as u32;
-    let random_days = rng.gen_range(0..=days_range);
+    let random_days = rng.random_range(0..=days_range);
     thirty_years_ago + chrono::Duration::days(random_days as i64)
 }
 
@@ -845,7 +845,7 @@ fn random_date_of_birth<R: Rng>(rng: &mut R) -> NaiveDate {
     let min_date = today - chrono::Duration::days(max_age * 365);
     let max_date = today - chrono::Duration::days(min_age * 365);
     let days_range = (max_date - min_date).num_days() as u32;
-    let random_days = rng.gen_range(0..=days_range);
+    let random_days = rng.random_range(0..=days_range);
     min_date + chrono::Duration::days(random_days as i64)
 }
 
@@ -853,7 +853,7 @@ fn random_date_of_birth<R: Rng>(rng: &mut R) -> NaiveDate {
 fn create_rng(seed: Option<u64>) -> StdRng {
     match seed {
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_os_rng(),
+        None => StdRng::from_rng(&mut rand::rng()),
     }
 }
 
@@ -962,10 +962,10 @@ pub fn superstore_with_config(config: &SuperstoreConfig) -> Vec<SuperstoreRow> {
         (0..config.count)
             .map(|_| {
                 vec![
-                    rng.gen::<f64>(),
-                    rng.gen::<f64>(),
-                    rng.gen::<f64>(),
-                    rng.gen::<f64>(),
+                    rng.random::<f64>(),
+                    rng.random::<f64>(),
+                    rng.random::<f64>(),
+                    rng.random::<f64>(),
                 ]
             })
             .collect()
@@ -1166,7 +1166,7 @@ pub fn employees(count: usize, seed: Option<u64>, pool_size: Option<usize>) -> V
             street: generate_street_address(&mut rng),
             city: location_pool.random_city(&mut rng).to_string(),
             postal_code: location_pool.random_zip(&mut rng).to_string(),
-            region: regions[rng.gen_range(0..5)].clone(),
+            region: regions[rng.random_range(0..5)].clone(),
             state: location_pool.random_state(&mut rng).to_string(),
             country: "US".to_string(),
             start_date: random_date_30_years(&mut rng),
