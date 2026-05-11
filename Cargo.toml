@@ -13,8 +13,8 @@ crate-type = ["cdylib"]
 superstore = { path = "./rust", version = "*" }
 pyo3 = { version = "0.28.2", features = ["abi3", "extension-module", "multiple-pymethods"] }
 uuid = { version = "1.23", features = ["v4"] }
-rand = "0.9"
-rand_distr = "0.5"
+rand = "0.10"
+rand_distr = "0.6"
 chrono = "0.4"
 rayon = "1.10"
 arrow = { version = "58", default-features = false, features = ["ipc"] }
