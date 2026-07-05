@@ -185,9 +185,9 @@ pub fn py_weather(
             let kwargs = pyo3::types::PyDict::new(py);
             kwargs.set_item("mode", "json")?;
             let dict = cfg.call_method("model_dump", (), Some(&kwargs))?;
-            let dict = dict.downcast::<PyDict>()?;
+            let dict = dict.cast::<PyDict>()?;
             dict_to_weather_config(py, Some(dict))?
-        } else if let Ok(dict) = cfg.downcast::<PyDict>() {
+        } else if let Ok(dict) = cfg.cast::<PyDict>() {
             dict_to_weather_config(py, Some(dict))?
         } else {
             return Err(pyo3::exceptions::PyTypeError::new_err(

@@ -250,7 +250,7 @@ fn parse_full_timeseries_config(dict: &Bound<'_, PyDict>) -> PyResult<(Timeserie
 
     // Parse nested RegimeConfig
     let regimes = if let Some(regimes_val) = dict.get_item("regimes")? {
-        if let Ok(regimes_dict) = regimes_val.downcast::<PyDict>() {
+        if let Ok(regimes_dict) = regimes_val.cast::<PyDict>() {
             let enable: bool = regimes_dict
                 .get_item("enable")?
                 .map(|v| v.extract())
@@ -286,7 +286,7 @@ fn parse_full_timeseries_config(dict: &Bound<'_, PyDict>) -> PyResult<(Timeserie
 
     // Parse nested JumpConfig
     let jumps = if let Some(jumps_val) = dict.get_item("jumps")? {
-        if let Ok(jumps_dict) = jumps_val.downcast::<PyDict>() {
+        if let Ok(jumps_dict) = jumps_val.cast::<PyDict>() {
             let enable: bool = jumps_dict
                 .get_item("enable")?
                 .map(|v| v.extract())
@@ -386,9 +386,9 @@ pub fn py_get_time_series(
             let kwargs = PyDict::new(py);
             kwargs.set_item("mode", "json")?;
             let dict = cfg.call_method("model_dump", (), Some(&kwargs))?;
-            let dict = dict.downcast::<PyDict>()?;
+            let dict = dict.cast::<PyDict>()?;
             parse_full_timeseries_config(dict)?
-        } else if let Ok(dict) = cfg.downcast::<PyDict>() {
+        } else if let Ok(dict) = cfg.cast::<PyDict>() {
             parse_full_timeseries_config(dict)?
         } else {
             return Err(pyo3::exceptions::PyTypeError::new_err(

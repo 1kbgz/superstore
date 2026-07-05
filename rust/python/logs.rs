@@ -251,7 +251,7 @@ fn parse_logs_config(dict: &Bound<'_, PyDict>) -> PyResult<(LogsConfig, String)>
 
     // Parse nested ErrorBurstConfig
     let error_burst = if let Some(eb_val) = dict.get_item("error_burst")? {
-        if let Ok(eb_dict) = eb_val.downcast::<PyDict>() {
+        if let Ok(eb_dict) = eb_val.cast::<PyDict>() {
             let enable: bool = eb_dict
                 .get_item("enable")?
                 .map(|v| v.extract())
@@ -287,7 +287,7 @@ fn parse_logs_config(dict: &Bound<'_, PyDict>) -> PyResult<(LogsConfig, String)>
 
     // Parse nested LatencyConfig
     let latency = if let Some(lat_val) = dict.get_item("latency")? {
-        if let Ok(lat_dict) = lat_val.downcast::<PyDict>() {
+        if let Ok(lat_dict) = lat_val.cast::<PyDict>() {
             let base_latency_ms: f64 = lat_dict
                 .get_item("base_latency_ms")?
                 .map(|v| v.extract())
