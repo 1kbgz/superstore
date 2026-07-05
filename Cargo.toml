@@ -11,8 +11,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 superstore = { path = "./rust", version = "*" }
-<<<<<<< before updating
-pyo3 = { version = "0.28.2", features = ["abi3", "extension-module", "multiple-pymethods"] }
+pyo3 = { version = "0.29.0", features = ["abi3", "extension-module", "multiple-pymethods"] }
 uuid = { version = "1.23", features = ["v4"] }
 rand = "0.10"
 rand_distr = "0.6"
@@ -20,9 +19,6 @@ chrono = "0.4"
 rayon = "1.10"
 arrow = { version = "58", default-features = false, features = ["ipc"] }
 nalgebra = "0.35"
-=======
-pyo3 = { version = "0.29.0", features = ["abi3", "extension-module", "multiple-pymethods"] }
->>>>>>> after updating
 
 [profile.release]
 panic = 'abort'
