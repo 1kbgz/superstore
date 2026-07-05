@@ -212,7 +212,7 @@ fn parse_finance_config(dict: &Bound<'_, PyDict>) -> PyResult<(FinanceConfig, St
 
     // Parse nested StockConfig
     let stock = if let Some(stock_val) = dict.get_item("stock")? {
-        if let Ok(stock_dict) = stock_val.downcast::<PyDict>() {
+        if let Ok(stock_dict) = stock_val.cast::<PyDict>() {
             let annual_drift: f64 = stock_dict
                 .get_item("annual_drift")?
                 .map(|v| v.extract())
@@ -266,7 +266,7 @@ fn parse_finance_config(dict: &Bound<'_, PyDict>) -> PyResult<(FinanceConfig, St
 
     // Parse nested OhlcvConfig
     let ohlcv = if let Some(ohlcv_val) = dict.get_item("ohlcv")? {
-        if let Ok(ohlcv_dict) = ohlcv_val.downcast::<PyDict>() {
+        if let Ok(ohlcv_dict) = ohlcv_val.cast::<PyDict>() {
             let avg_volume: u64 = ohlcv_dict
                 .get_item("avg_volume")?
                 .map(|v| v.extract())
@@ -302,7 +302,7 @@ fn parse_finance_config(dict: &Bound<'_, PyDict>) -> PyResult<(FinanceConfig, St
 
     // Parse nested OptionsConfig
     let options = if let Some(options_val) = dict.get_item("options")? {
-        if let Ok(options_dict) = options_val.downcast::<PyDict>() {
+        if let Ok(options_dict) = options_val.cast::<PyDict>() {
             let risk_free_rate: f64 = options_dict
                 .get_item("risk_free_rate")?
                 .map(|v| v.extract())

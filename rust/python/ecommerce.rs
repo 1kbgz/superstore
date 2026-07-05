@@ -632,27 +632,27 @@ fn parse_ecommerce_config(dict: &Bound<'_, PyDict>) -> EcommerceConfig {
         config.days = v.extract().unwrap_or(config.days);
     }
     if let Some(v) = dict.get_item("session").ok().flatten() {
-        if let Ok(d) = v.downcast::<PyDict>() {
+        if let Ok(d) = v.cast::<PyDict>() {
             config.session = parse_session_config(d);
         }
     }
     if let Some(v) = dict.get_item("cart").ok().flatten() {
-        if let Ok(d) = v.downcast::<PyDict>() {
+        if let Ok(d) = v.cast::<PyDict>() {
             config.cart = parse_cart_config(d);
         }
     }
     if let Some(v) = dict.get_item("catalog").ok().flatten() {
-        if let Ok(d) = v.downcast::<PyDict>() {
+        if let Ok(d) = v.cast::<PyDict>() {
             config.catalog = parse_catalog_config(d);
         }
     }
     if let Some(v) = dict.get_item("rfm").ok().flatten() {
-        if let Ok(d) = v.downcast::<PyDict>() {
+        if let Ok(d) = v.cast::<PyDict>() {
             config.rfm = parse_rfm_config(d);
         }
     }
     if let Some(v) = dict.get_item("funnel").ok().flatten() {
-        if let Ok(d) = v.downcast::<PyDict>() {
+        if let Ok(d) = v.cast::<PyDict>() {
             config.funnel = parse_funnel_config(d);
         }
     }

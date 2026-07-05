@@ -156,9 +156,9 @@ pub fn py_machines(
             let kwargs = PyDict::new(py);
             kwargs.set_item("mode", "json")?;
             let dict = cfg.call_method("model_dump", (), Some(&kwargs))?;
-            let dict = dict.downcast::<PyDict>()?;
+            let dict = dict.cast::<PyDict>()?;
             parse_crossfilter_config(dict)?
-        } else if let Ok(dict) = cfg.downcast::<PyDict>() {
+        } else if let Ok(dict) = cfg.cast::<PyDict>() {
             parse_crossfilter_config(dict)?
         } else {
             return Err(pyo3::exceptions::PyTypeError::new_err(
@@ -592,7 +592,7 @@ fn parse_telemetry_config(dict: &Bound<'_, PyDict>) -> PyResult<(TelemetryConfig
 
     // Parse nested AnomalyConfig
     let anomalies = if let Some(anom_val) = dict.get_item("anomalies")? {
-        if let Ok(anom_dict) = anom_val.downcast::<PyDict>() {
+        if let Ok(anom_dict) = anom_val.cast::<PyDict>() {
             AnomalyConfig {
                 enable: anom_dict
                     .get_item("enable")?
@@ -654,7 +654,7 @@ fn parse_telemetry_config(dict: &Bound<'_, PyDict>) -> PyResult<(TelemetryConfig
 
     // Parse nested SensorDriftConfig
     let sensor_drift = if let Some(sd_val) = dict.get_item("sensor_drift")? {
-        if let Ok(sd_dict) = sd_val.downcast::<PyDict>() {
+        if let Ok(sd_dict) = sd_val.cast::<PyDict>() {
             SensorDriftConfig {
                 enable: sd_dict
                     .get_item("enable")?
@@ -686,7 +686,7 @@ fn parse_telemetry_config(dict: &Bound<'_, PyDict>) -> PyResult<(TelemetryConfig
 
     // Parse nested TemporalConfig
     let temporal = if let Some(temp_val) = dict.get_item("temporal")? {
-        if let Ok(temp_dict) = temp_val.downcast::<PyDict>() {
+        if let Ok(temp_dict) = temp_val.cast::<PyDict>() {
             TemporalConfig {
                 enable: temp_dict
                     .get_item("enable")?
@@ -718,7 +718,7 @@ fn parse_telemetry_config(dict: &Bound<'_, PyDict>) -> PyResult<(TelemetryConfig
 
     // Parse nested FailureCascadeConfig
     let failure_cascade = if let Some(fc_val) = dict.get_item("failure_cascade")? {
-        if let Ok(fc_dict) = fc_val.downcast::<PyDict>() {
+        if let Ok(fc_dict) = fc_val.cast::<PyDict>() {
             FailureCascadeConfig {
                 enable: fc_dict
                     .get_item("enable")?
@@ -750,7 +750,7 @@ fn parse_telemetry_config(dict: &Bound<'_, PyDict>) -> PyResult<(TelemetryConfig
 
     // Parse nested MaintenanceConfig
     let maintenance = if let Some(mt_val) = dict.get_item("maintenance")? {
-        if let Ok(mt_dict) = mt_val.downcast::<PyDict>() {
+        if let Ok(mt_dict) = mt_val.cast::<PyDict>() {
             MaintenanceConfig {
                 enable: mt_dict
                     .get_item("enable")?
@@ -787,7 +787,7 @@ fn parse_telemetry_config(dict: &Bound<'_, PyDict>) -> PyResult<(TelemetryConfig
 
     // Parse nested DegradationConfig
     let degradation = if let Some(dg_val) = dict.get_item("degradation")? {
-        if let Ok(dg_dict) = dg_val.downcast::<PyDict>() {
+        if let Ok(dg_dict) = dg_val.cast::<PyDict>() {
             DegradationConfig {
                 enable: dg_dict
                     .get_item("enable")?

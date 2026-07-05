@@ -309,9 +309,9 @@ pub fn py_superstore(
             let kwargs = PyDict::new(py);
             kwargs.set_item("mode", "json")?;
             let dict = cfg.call_method("model_dump", (), Some(&kwargs))?;
-            let dict = dict.downcast::<PyDict>()?;
+            let dict = dict.cast::<PyDict>()?;
             parse_full_superstore_config(dict)?
-        } else if let Ok(dict) = cfg.downcast::<PyDict>() {
+        } else if let Ok(dict) = cfg.cast::<PyDict>() {
             parse_full_superstore_config(dict)?
         } else {
             return Err(pyo3::exceptions::PyTypeError::new_err(
@@ -393,7 +393,7 @@ fn parse_full_superstore_config(dict: &Bound<'_, PyDict>) -> PyResult<(Superstor
 
     // Parse nested SeasonalityConfig
     let seasonality = if let Some(seasonality_val) = dict.get_item("seasonality")? {
-        if let Ok(seasonality_dict) = seasonality_val.downcast::<PyDict>() {
+        if let Ok(seasonality_dict) = seasonality_val.cast::<PyDict>() {
             let enable: bool = seasonality_dict
                 .get_item("enable")?
                 .map(|v| v.extract())
@@ -429,7 +429,7 @@ fn parse_full_superstore_config(dict: &Bound<'_, PyDict>) -> PyResult<(Superstor
 
     // Parse nested PromotionalConfig
     let promotions = if let Some(promo_val) = dict.get_item("promotions")? {
-        if let Ok(promo_dict) = promo_val.downcast::<PyDict>() {
+        if let Ok(promo_dict) = promo_val.cast::<PyDict>() {
             let enable: bool = promo_dict
                 .get_item("enable")?
                 .map(|v| v.extract())
@@ -462,7 +462,7 @@ fn parse_full_superstore_config(dict: &Bound<'_, PyDict>) -> PyResult<(Superstor
 
     // Parse nested CustomerConfig
     let customers = if let Some(cust_val) = dict.get_item("customers")? {
-        if let Ok(cust_dict) = cust_val.downcast::<PyDict>() {
+        if let Ok(cust_dict) = cust_val.cast::<PyDict>() {
             let enable_cohorts: bool = cust_dict
                 .get_item("enable_cohorts")?
                 .map(|v| v.extract())
