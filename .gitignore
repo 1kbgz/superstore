@@ -61,18 +61,10 @@ junit.xml
 .hypothesis/
 .pytest_cache/
 
-<<<<<<< before updating
 # ASV benchmarks
 .asv/
 
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-=======
 # Django
->>>>>>> after updating
 *.log
 local_settings.py
 db.sqlite3

@@ -85,8 +85,8 @@ jobs:
       run: |
         rm -rf dist
         make dist-rs
-        make dist-py-wheel
         make dist-py-sdist
+        make dist-py-wheel
         make dist-check
       shell: bash
       if: matrix.os == 'ubuntu-latest'
