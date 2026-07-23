@@ -223,9 +223,12 @@ class TestCrossfilters:
             u2 = usage(m_with_usage, seed=seed2)
 
             # Only compare if neither was reset to zero
-            if u1["cpu"] > 0 and u2["cpu"] > 0:
-                if u1["cpu"] != u2["cpu"] or u1["mem"] != u2["mem"] or u1["network"] != u2["network"] or u1["disk"] != u2["disk"]:
-                    break
+            if (
+                u1["cpu"] > 0
+                and u2["cpu"] > 0
+                and (u1["cpu"] != u2["cpu"] or u1["mem"] != u2["mem"] or u1["network"] != u2["network"] or u1["disk"] != u2["disk"])
+            ):
+                break
 
         # It's ok if we don't find a difference - seed can trigger reset (10% chance each)
         # What matters is reproducibility, which is tested in test_usage_seed_reproducibility
@@ -278,7 +281,7 @@ class TestTelemetry:
         assert len(df) == 1000  # 10 machines * 100 readings
 
         # Verify schema columns
-        for col in TELEMETRY_SCHEMA.keys():
+        for col in TELEMETRY_SCHEMA:
             assert col in df.columns, f"Missing column: {col}"
 
     def test_telemetry_scenarios(self):

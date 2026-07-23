@@ -15,8 +15,8 @@ def _set_deterministic():
 class ParquetExportSuite:
     """Benchmark suite for Parquet export."""
 
-    params = [10_000, 100_000]
-    param_names = ["n_rows"]
+    params = [10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_rows"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_rows):
@@ -37,8 +37,8 @@ class ParquetExportSuite:
 class CSVExportSuite:
     """Benchmark suite for CSV export."""
 
-    params = [10_000, 100_000]
-    param_names = ["n_rows"]
+    params = [10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_rows"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_rows):
@@ -59,8 +59,8 @@ class CSVExportSuite:
 class ArrowExportSuite:
     """Benchmark suite for Arrow/IPC export (returns bytes)."""
 
-    params = [10_000, 100_000]
-    param_names = ["n_rows"]
+    params = [10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_rows"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_rows):

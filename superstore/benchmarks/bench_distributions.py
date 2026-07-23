@@ -12,8 +12,8 @@ def _set_deterministic():
 class NormalDistributionSuite:
     """Benchmark suite for normal distribution sampling."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -27,8 +27,8 @@ class NormalDistributionSuite:
 class ExponentialDistributionSuite:
     """Benchmark suite for exponential distribution sampling."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -42,8 +42,8 @@ class ExponentialDistributionSuite:
 class UniformDistributionSuite:
     """Benchmark suite for uniform distribution sampling."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -57,8 +57,8 @@ class UniformDistributionSuite:
 class PoissonDistributionSuite:
     """Benchmark suite for Poisson distribution sampling."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -72,8 +72,8 @@ class PoissonDistributionSuite:
 class LogNormalDistributionSuite:
     """Benchmark suite for log-normal distribution sampling."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -87,8 +87,8 @@ class LogNormalDistributionSuite:
 class GammaDistributionSuite:
     """Benchmark suite for gamma distribution sampling."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -102,8 +102,8 @@ class GammaDistributionSuite:
 class BetaDistributionSuite:
     """Benchmark suite for beta distribution sampling."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):

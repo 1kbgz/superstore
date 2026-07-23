@@ -12,8 +12,8 @@ def _set_deterministic():
 class GaussianCopulaSuite:
     """Benchmark suite for Gaussian copula."""
 
-    params = [1_000, 10_000, 100_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -38,8 +38,8 @@ class GaussianCopulaSuite:
 class HighDimensionalGaussianCopulaSuite:
     """Benchmark suite for high-dimensional Gaussian copula."""
 
-    params = [1_000, 10_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -58,8 +58,8 @@ class HighDimensionalGaussianCopulaSuite:
 class ClaytonCopulaSuite:
     """Benchmark suite for Clayton copula."""
 
-    params = [1_000, 10_000, 100_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -76,8 +76,8 @@ class ClaytonCopulaSuite:
 class FrankCopulaSuite:
     """Benchmark suite for Frank copula."""
 
-    params = [1_000, 10_000, 100_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -94,8 +94,8 @@ class FrankCopulaSuite:
 class GumbelCopulaSuite:
     """Benchmark suite for Gumbel copula."""
 
-    params = [1_000, 10_000, 100_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):

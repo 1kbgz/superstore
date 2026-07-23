@@ -12,8 +12,8 @@ def _set_deterministic():
 class AR1Suite:
     """Benchmark suite for AR(1) model."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -30,8 +30,8 @@ class AR1Suite:
 class ARpSuite:
     """Benchmark suite for AR(p) model."""
 
-    params = [1_000, 10_000, 100_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -48,8 +48,8 @@ class ARpSuite:
 class MarkovChainSuite:
     """Benchmark suite for Markov chain."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -74,8 +74,8 @@ class MarkovChainSuite:
 class RandomWalkSuite:
     """Benchmark suite for random walk."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
@@ -92,8 +92,8 @@ class RandomWalkSuite:
 class ExponentialSmoothingSuite:
     """Benchmark suite for exponential smoothing."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_samples"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_samples"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_samples):
