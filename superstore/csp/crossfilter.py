@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from typing import List
 
 import csp
 from csp import ts
@@ -16,18 +15,18 @@ from .. import (
 )
 
 __all__ = (
-    "machines",
-    "Machine",
-    "MACHINE_SCHEMA",
-    "usage",
-    "Usage",
-    "USAGE_SCHEMA",
-    "status",
-    "Status",
-    "STATUS_SCHEMA",
-    "jobs",
-    "Job",
     "JOBS_SCHEMA",
+    "MACHINE_SCHEMA",
+    "STATUS_SCHEMA",
+    "USAGE_SCHEMA",
+    "Job",
+    "Machine",
+    "Status",
+    "Usage",
+    "jobs",
+    "machines",
+    "status",
+    "usage",
 )
 
 
@@ -62,12 +61,12 @@ class Job(csp.Struct):
 
 
 @csp.graph
-def machines() -> ts[List[Machine]]:
+def machines() -> ts[list[Machine]]:
     return csp.const([Machine(**d) for d in _machines()])
 
 
 @csp.node
-def usage(machines: ts[List[Machine]], interval: timedelta = timedelta(seconds=5)) -> ts[List[Usage]]:
+def usage(machines: ts[list[Machine]], interval: timedelta = timedelta(seconds=5)) -> ts[list[Usage]]:
     with csp.alarms():
         a_tick = csp.alarm(bool)
 
@@ -92,7 +91,7 @@ def usage(machines: ts[List[Machine]], interval: timedelta = timedelta(seconds=5
 
 
 @csp.node
-def status(usage: ts[List[Usage]], interval: timedelta = timedelta(seconds=5)) -> ts[List[Status]]:
+def status(usage: ts[list[Usage]], interval: timedelta = timedelta(seconds=5)) -> ts[list[Status]]:
     with csp.alarms():
         a_tick = csp.alarm(bool)
 
@@ -111,7 +110,7 @@ def status(usage: ts[List[Usage]], interval: timedelta = timedelta(seconds=5)) -
 
 
 @csp.node
-def jobs(machines: ts[List[Machine]], interval: timedelta = timedelta(seconds=5)) -> ts[List[Job]]:
+def jobs(machines: ts[list[Machine]], interval: timedelta = timedelta(seconds=5)) -> ts[list[Job]]:
     with csp.alarms():
         a_tick = csp.alarm(bool)
 

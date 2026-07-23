@@ -1,6 +1,7 @@
 """Tests for the weather data generator."""
 
 import pytest
+from pydantic import ValidationError
 
 
 class TestWeather:
@@ -227,7 +228,7 @@ class TestWeatherConfig:
         assert config.count == 100
 
         # Invalid latitude should raise
-        with pytest.raises(Exception):
+        with pytest.raises(ValidationError):
             WeatherConfig(latitude=100.0)  # > 90
 
     def test_config_serialization(self):

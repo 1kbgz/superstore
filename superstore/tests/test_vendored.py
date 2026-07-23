@@ -99,7 +99,7 @@ class TestVendored:
         df2 = timeseries(nper=50, ncol=3)
 
         # DataFrames should be different (extremely unlikely to match)
-        assert not df1["A"].tolist() == df2["A"].tolist()
+        assert df1["A"].tolist() != df2["A"].tolist()
 
     def test_timeseriesdata_seed_reproducibility(self):
         """Test that same seed produces identical time series data."""
@@ -120,7 +120,7 @@ class TestVendored:
         data2 = timeseriesData(nper=50, ncol=3, seed=123)
 
         # Data should be different
-        assert not data1["A"].tolist() == data2["A"].tolist()
+        assert data1["A"].tolist() != data2["A"].tolist()
 
     def test_timeseries_seed_with_polars(self):
         """Test seed reproducibility with polars output."""

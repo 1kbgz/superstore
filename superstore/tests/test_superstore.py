@@ -135,7 +135,7 @@ class TestSuperstore:
         df2 = superstore(count=100)
 
         # DataFrames should be different (extremely unlikely to match)
-        assert not df1["Order ID"].tolist() == df2["Order ID"].tolist()
+        assert df1["Order ID"].tolist() != df2["Order ID"].tolist()
 
     def test_employees_seed_reproducibility(self):
         """Test that same seed produces identical employee results."""

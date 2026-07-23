@@ -12,8 +12,8 @@ def _set_deterministic():
 class SuperstoreSuite:
     """Benchmark suite for superstore() generator."""
 
-    params = [1_000, 10_000, 100_000]
-    param_names = ["n_rows"]
+    params = [1_000, 10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_rows"]  # noqa: RUF012
     timeout = 120  # seconds
 
     def setup(self, n_rows):
@@ -32,8 +32,8 @@ class SuperstoreSuite:
 class EmployeesSuite:
     """Benchmark suite for employees() generator."""
 
-    params = [1_000, 10_000, 100_000]
-    param_names = ["n_rows"]
+    params = [1_000, 10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_rows"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_rows):
@@ -51,8 +51,8 @@ class EmployeesSuite:
 class TimeSeriesSuite:
     """Benchmark suite for time series generator."""
 
-    params = [1_000, 10_000, 100_000, 1_000_000]
-    param_names = ["n_rows"]
+    params = [1_000, 10_000, 100_000, 1_000_000]  # noqa: RUF012
+    param_names = ["n_rows"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_rows):
@@ -70,8 +70,8 @@ class TimeSeriesSuite:
 class WeatherSuite:
     """Benchmark suite for weather() generator."""
 
-    params = [1_000, 10_000, 100_000]
-    param_names = ["n_rows"]
+    params = [1_000, 10_000, 100_000]  # noqa: RUF012
+    param_names = ["n_rows"]  # noqa: RUF012
     timeout = 120
 
     def setup(self, n_rows):

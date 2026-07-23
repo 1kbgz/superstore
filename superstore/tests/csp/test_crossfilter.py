@@ -13,7 +13,7 @@ class TestCrossfilter:
     def test_machines(self):
         from superstore.csp import machines
 
-        start = datetime.today()
+        start = datetime.today()  # noqa: DTZ002
         out = csp.run(machines, realtime=False, starttime=start, endtime=timedelta(seconds=1))
         assert len(out) == 1
         assert len(out[0]) == 1
@@ -25,7 +25,7 @@ class TestCrossfilter:
     def test_usage(self):
         from superstore.csp import machines, usage
 
-        start = datetime.today()
+        start = datetime.today()  # noqa: DTZ002
 
         @csp.graph
         def _graph():
@@ -43,7 +43,7 @@ class TestCrossfilter:
     def test_status(self):
         from superstore.csp import machines, status, usage
 
-        start = datetime.today()
+        start = datetime.today()  # noqa: DTZ002
 
         @csp.graph
         def _graph():
@@ -62,7 +62,7 @@ class TestCrossfilter:
     def test_jobs(self):
         from superstore.csp import jobs, machines
 
-        start = datetime.today()
+        start = datetime.today()  # noqa: DTZ002
 
         @csp.graph
         def _graph():
