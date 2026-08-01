@@ -15,7 +15,7 @@ pyo3 = { version = "0.29.0", features = ["abi3", "extension-module", "multiple-p
 uuid = { version = "1.23", features = ["v4"] }
 rand = "0.10"
 chrono = "0.4"
-arrow = { version = "58", default-features = false, features = ["ipc"] }
+arrow = { version = "59", default-features = false, features = ["ipc"] }
 
 [profile.release]
 panic = 'abort'
