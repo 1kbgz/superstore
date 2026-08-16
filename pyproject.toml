@@ -72,6 +72,10 @@ current_version = "0.3.2"
 commit = true
 tag = true
 commit_args = "-s"
+pre_commit_hooks = [
+    "cargo update --workspace",
+    "git add Cargo.lock",
+]
 
 [[tool.bumpversion.files]]
 filename = "superstore/__init__.py"
