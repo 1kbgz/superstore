@@ -120,6 +120,7 @@ archs = "arm64"
 environment = {PATH="$UserProfile\\.cargo\bin;$PATH", CARGO_TERM_COLOR="always"}
 skip = "*win32 *arm_64"
 
+
 [tool.coverage.run]
 branch = true
 omit = [
