@@ -267,8 +267,8 @@
 <span class="n">df</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 
 <span class="c1"># Different output formats</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;polars&quot;</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;dict&quot;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">"polars"</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">"dict"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -331,7 +331,7 @@
 <span class="n">config</span> <span class="o">=</span> <span class="n">WeatherConfig</span><span class="p">(</span>
     <span class="n">count</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
-    <span class="n">output</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span>
+    <span class="n">output</span><span class="o">=</span><span class="s2">"pandas"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">weather</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
@@ -341,7 +341,7 @@
 <p>Control the time span and frequency of readings:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="n">WeatherConfig</span><span class="p">(</span>
     <span class="n">count</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
-    <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span>   <span class="c1"># Start date (YYYY-MM-DD)</span>
+    <span class="n">start_date</span><span class="o">=</span><span class="s2">"2024-01-01"</span><span class="p">,</span>   <span class="c1"># Start date (YYYY-MM-DD)</span>
     <span class="n">frequency_minutes</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>       <span class="c1"># Reading every 15 minutes</span>
 <span class="p">)</span>
 </pre></div>
@@ -374,7 +374,7 @@
 
 <span class="n">config</span> <span class="o">=</span> <span class="n">WeatherConfig</span><span class="p">(</span>
     <span class="n">count</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
-    <span class="n">climate_zone</span><span class="o">=</span><span class="n">ClimateZone</span><span class="o">.</span><span class="n">TROPICAL</span><span class="p">,</span>  <span class="c1"># or &quot;tropical&quot;</span>
+    <span class="n">climate_zone</span><span class="o">=</span><span class="n">ClimateZone</span><span class="o">.</span><span class="n">TROPICAL</span><span class="p">,</span>  <span class="c1"># or "tropical"</span>
     <span class="n">latitude</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span>  <span class="c1"># Affects day/night calculations</span>
 <span class="p">)</span>
 </pre></div>
@@ -592,11 +592,11 @@
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
 
     <span class="c1"># Time settings</span>
-    <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">,</span>
+    <span class="n">start_date</span><span class="o">=</span><span class="s2">"2024-01-01"</span><span class="p">,</span>
     <span class="n">frequency_minutes</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
 
     <span class="c1"># Location</span>
-    <span class="n">climate_zone</span><span class="o">=</span><span class="s2">&quot;mediterranean&quot;</span><span class="p">,</span>
+    <span class="n">climate_zone</span><span class="o">=</span><span class="s2">"mediterranean"</span><span class="p">,</span>
     <span class="n">latitude</span><span class="o">=</span><span class="mf">37.0</span><span class="p">,</span>
 
     <span class="c1"># Temperature</span>

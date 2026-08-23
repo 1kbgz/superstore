@@ -383,7 +383,7 @@
 </div>
 <p><strong>Named states:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Three-state regime model</span>
-<span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;low_vol&quot;</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;high_vol&quot;</span><span class="p">]</span>
+<span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"low_vol"</span><span class="p">,</span> <span class="s2">"normal"</span><span class="p">,</span> <span class="s2">"high_vol"</span><span class="p">]</span>
 <span class="n">transition_matrix</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">[</span><span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">],</span>  <span class="c1"># low → low, normal, high</span>
     <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>  <span class="c1"># normal → ...</span>
@@ -396,7 +396,7 @@
 <span class="p">)</span>
 
 <span class="c1"># Returns strings instead of integers</span>
-<span class="n">regimes</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">)</span>
+<span class="n">regimes</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="s2">"normal"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Stationary distribution:</strong></p>
@@ -521,12 +521,12 @@
 <span class="c1"># Two volatility regimes</span>
 <span class="n">mc</span> <span class="o">=</span> <span class="n">MarkovChain</span><span class="p">(</span>
     <span class="n">transition_matrix</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">]],</span>
-    <span class="n">state_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;low_vol&quot;</span><span class="p">,</span> <span class="s2">&quot;high_vol&quot;</span><span class="p">],</span>
+    <span class="n">state_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"low_vol"</span><span class="p">,</span> <span class="s2">"high_vol"</span><span class="p">],</span>
 <span class="p">)</span>
-<span class="n">regimes</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="s2">&quot;low_vol&quot;</span><span class="p">)</span>
+<span class="n">regimes</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="s2">"low_vol"</span><span class="p">)</span>
 
 <span class="c1"># Generate returns with regime-dependent volatility</span>
-<span class="n">volatilities</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;low_vol&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s2">&quot;high_vol&quot;</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">}</span>
+<span class="n">volatilities</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"low_vol"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s2">"high_vol"</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">}</span>
 <span class="n">returns</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampleNormal</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="n">volatilities</span><span class="p">[</span><span class="n">r</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">regimes</span><span class="p">]</span>
 </pre></div>
 </div>

@@ -376,7 +376,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">superstore</span><span class="w"> </span><span class="kn">import</span> <span class="n">sampleCategorical</span>
 
 <span class="c1"># Equal probabilities</span>
-<span class="n">categories</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">]</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"A"</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">,</span> <span class="s2">"C"</span><span class="p">,</span> <span class="s2">"D"</span><span class="p">]</span>
 <span class="n">values</span> <span class="o">=</span> <span class="n">sampleCategorical</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">categories</span><span class="o">=</span><span class="n">categories</span><span class="p">)</span>
 
 <span class="c1"># Custom probabilities</span>
@@ -438,7 +438,7 @@
 <span class="n">data_with_missing</span> <span class="o">=</span> <span class="n">applyMissing</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">missing_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
 
 <span class="c1"># Different missing rates for multiple columns</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">applyMissing</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">missing_rate</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;col1&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;col2&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">applyMissing</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">missing_rate</span><span class="o">=</span><span class="p">{</span><span class="s2">"col1"</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">"col2"</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">})</span>
 </pre></div>
 </div>
 </section>

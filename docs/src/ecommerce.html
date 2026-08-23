@@ -268,11 +268,11 @@ The e-commerce generators create data suitable for:
 <span class="n">data</span> <span class="o">=</span> <span class="n">ecommerce_data</span><span class="p">()</span>
 
 <span class="c1"># Access individual tables</span>
-<span class="n">sessions_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sessions&quot;</span><span class="p">]</span>
-<span class="n">products_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;products&quot;</span><span class="p">]</span>
-<span class="n">cart_events_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;cart_events&quot;</span><span class="p">]</span>
-<span class="n">orders_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;orders&quot;</span><span class="p">]</span>
-<span class="n">customers_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;customers&quot;</span><span class="p">]</span>
+<span class="n">sessions_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"sessions"</span><span class="p">]</span>
+<span class="n">products_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"products"</span><span class="p">]</span>
+<span class="n">cart_events_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"cart_events"</span><span class="p">]</span>
+<span class="n">orders_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"orders"</span><span class="p">]</span>
+<span class="n">customers_df</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"customers"</span><span class="p">]</span>
 <span class="sb">```</span>
 
 ---
@@ -409,7 +409,7 @@ Customer records include RFM (Recency, Frequency, Monetary) segmentation.
 | <span class="sb">`rfm_recency`</span> | int | Recency score (1-5) |
 | <span class="sb">`rfm_frequency`</span> | int | Frequency score (1-5) |
 | <span class="sb">`rfm_monetary`</span> | float | Monetary value |
-| <span class="sb">`rfm_score`</span> | str | Combined RFM score (e.g., &quot;544&quot;) |
+| <span class="sb">`rfm_score`</span> | str | Combined RFM score (e.g., "544") |
 | <span class="sb">`rfm_segment`</span> | str | Customer segment label |
 
 <span class="gu">### RFM Segments</span>
@@ -451,13 +451,13 @@ Control user session behavior:
 <span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
     <span class="n">sessions</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
     <span class="n">session</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;avg_pages_per_session&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
-        <span class="s2">&quot;cart_add_probability&quot;</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span>
-        <span class="s2">&quot;checkout_start_probability&quot;</span><span class="p">:</span> <span class="mf">0.40</span><span class="p">,</span>
-        <span class="s2">&quot;purchase_completion_probability&quot;</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">,</span>
-        <span class="s2">&quot;avg_session_duration_seconds&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
-        <span class="s2">&quot;enable_bounces&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;bounce_rate&quot;</span><span class="p">:</span> <span class="mf">0.35</span><span class="p">,</span>
+        <span class="s2">"avg_pages_per_session"</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+        <span class="s2">"cart_add_probability"</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span>
+        <span class="s2">"checkout_start_probability"</span><span class="p">:</span> <span class="mf">0.40</span><span class="p">,</span>
+        <span class="s2">"purchase_completion_probability"</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">,</span>
+        <span class="s2">"avg_session_duration_seconds"</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+        <span class="s2">"enable_bounces"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"bounce_rate"</span><span class="p">:</span> <span class="mf">0.35</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="sb">```</span>
@@ -479,12 +479,12 @@ Configure cart behavior and abandonment:
 <span class="sb">```python</span>
 <span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
     <span class="n">cart</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;avg_items_per_cart&quot;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
-        <span class="s2">&quot;remove_probability&quot;</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span>
-        <span class="s2">&quot;quantity_update_probability&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
-        <span class="s2">&quot;max_items&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-        <span class="s2">&quot;enable_abandonment&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;abandonment_rate&quot;</span><span class="p">:</span> <span class="mf">0.70</span><span class="p">,</span>
+        <span class="s2">"avg_items_per_cart"</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
+        <span class="s2">"remove_probability"</span><span class="p">:</span> <span class="mf">0.10</span><span class="p">,</span>
+        <span class="s2">"quantity_update_probability"</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+        <span class="s2">"max_items"</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s2">"enable_abandonment"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"abandonment_rate"</span><span class="p">:</span> <span class="mf">0.70</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="sb">```</span>
@@ -505,11 +505,11 @@ Configure the product catalog:
 <span class="sb">```python</span>
 <span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
     <span class="n">catalog</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;num_products&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
-        <span class="s2">&quot;min_price&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
-        <span class="s2">&quot;max_price&quot;</span><span class="p">:</span> <span class="mf">1000.0</span><span class="p">,</span>
-        <span class="s2">&quot;lognormal_prices&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;categories&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Electronics&quot;</span><span class="p">,</span> <span class="s2">&quot;Clothing&quot;</span><span class="p">,</span> <span class="s2">&quot;Home&quot;</span><span class="p">,</span> <span class="s2">&quot;Sports&quot;</span><span class="p">],</span>
+        <span class="s2">"num_products"</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+        <span class="s2">"min_price"</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+        <span class="s2">"max_price"</span><span class="p">:</span> <span class="mf">1000.0</span><span class="p">,</span>
+        <span class="s2">"lognormal_prices"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"categories"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Electronics"</span><span class="p">,</span> <span class="s2">"Clothing"</span><span class="p">,</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="s2">"Sports"</span><span class="p">],</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="sb">```</span>
@@ -529,10 +529,10 @@ Configure RFM analysis parameters:
 <span class="sb">```python</span>
 <span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
     <span class="n">rfm</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;enable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;recency_window_days&quot;</span><span class="p">:</span> <span class="mi">365</span><span class="p">,</span>
-        <span class="s2">&quot;num_buckets&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-        <span class="s2">&quot;pareto_shape&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span>
+        <span class="s2">"enable"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"recency_window_days"</span><span class="p">:</span> <span class="mi">365</span><span class="p">,</span>
+        <span class="s2">"num_buckets"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">"pareto_shape"</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="sb">```</span>
@@ -551,10 +551,10 @@ Configure conversion funnel tracking:
 <span class="sb">```python</span>
 <span class="n">config</span> <span class="o">=</span> <span class="n">EcommerceConfig</span><span class="p">(</span>
     <span class="n">funnel</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;enable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;stages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;visit&quot;</span><span class="p">,</span> <span class="s2">&quot;view_product&quot;</span><span class="p">,</span> <span class="s2">&quot;add_to_cart&quot;</span><span class="p">,</span> <span class="s2">&quot;checkout&quot;</span><span class="p">,</span> <span class="s2">&quot;purchase&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;time_of_day_effects&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;day_of_week_effects&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"enable"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"stages"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"visit"</span><span class="p">,</span> <span class="s2">"view_product"</span><span class="p">,</span> <span class="s2">"add_to_cart"</span><span class="p">,</span> <span class="s2">"checkout"</span><span class="p">,</span> <span class="s2">"purchase"</span><span class="p">],</span>
+        <span class="s2">"time_of_day_effects"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"day_of_week_effects"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="sb">```</span>
@@ -572,34 +572,34 @@ Configure conversion funnel tracking:
     <span class="n">days</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
     <span class="n">session</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;avg_pages_per_session&quot;</span><span class="p">:</span> <span class="mf">6.0</span><span class="p">,</span>
-        <span class="s2">&quot;bounce_rate&quot;</span><span class="p">:</span> <span class="mf">0.30</span><span class="p">,</span>
-        <span class="s2">&quot;purchase_completion_probability&quot;</span><span class="p">:</span> <span class="mf">0.70</span><span class="p">,</span>
+        <span class="s2">"avg_pages_per_session"</span><span class="p">:</span> <span class="mf">6.0</span><span class="p">,</span>
+        <span class="s2">"bounce_rate"</span><span class="p">:</span> <span class="mf">0.30</span><span class="p">,</span>
+        <span class="s2">"purchase_completion_probability"</span><span class="p">:</span> <span class="mf">0.70</span><span class="p">,</span>
     <span class="p">},</span>
     <span class="n">cart</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;abandonment_rate&quot;</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">,</span>
-        <span class="s2">&quot;avg_items_per_cart&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+        <span class="s2">"abandonment_rate"</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">,</span>
+        <span class="s2">"avg_items_per_cart"</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
     <span class="p">},</span>
     <span class="n">catalog</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;num_products&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-        <span class="s2">&quot;categories&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Electronics&quot;</span><span class="p">,</span> <span class="s2">&quot;Fashion&quot;</span><span class="p">,</span> <span class="s2">&quot;Home&quot;</span><span class="p">,</span> <span class="s2">&quot;Beauty&quot;</span><span class="p">,</span> <span class="s2">&quot;Sports&quot;</span><span class="p">],</span>
+        <span class="s2">"num_products"</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+        <span class="s2">"categories"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Electronics"</span><span class="p">,</span> <span class="s2">"Fashion"</span><span class="p">,</span> <span class="s2">"Home"</span><span class="p">,</span> <span class="s2">"Beauty"</span><span class="p">,</span> <span class="s2">"Sports"</span><span class="p">],</span>
     <span class="p">},</span>
     <span class="n">rfm</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;num_buckets&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-        <span class="s2">&quot;pareto_shape&quot;</span><span class="p">:</span> <span class="mf">1.8</span><span class="p">,</span>
+        <span class="s2">"num_buckets"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="s2">"pareto_shape"</span><span class="p">:</span> <span class="mf">1.8</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">)</span>
 
 <span class="n">data</span> <span class="o">=</span> <span class="n">ecommerce_data</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
 
 <span class="c1"># Analyze conversion rates</span>
-<span class="n">sessions</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sessions&quot;</span><span class="p">]</span>
-<span class="n">conversion_rate</span> <span class="o">=</span> <span class="n">sessions</span><span class="p">[</span><span class="s2">&quot;converted&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Conversion rate: </span><span class="si">{</span><span class="n">conversion_rate</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">sessions</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"sessions"</span><span class="p">]</span>
+<span class="n">conversion_rate</span> <span class="o">=</span> <span class="n">sessions</span><span class="p">[</span><span class="s2">"converted"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Conversion rate: </span><span class="si">{</span><span class="n">conversion_rate</span><span class="si">:</span><span class="s2">.2%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Segment customers by RFM</span>
-<span class="n">customers</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;customers&quot;</span><span class="p">]</span>
-<span class="n">segment_counts</span> <span class="o">=</span> <span class="n">customers</span><span class="p">[</span><span class="s2">&quot;rfm_segment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">customers</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"customers"</span><span class="p">]</span>
+<span class="n">segment_counts</span> <span class="o">=</span> <span class="n">customers</span><span class="p">[</span><span class="s2">"rfm_segment"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">segment_counts</span><span class="p">)</span>
 <span class="sb">```</span>
 

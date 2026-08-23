@@ -270,7 +270,7 @@
 <span class="n">df</span> <span class="o">=</span> <span class="n">telemetry</span><span class="p">(</span><span class="n">n_machines</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">n_readings</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 
 <span class="c1"># Use a preset scenario</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">telemetry</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="s2">&quot;anomaly_detection&quot;</span><span class="p">,</span> <span class="n">n_machines</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">telemetry</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="s2">"anomaly_detection"</span><span class="p">,</span> <span class="n">n_machines</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -358,7 +358,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">TELEMETRY_SCENARIOS</span><span class="p">)</span>
 
 <span class="c1"># Use a scenario</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">telemetry</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="s2">&quot;production&quot;</span><span class="p">,</span> <span class="n">n_machines</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">telemetry</span><span class="p">(</span><span class="n">scenario</span><span class="o">=</span><span class="s2">"production"</span><span class="p">,</span> <span class="n">n_machines</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="table-wrapper colwidths-auto docutils container">
@@ -605,14 +605,14 @@
     <span class="n">n_machines</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
 
     <span class="c1"># Machine types</span>
-    <span class="n">machine_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="s2">&quot;worker&quot;</span><span class="p">],</span>
+    <span class="n">machine_types</span><span class="o">=</span><span class="p">[</span><span class="s2">"core"</span><span class="p">,</span> <span class="s2">"edge"</span><span class="p">,</span> <span class="s2">"worker"</span><span class="p">],</span>
 
     <span class="c1"># Hardware specs</span>
     <span class="n">cores_range</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">128</span><span class="p">),</span>  <span class="c1"># CPU cores range</span>
 
     <span class="c1"># Topology</span>
-    <span class="n">zones</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;zone-a&quot;</span><span class="p">,</span> <span class="s2">&quot;zone-b&quot;</span><span class="p">,</span> <span class="s2">&quot;zone-c&quot;</span><span class="p">,</span> <span class="s2">&quot;zone-d&quot;</span><span class="p">],</span>
-    <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;us-east-1&quot;</span><span class="p">,</span> <span class="s2">&quot;us-west-2&quot;</span><span class="p">,</span> <span class="s2">&quot;eu-west-1&quot;</span><span class="p">,</span> <span class="s2">&quot;ap-northeast-1&quot;</span><span class="p">],</span>
+    <span class="n">zones</span><span class="o">=</span><span class="p">[</span><span class="s2">"zone-a"</span><span class="p">,</span> <span class="s2">"zone-b"</span><span class="p">,</span> <span class="s2">"zone-c"</span><span class="p">,</span> <span class="s2">"zone-d"</span><span class="p">],</span>
+    <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">"us-east-1"</span><span class="p">,</span> <span class="s2">"us-west-2"</span><span class="p">,</span> <span class="s2">"eu-west-1"</span><span class="p">,</span> <span class="s2">"ap-northeast-1"</span><span class="p">],</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -691,10 +691,10 @@
     <span class="n">n_readings</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span>
 
     <span class="n">anomalies</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;enable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;cpu_spike_probability&quot;</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">,</span>       <span class="c1"># 3% CPU spikes</span>
-        <span class="s2">&quot;memory_leak_probability&quot;</span><span class="p">:</span> <span class="mf">0.015</span><span class="p">,</span>    <span class="c1"># Memory leak starts</span>
-        <span class="s2">&quot;network_saturation_probability&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>  <span class="c1"># Network saturation</span>
+        <span class="s2">"enable"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"cpu_spike_probability"</span><span class="p">:</span> <span class="mf">0.03</span><span class="p">,</span>       <span class="c1"># 3% CPU spikes</span>
+        <span class="s2">"memory_leak_probability"</span><span class="p">:</span> <span class="mf">0.015</span><span class="p">,</span>    <span class="c1"># Memory leak starts</span>
+        <span class="s2">"network_saturation_probability"</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>  <span class="c1"># Network saturation</span>
     <span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
@@ -736,11 +736,11 @@
     <span class="n">n_readings</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span>
 
     <span class="n">temporal_patterns</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;enable_diurnal&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>    <span class="c1"># Day/night patterns</span>
-        <span class="s2">&quot;enable_weekly&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>     <span class="c1"># Weekday/weekend patterns</span>
-        <span class="s2">&quot;peak_hour&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>           <span class="c1"># Peak at 2 PM</span>
-        <span class="s2">&quot;night_load_factor&quot;</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span> <span class="c1"># 25% load at night</span>
-        <span class="s2">&quot;weekend_load_factor&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span> <span class="c1"># 40% load on weekends</span>
+        <span class="s2">"enable_diurnal"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>    <span class="c1"># Day/night patterns</span>
+        <span class="s2">"enable_weekly"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>     <span class="c1"># Weekday/weekend patterns</span>
+        <span class="s2">"peak_hour"</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span>           <span class="c1"># Peak at 2 PM</span>
+        <span class="s2">"night_load_factor"</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">,</span> <span class="c1"># 25% load at night</span>
+        <span class="s2">"weekend_load_factor"</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span> <span class="c1"># 40% load on weekends</span>
     <span class="p">}</span>
 <span class="p">)</span>
 </pre></div>
@@ -826,10 +826,10 @@
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
 
     <span class="c1"># Machine topology</span>
-    <span class="n">machine_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="s2">&quot;edge&quot;</span><span class="p">,</span> <span class="s2">&quot;worker&quot;</span><span class="p">],</span>
+    <span class="n">machine_types</span><span class="o">=</span><span class="p">[</span><span class="s2">"core"</span><span class="p">,</span> <span class="s2">"edge"</span><span class="p">,</span> <span class="s2">"worker"</span><span class="p">],</span>
     <span class="n">cores_range</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">96</span><span class="p">),</span>
-    <span class="n">zones</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;zone-a&quot;</span><span class="p">,</span> <span class="s2">&quot;zone-b&quot;</span><span class="p">,</span> <span class="s2">&quot;zone-c&quot;</span><span class="p">],</span>
-    <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;us-east-1&quot;</span><span class="p">,</span> <span class="s2">&quot;us-west-2&quot;</span><span class="p">,</span> <span class="s2">&quot;eu-west-1&quot;</span><span class="p">],</span>
+    <span class="n">zones</span><span class="o">=</span><span class="p">[</span><span class="s2">"zone-a"</span><span class="p">,</span> <span class="s2">"zone-b"</span><span class="p">,</span> <span class="s2">"zone-c"</span><span class="p">],</span>
+    <span class="n">regions</span><span class="o">=</span><span class="p">[</span><span class="s2">"us-east-1"</span><span class="p">,</span> <span class="s2">"us-west-2"</span><span class="p">,</span> <span class="s2">"eu-west-1"</span><span class="p">],</span>
 
     <span class="c1"># Usage profiles</span>
     <span class="n">base_cpu_load</span><span class="o">=</span><span class="mf">0.35</span><span class="p">,</span>
@@ -838,19 +838,19 @@
 
     <span class="c1"># Anomalies</span>
     <span class="n">anomalies</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;enable&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;cpu_spike_probability&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>
-        <span class="s2">&quot;memory_leak_probability&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
-        <span class="s2">&quot;network_saturation_probability&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="s2">"enable"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"cpu_spike_probability"</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>
+        <span class="s2">"memory_leak_probability"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+        <span class="s2">"network_saturation_probability"</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
     <span class="p">},</span>
 
     <span class="c1"># Temporal patterns</span>
     <span class="n">temporal_patterns</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;enable_diurnal&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;enable_weekly&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="s2">&quot;peak_hour&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-        <span class="s2">&quot;night_load_factor&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
-        <span class="s2">&quot;weekend_load_factor&quot;</span><span class="p">:</span> <span class="mf">0.35</span><span class="p">,</span>
+        <span class="s2">"enable_diurnal"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"enable_weekly"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">"peak_hour"</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+        <span class="s2">"night_load_factor"</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+        <span class="s2">"weekend_load_factor"</span><span class="p">:</span> <span class="mf">0.35</span><span class="p">,</span>
     <span class="p">},</span>
 
     <span class="c1"># Failures</span>
