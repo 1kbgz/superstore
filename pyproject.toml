@@ -75,8 +75,7 @@ tag = true
 commit_args = "-s"
 pre_commit_hooks = [
     "cargo update --workspace",
-    "cargo update --manifest-path rust/Cargo.toml --workspace",
-    "git add Cargo.lock rust/Cargo.lock",
+    "git add Cargo.lock",
 ]
 
 [[tool.bumpversion.files]]

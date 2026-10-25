@@ -44,13 +44,8 @@ lint-rs:  ## run rust linter
 	make -C rust lint
 
 lint-docs:  ## lint docs with mdformat and codespell
-<<<<<<< before updating
 	python -m mdformat --check README.md
 	python -m codespell_lib README.md
-=======
-	python -m mdformat --check README.md $(wildcard docs/src) 
-	python -m codespell_lib README.md $(wildcard docs/src) 
->>>>>>> after updating
 
 lint: lint-rs lint-py lint-docs  ## run project linters
 
@@ -66,13 +61,8 @@ fix-rs:  ## fix rust formatting
 	make -C rust fix
 
 fix-docs:  ## autoformat docs with mdformat and codespell
-<<<<<<< before updating
 	python -m mdformat README.md
 	python -m codespell_lib --write README.md
-=======
-	python -m mdformat README.md $(wildcard docs/src) 
-	python -m codespell_lib --write README.md $(wildcard docs/src) 
->>>>>>> after updating
 
 fix: fix-rs fix-py fix-docs  ## run project autoformatters
 
@@ -87,14 +77,9 @@ format: fix
 check-dist:  ## check python sdist and wheel with check-dist
 	check-dist -v
 
-<<<<<<< before updating
 check-types:  ## check python types with mypy/ty
 	python -m mypy.stubtest superstore.superstore --allowlist superstore/stubtest_allowlist.txt --ignore-unused-allowlist
 	# ty check --python $$(which python)
-=======
-check-types:  ## check python types with ty
-	python -m ty check
->>>>>>> after updating
 
 checks: check-dist check-types
 
