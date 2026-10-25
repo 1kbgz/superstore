@@ -1,3 +1,4 @@
+<<<<<<< before updating
 """Type stubs for superstore - a library for realistic data generation."""
 
 from typing import Any, Literal, final, overload
@@ -893,3 +894,7 @@ class GumbelCopula:
         n: int,
         seed: int | None = ...,
     ) -> list[list[float]]: ...
+=======
+class Example:
+    def __init__(self, value: str) -> None: ...
+>>>>>>> after updating
