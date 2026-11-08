@@ -45,7 +45,7 @@ develop = [
     "hatch-rs",
     "hatchling",
     "mdformat",
-    "mdformat-frontmatter",
+    "mdformat-myst",
     "mdformat-tables>=1",
     "mypy>=1.0",
     "pytest",
