@@ -29,6 +29,3 @@ parquet = { version = "60", default-features = false, features = ["arrow", "snap
 csv = "1.3"
 nalgebra = "0.35"
 
-[profile.test.junit]
-path = "junit.xml"
-
