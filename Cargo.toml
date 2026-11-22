@@ -8,6 +8,7 @@ publish = false
 name = "superstore"
 path = "rust/python/lib.rs"
 crate-type = ["cdylib"]
+test = false
 
 [dependencies]
 superstore = { path = "./rust", version = "*" }
