@@ -148,6 +148,7 @@ fail_under = 50
 src = "/"
 
 [tool.hatch.build.hooks.hatch-rs]
+env = { PYO3_BUILD_EXTENSION_MODULE = "1" }
 verbose = true
 abi3 = true
 module = "superstore"
